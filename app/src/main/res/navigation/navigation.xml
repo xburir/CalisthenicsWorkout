@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/titleFragment">
+
+    <fragment
+        android:id="@+id/titleFragment"
+        android:name="com.example.calisthenicsworkout.fragments.TitleFragment"
+        android:label="Calisthenics App"
+        tools:layout="@layout/fragment_title">
+        <action
+            android:id="@+id/action_titleFragment_to_skillFragment"
+            app:destination="@id/skillFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popUpTo="@id/titleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/skillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.SkillFragment"
+        android:label="Chosen skill"
+        tools:layout="@layout/fragment_skill" >
+        <argument
+            android:name="skill_name"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AboutFragment"
+        android:label="O aplikacii" />
+    <fragment
+        android:id="@+id/addSkillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AddSkillFragment"
+        android:label="Add new skill"
+        tools:layout="@layout/fragment_add_skill" >
+        <action
+            android:id="@+id/action_addSkillFragment_to_titleFragment"
+            app:destination="@id/titleFragment"
+            app:popUpTo="@id/titleFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+</navigation>
