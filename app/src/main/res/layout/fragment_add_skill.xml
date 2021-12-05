@@ -7,6 +7,12 @@
     tools:context=".fragments.AddSkillFragment"
     >
 
+    <data>
+        <variable
+            name="skillViewModel"
+            type="com.example.calisthenicsworkout.fragments.SkillViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout3"
         android:layout_width="match_parent"

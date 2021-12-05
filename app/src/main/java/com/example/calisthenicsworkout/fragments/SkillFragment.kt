@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
+//import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
 import timber.log.Timber
 
@@ -28,17 +29,16 @@ class SkillFragment : Fragment() {
         val binding: FragmentSkillBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_skill,container,false)
 
-        val application = requireNotNull(this.activity).application;
-        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao
+        val application = requireNotNull(this.activity).application
+        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = SkillViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(SkillViewModel::class.java)
-
-
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
         binding.skillViewModel = viewModel;
+        binding.lifecycleOwner = this;
 
-        viewModel.skills.observe(viewLifecycleOwner){
-            Timber.i(it.toString());
-        }
+//        viewModel.skills.observe(viewLifecycleOwner){
+//            Timber.i(it.toString());
+//        }
 
 
         // create receiving bundle for arguments passed, toto mozno nebudem potrebovat kedze veci mi pôjdu z databázy
@@ -50,9 +50,8 @@ class SkillFragment : Fragment() {
 //            binding.textView1.text = newNumberOfSkills.toString()
 //        })
 
-        //toto by malo fungovat namiesto kodu hore, do skill layout pridat text = "@skillViewModel.numberOfSkills"
-        binding.skillViewModel = viewModel;
-        binding.lifecycleOwner = this;
+
+
 
         return binding.root
     }

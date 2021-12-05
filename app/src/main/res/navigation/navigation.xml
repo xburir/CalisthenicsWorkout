@@ -21,11 +21,7 @@
         android:id="@+id/skillFragment"
         android:name="com.example.calisthenicsworkout.fragments.SkillFragment"
         android:label="Chosen skill"
-        tools:layout="@layout/fragment_skill" >
-        <argument
-            android:name="skill_name"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_skill" />
     <fragment
         android:id="@+id/aboutFragment"
         android:name="com.example.calisthenicsworkout.fragments.AboutFragment"

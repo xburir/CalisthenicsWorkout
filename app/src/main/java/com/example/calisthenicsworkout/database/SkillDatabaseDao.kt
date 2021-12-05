@@ -10,7 +10,7 @@ import com.example.calisthenicsworkout.database.relations.SkillWithSkills
 interface SkillDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(skill: Skill)
+     fun insert(skill: Skill)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
      fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef)
@@ -21,11 +21,8 @@ interface SkillDatabaseDao {
     @Query("SELECT * from Skills WHERE skillId = :key")
     fun getSkill(key: Long): LiveData<Skill>
 
-
-    @Transaction
-    @Query("SELECT * FROM SkillAndSkillsCrossRef WHERE skillId=:skillId")
-    suspend fun getBeforeSkillsOfSkill(skillId: Long): List<SkillWithSkills>
-
+    @Query("SELECT * from Skills ORDER BY skillId DESC LIMIT 1")
+    fun getLastAddedSkill(): LiveData<Skill>
 
     @Delete
     fun delete(skill: Skill)

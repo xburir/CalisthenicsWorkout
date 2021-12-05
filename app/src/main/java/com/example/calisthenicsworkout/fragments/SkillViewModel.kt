@@ -1,29 +1,53 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
+import com.example.calisthenicsworkout.database.SkillDatabaseDao
+import com.example.calisthenicsworkout.database.SkillRepository
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.SkillDatabaseDao
+//import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import kotlinx.coroutines.*
 import timber.log.Timber
 
 
-class SkillViewModel(val database: SkillDatabaseDao,application: Application): AndroidViewModel(application) {
+class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
 
-    val skills = database.getALlSkills()
+    val chosenSkill = MutableLiveData<String>()
 
-    val skillId = MutableLiveData(1L)
-    val skill = Transformations.map(skillId){
-        database.getSkill(it)
-    }
+    val allSkills = database.getALlSkills()
+    private lateinit var lastSkill: LiveData<Skill>
+
+//    val skillId = MutableLiveData(1L)
+//    val skill = Transformations.map(skillId){
+//        database.getSkill(it)
+//    }
 
     init {
+        Log.i("Debug","ViewModel created")
+        //addTestData()
+    }
 
+    fun addSkillToDatabase(skill: Skill){
+        viewModelScope.launch {
+            suspendfunction(skill)
+            lastSkill = database.getLastAddedSkill()
+        }
+    }
+    suspend fun suspendfunction(skill: Skill){
+        withContext(Dispatchers.IO){
+            database.insert(skill)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared();
+        Log.i("Debug","ViewModel cleared")
+    }
+
+    fun addTestData(){
         val skills = listOf(
             Skill(0,"Handstand"),
             Skill(0,"Muscle up"),
@@ -35,73 +59,8 @@ class SkillViewModel(val database: SkillDatabaseDao,application: Application): A
             SkillAndSkillCrossRef(1,3,20)
         )
 
-
-        viewModelScope.launch {
-            clear()
-            addThingsToDatabase(skills,skillWithSkillsRelations)
+        skills.forEach{
+            addSkillToDatabase(it)
         }
-    }
-
-    private suspend fun addThingsToDatabase(skills: List<Skill>, skillWithSkillsRelations: List<SkillAndSkillCrossRef>){
-            skills.forEach{
-                database.insert(it)
-            }
-            skillWithSkillsRelations.forEach {
-                database.insertSkillAndSkillCrossRef(it)
-            }
-
-
-    }
-
-
-    fun initializeSkill(id:Long){
-        viewModelScope.launch {
-//            skill.value = getSkillFromDatabase(id)
-        }
-    }
-
-
-
-//    private suspend fun getSkillFromDatabase(key: Long): Skill? {
-//        val skill = database.getSkill(key)
-//
-//    }
-
-    fun addSkill(name:String){
-        viewModelScope.launch {
-            val newSkill = Skill(0,name);
-            insert(newSkill);
-        }
-
-    }
-
-    private suspend fun insert(skill: Skill){
-        withContext(Dispatchers.IO){
-            database.insert(skill);
-        }
-    }
-
-    private suspend fun update(skill: Skill){
-        withContext(Dispatchers.IO){
-            database.update(skill)
-        }
-    }
-
-    private fun clearDatabase(){
-        viewModelScope.launch {
-            clear();
-        }
-    }
-
-    private suspend fun clear(){
-        withContext(Dispatchers.IO){
-            database.clearSkillAndSkillCrossRefTable()
-            database.clearSkillTable()
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared();
-        Timber.i("Skill viewModel cleared");
     }
 }

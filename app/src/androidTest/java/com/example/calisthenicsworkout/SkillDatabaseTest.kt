@@ -18,19 +18,19 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class SleepDatabaseTest {
 
-    private lateinit var sleepDao: SkillDatabaseDao
-    private var db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().targetContext, SkillDatabase::class.java).allowMainThreadQueries().build()
+    private lateinit var skillDao: SkillDatabaseDao
+    private lateinit var db: SkillDatabase
 
     @Before
     fun createDb() {
-//        val context = InstrumentationRegistry.getInstrumentation().targetContext
-//        // Using an in-memory database because the information stored here disappears when the
-//        // process is killed.
-//        db = Room.inMemoryDatabaseBuilder(context, SkillDatabase::class.java)
-//            // Allowing main thread queries, just for testing.
-//            .allowMainThreadQueries()
-//            .build()
-        sleepDao = db.skillDatabaseDao
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        // Using an in-memory database because the information stored here disappears when the
+        // process is killed.
+        db = Room.inMemoryDatabaseBuilder(context, SkillDatabase::class.java)
+            // Allowing main thread queries, just for testing.
+            .allowMainThreadQueries()
+            .build()
+        skillDao = db.skillDatabaseDao()
     }
 
     @After
@@ -42,9 +42,9 @@ class SleepDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetSkill() {
-        val skill = Skill("Handstand")
-        sleepDao.insert(skill)
-        val chosenSkill = sleepDao.getSkill(0)
-        assertEquals(chosenSkill.id, "Handstand")
+        val skill = Skill(0,"Dip")
+        skillDao.insert(skill)
+        val chosenSkill = skillDao.getLastAddedSkill()
+        assertEquals("Dip", chosenSkill.value?.skillName)
     }
 }

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.Skill
+//import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentAddSkillBinding
 
 class AddSkillFragment : Fragment() {
@@ -28,15 +30,15 @@ class AddSkillFragment : Fragment() {
 
 
         val application = requireNotNull(this.activity).application;
-        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao
+        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = SkillViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(SkillViewModel::class.java)
-
+        viewModel = ViewModelProvider(requireActivity()).get(SkillViewModel::class.java)
+        binding.skillViewModel = viewModel;
+        binding.lifecycleOwner = this;
 
         //sets a click listener to a button that then does an action (changing the fragment)
         binding.button.setOnClickListener{ view: View ->
-            val name: String = binding.skillName.text.toString();
-            viewModel.addSkill(name);
+            viewModel.addSkillToDatabase(Skill(0,binding.skillName.text.toString()))
             view.findNavController().navigate(
                 AddSkillFragmentDirections.actionAddSkillFragmentToTitleFragment()
             )

@@ -21,17 +21,14 @@ abstract class SkillDatabase : RoomDatabase() {
         private var INSTANCE: SkillDatabase? = null
 
         fun getInstance(context: Context): SkillDatabase{
-            val tempInstance = INSTANCE
-            if(tempInstance!=null){
-                return tempInstance
-            }
             synchronized(this){
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    SkillDatabase::class.java,
-                    "Database"
-                ).build()
-                INSTANCE = instance
+                var instance = INSTANCE
+
+                if(instance == null){
+                    instance = Room.databaseBuilder(context.applicationContext,SkillDatabase::class.java,"Database")
+                        .fallbackToDestructiveMigration().build()
+                    INSTANCE = instance
+                }
                 return instance
             }
         }
@@ -40,21 +37,3 @@ abstract class SkillDatabase : RoomDatabase() {
     }
 }
 
-
-/*
-          fun getInstance(context: Context): SkillDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: buildDatabase(context).also { INSTANCE = it }
-            }
-
-private fun buildDatabase(context: Context) =
-    Room.databaseBuilder(
-        context.applicationContext,
-        SkillDatabase::class.java, "Database"
-    ).fallbackToDestructiveMigration()
-        .build()
-
-
-
- */

@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var myLifeCycleObserver: MyLifeCycleObserver;
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -23,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
 
-        myLifeCycleObserver = MyLifeCycleObserver(this.lifecycle);
+
+
 
         //find navigation controller in activity
         val navController = this.findNavController(R.id.myNavHostFragment)
