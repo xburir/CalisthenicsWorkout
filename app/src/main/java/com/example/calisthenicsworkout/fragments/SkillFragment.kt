@@ -44,6 +44,14 @@ class SkillFragment : Fragment() {
         binding.lifecycleOwner = this;
 
 
+        val manager = GridLayoutManager(activity, 3)
+        val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
+                skillId -> viewModel.onSkillClicked(skillId)
+        })
+        binding.recyclerViewViewed.adapter = adapter
+        binding.recyclerViewViewed.layoutManager = manager
+
+
         viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
             skill?.let {
                 //binding.skillId.text = skill.toString()       //toto funguje
@@ -58,14 +66,7 @@ class SkillFragment : Fragment() {
                 viewModel.onSkillNavigated()
             }
         })
-
-        val manager = GridLayoutManager(activity, 3)
-        val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
-                skillId -> viewModel.onSkillClicked(skillId)
-        })
-        binding.recyclerViewViewed.adapter = adapter
-        binding.recyclerViewViewed.layoutManager = manager
-        viewModel.allSkills.observe(viewLifecycleOwner, Observer {
+        viewModel.allSkillsBeforeSkills.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }

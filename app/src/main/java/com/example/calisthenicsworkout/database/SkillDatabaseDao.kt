@@ -18,8 +18,8 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM Skills ORDER BY skillId DESC")
     fun getALlSkills(): LiveData<List<Skill>>
 
-//    @Query("SELECT * FROM Skillandskillscrossref WHERE skillId = :key ORDER BY skillId DESC")
-//    fun getALlBeforeSkills(key: Long): LiveData<List<Skill>>
+    @Query("SELECT * FROM Skills WHERE skillid IN (SELECT childskillid FROM SkillAndSkillsCrossRef WHERE skillid = :key)")
+    fun getALlBeforeSkills(key: Long): LiveData<List<Skill>>
 
     @Query("SELECT * from Skills WHERE skillId = :key")
     fun getSkill(key: Long): Skill

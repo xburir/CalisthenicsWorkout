@@ -45,13 +45,15 @@ class TitleFragment : Fragment() {
         val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
             skillId -> viewModel.onSkillClicked(skillId)
         })
+        val manager = GridLayoutManager(activity, 3)
+        binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
+
         viewModel.allSkills.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
-
         viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
             skill?.let {
                 this.findNavController().navigate(
@@ -61,8 +63,7 @@ class TitleFragment : Fragment() {
             }
         })
 
-        val manager = GridLayoutManager(activity, 3)
-        binding.recyclerView.layoutManager = manager
+
 
         //sets a click listener to a button that then does an action (changing the fragment)
         binding.searchButton.setOnClickListener {
