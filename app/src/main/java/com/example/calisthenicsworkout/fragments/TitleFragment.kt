@@ -3,10 +3,12 @@ package com.example.calisthenicsworkout.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calisthenicsworkout.R
@@ -40,7 +42,9 @@ class TitleFragment : Fragment() {
         binding.skillViewModel = viewModel
         binding.lifecycleOwner = this
 
-        val adapter = SkillListAdapter()
+        val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
+            skillId -> viewModel.onSkillClicked(skillId)
+        })
         binding.recyclerView.adapter = adapter
         viewModel.allSkills.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -48,19 +52,22 @@ class TitleFragment : Fragment() {
             }
         })
 
-        //sets a click listener to a button that then does an action (changing the fragment)
-        binding.searchButton.setOnClickListener { view: View ->
-            var search : String = binding.searchBar.text.toString()
-            viewModel.chosenSkill.value = search
-            view.findNavController().navigate(
-                TitleFragmentDirections.actionTitleFragmentToSkillFragment()
-            )
-        }
+        viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
+            skill?.let {
+                this.findNavController().navigate(
+                    TitleFragmentDirections.actionTitleFragmentToSkillFragment(skill)
+                )
+
+            }
+        })
 
         val manager = GridLayoutManager(activity, 3)
         binding.recyclerView.layoutManager = manager
 
-
+        //sets a click listener to a button that then does an action (changing the fragment)
+        binding.searchButton.setOnClickListener {
+            Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
+        }
 
 
 

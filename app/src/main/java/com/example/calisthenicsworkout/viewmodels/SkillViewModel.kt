@@ -13,27 +13,28 @@ import kotlinx.coroutines.*
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
 
-    val chosenSkill = MutableLiveData<String>()
-
     val allSkills = database.getALlSkills()
-    private lateinit var lastSkill: LiveData<Skill>
+    val chosenSkillId = MutableLiveData<Long>();
+    //lateinit var allSkillsBeforeSkills: LiveData<List<Skill>>
 
-//    val skillId = MutableLiveData(1L)
-//    val skill = Transformations.map(skillId){
-//        database.getSkill(it)
-//    }
 
     init {
         Log.i("Debug","ViewModel created")
 
+    }
 
+    fun onSkillClicked(skillId: Long) {
+        chosenSkillId.value = skillId
+   //     allSkillsBeforeSkills = database.getALlBeforeSkills(skillId)
+    }
+    fun onSkillNavigated(){
+        chosenSkillId.value = null
 
     }
 
     fun addSkillToDatabase(skill: Skill){
         viewModelScope.launch {
             suspendfunction(skill)
-            lastSkill = database.getLastAddedSkill()
         }
     }
     suspend fun suspendfunction(skill: Skill){
@@ -69,4 +70,6 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
             addSkillToDatabase(it)
         }
     }
+
+
 }

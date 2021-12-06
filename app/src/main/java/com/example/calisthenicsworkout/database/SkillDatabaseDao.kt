@@ -16,10 +16,13 @@ interface SkillDatabaseDao {
      fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef)
 
     @Query("SELECT * FROM Skills ORDER BY skillId DESC")
-    fun getALlSkills(): LiveData<List<Skill>> //MutableLiveData<MutableList<Skill>>
+    fun getALlSkills(): LiveData<List<Skill>>
+
+//    @Query("SELECT * FROM Skillandskillscrossref WHERE skillId = :key ORDER BY skillId DESC")
+//    fun getALlBeforeSkills(key: Long): LiveData<List<Skill>>
 
     @Query("SELECT * from Skills WHERE skillId = :key")
-    fun getSkill(key: Long): LiveData<Skill>
+    fun getSkill(key: Long): Skill
 
     @Query("SELECT * from Skills ORDER BY skillId DESC LIMIT 1")
     fun getLastAddedSkill(): LiveData<Skill>

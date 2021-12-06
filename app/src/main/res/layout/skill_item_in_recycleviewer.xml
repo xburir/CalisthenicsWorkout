@@ -7,16 +7,20 @@
         <variable
             name="skill"
             type="com.example.calisthenicsworkout.database.entities.Skill" />
+        <variable
+            name="clickListener"
+            type="com.example.calisthenicsworkout.adapters.SkillListAdapter.SkillListener" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ConstraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->clickListener.onClick(skill)}">
 
         <ImageView
-            android:id="@+id/skill_image"
+            android:id="@+id/skill_image_viewed"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginTop="8dp"
@@ -36,9 +40,9 @@
             android:text="TextView"
             android:textAlignment="center"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/skill_image"
-            app:layout_constraintStart_toStartOf="@+id/skill_image"
-            app:layout_constraintTop_toBottomOf="@+id/skill_image"
+            app:layout_constraintEnd_toEndOf="@+id/skill_image_viewed"
+            app:layout_constraintStart_toStartOf="@+id/skill_image_viewed"
+            app:layout_constraintTop_toBottomOf="@+id/skill_image_viewed"
             app:skillNameFormatted="@{skill}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

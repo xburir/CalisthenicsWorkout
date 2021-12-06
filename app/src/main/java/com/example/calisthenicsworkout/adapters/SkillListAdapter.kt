@@ -5,15 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.databinding.SkillItemInRecycleviewerBinding
 
-class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDiffCallBack()) {
+class SkillListAdapter(val clickListener: SkillListener): ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDiffCallBack()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+        holder.bind(getItem(position)!!,clickListener)
 
     }
 
@@ -25,8 +23,9 @@ class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDif
 
     class ViewHolder private constructor(val binding: SkillItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: Skill) {
+        fun bind(item: Skill, clickListener: SkillListener) {
             binding.skill = item
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
 
@@ -48,6 +47,10 @@ class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDif
             return oldItem == newItem
         }
 
+    }
+
+    class SkillListener(val clickListener: (skillId: Long)->Unit){
+        fun onClick(skill: Skill) = clickListener(skill.skillId)
     }
 
 

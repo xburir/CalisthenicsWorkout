@@ -2,12 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <data>-->
-<!--        <variable-->
-<!--            name="Skill"-->
-<!--            type="com.example.calisthenicsworkout.database.entities.Skill"-->
-<!--            />-->
-<!--    </data>-->
+
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
