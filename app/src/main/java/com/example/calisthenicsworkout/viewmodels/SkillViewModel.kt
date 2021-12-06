@@ -1,15 +1,13 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
-import com.example.calisthenicsworkout.database.SkillRepository
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
 //import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {

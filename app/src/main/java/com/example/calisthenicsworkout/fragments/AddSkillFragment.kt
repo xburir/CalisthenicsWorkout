@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.Skill
 //import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentAddSkillBinding
+import com.example.calisthenicsworkout.viewmodels.SkillViewModel
+import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 
 class AddSkillFragment : Fragment() {
 

@@ -25,6 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:skillImage="@{skill}"
             app:srcCompat="@drawable/dip"
             tools:ignore="ImageContrastCheck"
             tools:srcCompat="@drawable/dip" />
@@ -36,11 +37,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:textSize="32dp"
             android:text="TextView"
+            android:textSize="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/skill_image"
-            app:layout_constraintTop_toTopOf="@+id/skill_image" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:skillNameFormatted="@{skill}" />
 
         <TextView
             android:id="@+id/skill_description"
@@ -49,9 +51,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="TextView"
+            android:layout_marginBottom="8dp"
+            android:text="Text"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/skill_image"
-            app:layout_constraintTop_toBottomOf="@+id/skill_name" />
+            app:layout_constraintTop_toBottomOf="@+id/skill_name"
+            app:skillDescriptionFormatted="@{skill}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,10 +1,11 @@
-package com.example.calisthenicsworkout
+package com.example.calisthenicsworkout.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.databinding.SkillItemInRecycleviewerBinding
 
@@ -25,19 +26,8 @@ class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDif
     class ViewHolder private constructor(val binding: SkillItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: Skill) {
-            binding.skillName.text = item.skillName
-            binding.skillDescription.text = item.skillDescription
-            binding.skillImage.setImageResource(
-                when (item.skillName) {
-                    "Dip" -> R.drawable.dip
-                    "Handstand" -> R.drawable.handstand
-                    "Push up" -> R.drawable.push_up
-                    "Muscle up" -> R.drawable.muscle_up
-                    "Front lever " -> R.drawable.front_lever
-                    "Pull up" -> R.drawable.pull_up
-                    else -> R.drawable.ic_launcher_background
-                }
-            )
+            binding.skill = item
+            binding.executePendingBindings()
         }
 
         companion object {

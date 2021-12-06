@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 //import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
-import timber.log.Timber
+import com.example.calisthenicsworkout.viewmodels.SkillViewModel
+import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 
 class SkillFragment : Fragment() {
 

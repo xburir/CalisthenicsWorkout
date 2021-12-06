@@ -7,7 +7,7 @@
     <data>
         <variable
             name="skillViewModel"
-            type="com.example.calisthenicsworkout.fragments.SkillViewModel" />
+            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

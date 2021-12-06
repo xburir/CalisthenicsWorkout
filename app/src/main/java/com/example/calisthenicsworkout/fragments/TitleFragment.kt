@@ -1,6 +1,5 @@
 package com.example.calisthenicsworkout.fragments
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,7 +11,9 @@ import androidx.navigation.ui.NavigationUI
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentTitleBinding
-import com.example.calisthenicsworkout.SkillListAdapter
+import com.example.calisthenicsworkout.adapters.SkillListAdapter
+import com.example.calisthenicsworkout.viewmodels.SkillViewModel
+import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import androidx.databinding.DataBindingUtil as DataBindingUtil1
 
 class TitleFragment : Fragment() {

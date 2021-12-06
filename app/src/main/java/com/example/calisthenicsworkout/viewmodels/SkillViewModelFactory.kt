@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
