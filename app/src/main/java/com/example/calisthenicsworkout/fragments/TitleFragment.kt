@@ -42,7 +42,7 @@ class TitleFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         viewModel.allSkills.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.data = it
+                adapter.submitList(it)
             }
         })
 

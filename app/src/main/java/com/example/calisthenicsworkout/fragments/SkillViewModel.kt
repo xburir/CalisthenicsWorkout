@@ -56,10 +56,11 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun addTestData(){
         val skills = listOf(
-            Skill(0,"Handstand",""),
-            Skill(0,"Muscle up",""),
-            Skill(0,"Pull Up",""),
-            Skill(0,"Dip","")
+            Skill(0,"Knee Push up","Lower yourself until your chest nearly touches the floor end then extend your arms, with your knees on the floor instead of your feet"),
+            Skill(0,"Back lever","Hang on the bar with your body being completely horizontal, with hands behind your back"),
+            Skill(0,"Planche","Put your body in a horizontal position while being only on your hands"),
+            Skill(0,"Pike Push up","Bend your body so your chest and legs make 90° like the letter L, do a pushup but instead of going down with your whole body, go directly down with your shoulders."),
+            Skill(0,"Lsit","Elevate your legs until your body makes an L letter.")
         )
         val skillWithSkillsRelations = listOf(
             SkillAndSkillCrossRef(1,2,15),

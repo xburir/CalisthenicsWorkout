@@ -5,32 +5,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.database.entities.Skill
 
-class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
-    var data = listOf<Skill>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount() = data.size
+class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDiffCallBack()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = data[position]
+        val item = getItem(position)
         holder.bind(item)
 
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.skill_item_in_recycleviewer,parent,false)
-        return ViewHolder(view)
+        return ViewHolder.from(parent)
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
+
+    class ViewHolder private constructor(itemView: View): RecyclerView.ViewHolder(itemView){
         val skillName: TextView = itemView.findViewById(R.id.skill_name)
         val skillDescription: TextView = itemView.findViewById((R.id.skill_description))
         val skillImage: ImageView = itemView.findViewById(R.id.skill_image)
@@ -50,5 +44,26 @@ class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
                 }
             )
         }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.skill_item_in_recycleviewer, parent, false)
+                return ViewHolder(view)
+            }
+        }
     }
+
+    class SkillDiffCallBack: DiffUtil.ItemCallback<Skill>(){
+        override fun areItemsTheSame(oldItem: Skill, newItem: Skill): Boolean {
+            return oldItem.skillId == newItem.skillId
+        }
+
+        override fun areContentsTheSame(oldItem: Skill, newItem: Skill): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
+
 }
