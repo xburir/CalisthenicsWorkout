@@ -38,7 +38,7 @@ class AddSkillFragment : Fragment() {
 
         //sets a click listener to a button that then does an action (changing the fragment)
         binding.button.setOnClickListener{ view: View ->
-            viewModel.addSkillToDatabase(Skill(0,binding.skillName.text.toString()))
+            viewModel.addSkillToDatabase(Skill(0,binding.skillName.text.toString(),""))
             view.findNavController().navigate(
                 AddSkillFragmentDirections.actionAddSkillFragmentToTitleFragment()
             )

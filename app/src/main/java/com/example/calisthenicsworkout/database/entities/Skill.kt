@@ -13,6 +13,9 @@ data class Skill(
     @ColumnInfo(name = "skillName")
     var skillName: String,
 
+    @ColumnInfo(name = "skillDescription")
+    var skillDescription: String,
+
 )
 
 

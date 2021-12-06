@@ -37,7 +37,7 @@ class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
 
         fun bind(item: Skill) {
             skillName.text = item.skillName
-            skillDescription.text = "Description will be later added"
+            skillDescription.text = item.skillDescription
             skillImage.setImageResource(
                 when (item.skillName) {
                     "Dip" -> R.drawable.dip
@@ -45,7 +45,7 @@ class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
                     "Push up" -> R.drawable.push_up
                     "Muscle up" -> R.drawable.muscle_up
                     "Front lever " -> R.drawable.front_lever
-                    "Pull Up" -> R.drawable.pull_up
+                    "Pull up" -> R.drawable.pull_up
                     else -> R.drawable.ic_launcher_background
                 }
             )
