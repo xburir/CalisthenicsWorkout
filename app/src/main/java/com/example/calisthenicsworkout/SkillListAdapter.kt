@@ -19,19 +19,10 @@ class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.skillName.text = item.skillName
-        holder.skillDescription.text = "Description will be later added"
-        holder.skillImage.setImageResource(when (item.skillName){
-            "Dip" -> R.drawable.dip
-            "Handstand" -> R.drawable.handstand
-            "Push up" -> R.drawable.push_up
-            "Muscle up" -> R.drawable.muscle_up
-            "Front lever " -> R.drawable.front_lever
-            "Pull Up" -> R.drawable.pull_up
-            else -> R.drawable.ic_launcher_background
-        })
+        holder.bind(item)
 
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -43,5 +34,21 @@ class SkillListAdapter: RecyclerView.Adapter<SkillListAdapter.ViewHolder>() {
         val skillName: TextView = itemView.findViewById(R.id.skill_name)
         val skillDescription: TextView = itemView.findViewById((R.id.skill_description))
         val skillImage: ImageView = itemView.findViewById(R.id.skill_image)
+
+        fun bind(item: Skill) {
+            skillName.text = item.skillName
+            skillDescription.text = "Description will be later added"
+            skillImage.setImageResource(
+                when (item.skillName) {
+                    "Dip" -> R.drawable.dip
+                    "Handstand" -> R.drawable.handstand
+                    "Push up" -> R.drawable.push_up
+                    "Muscle up" -> R.drawable.muscle_up
+                    "Front lever " -> R.drawable.front_lever
+                    "Pull Up" -> R.drawable.pull_up
+                    else -> R.drawable.ic_launcher_background
+                }
+            )
+        }
     }
 }
