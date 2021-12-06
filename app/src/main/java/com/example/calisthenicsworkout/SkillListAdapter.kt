@@ -1,14 +1,12 @@
 package com.example.calisthenicsworkout
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.database.entities.Skill
+import com.example.calisthenicsworkout.databinding.SkillItemInRecycleviewerBinding
 
 class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDiffCallBack()) {
 
@@ -24,15 +22,12 @@ class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDif
 
 
 
-    class ViewHolder private constructor(itemView: View): RecyclerView.ViewHolder(itemView){
-        val skillName: TextView = itemView.findViewById(R.id.skill_name)
-        val skillDescription: TextView = itemView.findViewById((R.id.skill_description))
-        val skillImage: ImageView = itemView.findViewById(R.id.skill_image)
+    class ViewHolder private constructor(val binding: SkillItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: Skill) {
-            skillName.text = item.skillName
-            skillDescription.text = item.skillDescription
-            skillImage.setImageResource(
+            binding.skillName.text = item.skillName
+            binding.skillDescription.text = item.skillDescription
+            binding.skillImage.setImageResource(
                 when (item.skillName) {
                     "Dip" -> R.drawable.dip
                     "Handstand" -> R.drawable.handstand
@@ -48,8 +43,8 @@ class SkillListAdapter: ListAdapter<Skill, SkillListAdapter.ViewHolder>(SkillDif
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.skill_item_in_recycleviewer, parent, false)
-                return ViewHolder(view)
+                val binding = SkillItemInRecycleviewerBinding.inflate(layoutInflater,parent,false)
+                return ViewHolder(binding)
             }
         }
     }

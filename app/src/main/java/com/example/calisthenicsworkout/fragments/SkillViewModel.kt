@@ -27,7 +27,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     init {
         Log.i("Debug","ViewModel created")
-        //addTestData()
+
 
 
     }
@@ -40,7 +40,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     }
     suspend fun suspendfunction(skill: Skill){
         withContext(Dispatchers.IO){
-//            database.insert(skill)
+            database.insert(skill)
 
 //            var skill = database.getSkill(4)
 //            skill.skillDescription = "Lower yourself until your arms make 90° and then push yourself up so your arms are fully extended"
