@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentTitleBinding
@@ -56,6 +57,8 @@ class TitleFragment : Fragment() {
             )
         }
 
+        val manager = GridLayoutManager(activity, 3)
+        binding.recyclerView.layoutManager = manager
 
 
 
