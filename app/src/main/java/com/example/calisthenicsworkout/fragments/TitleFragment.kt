@@ -1,5 +1,6 @@
 package com.example.calisthenicsworkout.fragments
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -62,6 +63,8 @@ class TitleFragment : Fragment() {
         // create menu resource
         // call setHasOptionsMenu(true)
         setHasOptionsMenu(true)
+
+
 
 
 
