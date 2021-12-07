@@ -15,7 +15,6 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<Long>();
-    lateinit var allSkillsBeforeSkills: LiveData<List<Skill>>
 
 
     init {
@@ -25,7 +24,6 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun onSkillClicked(skillId: Long) {
         chosenSkillId.value = skillId
-        allSkillsBeforeSkills = database.getALlBeforeSkills(skillId)
     }
     fun onSkillNavigated(){
         chosenSkillId.value = null

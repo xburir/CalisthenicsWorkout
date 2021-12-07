@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -52,25 +53,19 @@ class SkillFragment : Fragment() {
         binding.recyclerViewViewed.layoutManager = manager
 
 
-        viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
+        viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
-                //binding.skillId.text = skill.toString()       //toto funguje
-
-
                 viewModel.viewModelScope.launch {
                     withContext(Dispatchers.IO){
                         binding.skill = viewModel.database.getSkill(skill)
-
+                        adapter.submitList(viewModel.database.getALlBeforeSkills(skill))
                     }
                 }
                 viewModel.onSkillNavigated()
             }
         })
-        viewModel.allSkillsBeforeSkills.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.submitList(it)
-            }
-        })
+
+
 
 
 

@@ -59,25 +59,18 @@ class TitleFragment : Fragment() {
                 this.findNavController().navigate(
                     TitleFragmentDirections.actionTitleFragmentToSkillFragment(skill)
                 )
-
             }
         })
 
 
-
-        //sets a click listener to a button that then does an action (changing the fragment)
+        //sets a click listener to a button that then does an action
         binding.searchButton.setOnClickListener {
             Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
         }
 
-
-
         // create menu resource
         // call setHasOptionsMenu(true)
         setHasOptionsMenu(true)
-
-
-
 
 
         return binding.root
