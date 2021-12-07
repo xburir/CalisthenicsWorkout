@@ -42,7 +42,7 @@ class SleepDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun insertAndGetSkill() {
-        val skill = Skill(0,"Dip")
+        val skill = Skill(0,"Dip","")
         skillDao.insert(skill)
         val chosenSkill = skillDao.getLastAddedSkill()
         assertEquals("Dip", chosenSkill.value?.skillName)

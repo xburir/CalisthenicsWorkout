@@ -49,7 +49,7 @@ class SkillListAdapter(val clickListener: SkillListener): ListAdapter<Skill, Ski
 
     }
 
-    class SkillListener(val clickListener: (skillId: Long)->Unit){
+    class SkillListener(val clickListener: (skillId: String)->Unit){
         fun onClick(skill: Skill) = clickListener(skill.skillId)
     }
 

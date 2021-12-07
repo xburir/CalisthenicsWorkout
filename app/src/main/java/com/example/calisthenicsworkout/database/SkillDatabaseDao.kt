@@ -19,13 +19,21 @@ interface SkillDatabaseDao {
     fun getALlSkills(): LiveData<List<Skill>>
 
     @Query("SELECT * FROM Skills WHERE skillid IN (SELECT childskillid FROM SkillAndSkillsCrossRef WHERE skillid = :key)")
-    fun getALlBeforeSkills(key: Long): List<Skill>
+    fun getALlBeforeSkills(key: String): List<Skill>
+
+    @Query("SELECT * FROM Skills WHERE skillid IN (SELECT skillId FROM SkillAndSkillsCrossRef WHERE childskillid = :key)")
+    fun getALlAfterSkills(key: String): List<Skill>
 
     @Query("SELECT * from Skills WHERE skillId = :key")
-    fun getSkill(key: Long): Skill
+    fun getSkill(key: String): Skill
 
-    @Query("SELECT * from Skills ORDER BY skillId DESC LIMIT 1")
-    fun getLastAddedSkill(): LiveData<Skill>
+    @Query("SELECT * FROM skillandskillscrossref ORDER BY skillId DESC")
+    fun getALlCrossRefs(): LiveData<List<SkillAndSkillCrossRef>>
+
+
+
+
+
 
     @Delete
     fun delete(skill: Skill)

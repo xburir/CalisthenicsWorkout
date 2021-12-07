@@ -6,9 +6,9 @@ import com.google.gson.Gson
 
 @Entity(tableName = "Skills")
 data class Skill(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "skillId")
-    var skillId: Long = 0L,
+    var skillId: String,
 
     @ColumnInfo(name = "skillName")
     var skillName: String,

@@ -14,15 +14,16 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
     val allSkills = database.getALlSkills()
-    val chosenSkillId = MutableLiveData<Long>();
+    val chosenSkillId = MutableLiveData<String>();
 
 
     init {
         Log.i("Debug","ViewModel created")
 
+
     }
 
-    fun onSkillClicked(skillId: Long) {
+    fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId
     }
     fun onSkillNavigated(){
@@ -32,17 +33,23 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun addSkillToDatabase(skill: Skill){
         viewModelScope.launch {
-            suspendfunction(skill)
+            insertSkillToDatabase(skill)
         }
     }
-    suspend fun suspendfunction(skill: Skill){
+    suspend fun insertSkillToDatabase(skill: Skill){
         withContext(Dispatchers.IO){
             database.insert(skill)
+        }
+    }
 
-//            var skill = database.getSkill(4)
-//            skill.skillDescription = "Lower yourself until your arms make 90° and then push yourself up so your arms are fully extended"
-//            database.update(skill)
-
+    fun addSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
+        viewModelScope.launch {
+            insertSkillAndSkillCrossRef(crossRef)
+        }
+    }
+    suspend fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
+        withContext(Dispatchers.IO){
+            database.insertSkillAndSkillCrossRef(crossRef)
         }
     }
 
@@ -51,22 +58,29 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         Log.i("Debug","ViewModel cleared")
     }
 
-    fun addTestData(){
-        val skills = listOf(
-            Skill(0,"Knee Push up","Lower yourself until your chest nearly touches the floor end then extend your arms, with your knees on the floor instead of your feet"),
-            Skill(0,"Back lever","Hang on the bar with your body being completely horizontal, with hands behind your back"),
-            Skill(0,"Planche","Put your body in a horizontal position while being only on your hands"),
-            Skill(0,"Pike Push up","Bend your body so your chest and legs make 90° like the letter L, do a pushup but instead of going down with your whole body, go directly down with your shoulders."),
-            Skill(0,"Lsit","Elevate your legs until your body makes an L letter.")
-        )
-        val skillWithSkillsRelations = listOf(
-            SkillAndSkillCrossRef(1,2,15),
-            SkillAndSkillCrossRef(1,3,20)
-        )
-
-        skills.forEach{
-            addSkillToDatabase(it)
+    suspend fun addData(){
+        withContext(Dispatchers.IO){
+            val skillWithSkillsRelations = listOf(
+                SkillAndSkillCrossRef("diNPnsIMXFD77XS27c47","eZvOsXPA6xm78eH5pq4W", 10),
+                SkillAndSkillCrossRef("diNPnsIMXFD77XS27c47","bUtOavsF1sgr0e2X4lVc", 10),
+                SkillAndSkillCrossRef("bUtOavsF1sgr0e2X4lVc","mDrWpi7wfuxfW4fdNRDH", 5),
+                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","eZvOsXPA6xm78eH5pq4W", 20),
+                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","wJyxVbujrKQWhYFiWIqh", 30),
+                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","NXVQJbsy3rhb312tOW3E", 50),
+                SkillAndSkillCrossRef("mDrWpi7wfuxfW4fdNRDH","RV6ZgL068YaRdfBkffTv", 5),
+                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","92DfStRxQd25WPujS74J", 20),
+                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","NXVQJbsy3rhb312tOW3E", 50),
+                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","wJyxVbujrKQWhYFiWIqh", 20),
+                SkillAndSkillCrossRef("SD2dc0gnxKi7hWPHxN3U","wJyxVbujrKQWhYFiWIqh", 10),
+                SkillAndSkillCrossRef("SD2dc0gnxKi7hWPHxN3U","NXVQJbsy3rhb312tOW3E", 30),
+                SkillAndSkillCrossRef("wJyxVbujrKQWhYFiWIqh","NXVQJbsy3rhb312tOW3E", 30),
+                SkillAndSkillCrossRef("92DfStRxQd25WPujS74J","mDrWpi7wfuxfW4fdNRDH", 5),
+            )
+            skillWithSkillsRelations.onEach {
+                database.insertSkillAndSkillCrossRef(it)
+            }
         }
+
     }
 
 

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
@@ -33,7 +34,7 @@ class SkillFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        //Inflate the layout for this fragment
         val binding: FragmentSkillBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_skill,container,false)
 
@@ -45,12 +46,19 @@ class SkillFragment : Fragment() {
         binding.lifecycleOwner = this;
 
 
-        val manager = GridLayoutManager(activity, 3)
-        val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
+        val managerBefore = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+        val adapterBefore = SkillListAdapter(SkillListAdapter.SkillListener {
                 skillId -> viewModel.onSkillClicked(skillId)
         })
-        binding.recyclerViewViewed.adapter = adapter
-        binding.recyclerViewViewed.layoutManager = manager
+        binding.beforeSkills.adapter = adapterBefore
+        binding.beforeSkills.layoutManager = managerBefore
+
+        val managerAfter = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+        val adapterAfter = SkillListAdapter(SkillListAdapter.SkillListener {
+                skillId -> viewModel.onSkillClicked(skillId)
+        })
+        binding.afterSkills.adapter = adapterAfter
+        binding.afterSkills.layoutManager = managerAfter
 
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
@@ -58,7 +66,8 @@ class SkillFragment : Fragment() {
                 viewModel.viewModelScope.launch {
                     withContext(Dispatchers.IO){
                         binding.skill = viewModel.database.getSkill(skill)
-                        adapter.submitList(viewModel.database.getALlBeforeSkills(skill))
+                        adapterBefore.submitList(viewModel.database.getALlBeforeSkills(skill))
+                        adapterAfter.submitList(viewModel.database.getALlAfterSkills(skill))
                     }
                 }
                 viewModel.onSkillNavigated()

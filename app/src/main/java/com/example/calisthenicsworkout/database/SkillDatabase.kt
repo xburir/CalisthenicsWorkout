@@ -9,7 +9,7 @@ import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
     Skill::class,
     SkillAndSkillCrossRef::class
                      ],
-            version = 6 ,
+            version = 7 ,
             exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class SkillDatabase : RoomDatabase() {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "269845010129",
+    "project_id": "calisthenicsworkout-1ca6c",
+    "storage_bucket": "calisthenicsworkout-1ca6c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269845010129:android:cf5638f03726408e1017f0",
+        "android_client_info": {
+          "package_name": "com.example.calisthenicsworkout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269845010129-6q1f5eajj9242f33pu9sh6874vf6pmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNUpdrsyAwcJRFRfsAVNmmZbqceq1Gd-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269845010129-6q1f5eajj9242f33pu9sh6874vf6pmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

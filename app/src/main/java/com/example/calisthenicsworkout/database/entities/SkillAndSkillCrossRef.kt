@@ -5,8 +5,8 @@ import androidx.room.Entity
 
 @Entity(primaryKeys = ["skillId","childSkillId"],tableName = "SkillAndSkillsCrossRef")
 data class SkillAndSkillCrossRef(
-    val skillId: Long,
-    val childSkillId: Long,
+    val skillId: String,
+    val childSkillId: String,
     @ColumnInfo(name = "Minimal amount")
     var minAmount: Int,
 )
