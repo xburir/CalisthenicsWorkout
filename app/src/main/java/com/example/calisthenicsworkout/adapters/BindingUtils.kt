@@ -28,11 +28,18 @@ fun ImageView.setSkillImage(item: Skill?){
             when (item.skillName) {
                 "Dip" -> R.drawable.dip
                 "Handstand" -> R.drawable.handstand
-                "Push up" -> R.drawable.push_up
-                "Muscle up" -> R.drawable.muscle_up
-                "Front lever " -> R.drawable.front_lever
+                "Push up" -> R.drawable.pushup
+                "Muscle up" -> R.drawable.muscleup
+                "Front lever " -> R.drawable.front
                 "Pull up" -> R.drawable.pull_up
-                else -> R.drawable.ic_launcher_background
+                "Back lever" -> R.drawable.backlever
+                "Sit up" -> R.drawable.situp
+                "Squat" -> R.drawable.squat
+                "Pike Push up" -> R.drawable.pikepushup
+                "Lsit" -> R.drawable.lsit
+                "Planche" -> R.drawable.planche
+                "Knee Push up" -> R.drawable.knee_pushup
+                else -> R.drawable.nothing
             }
         )
     }
