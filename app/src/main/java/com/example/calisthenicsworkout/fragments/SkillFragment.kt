@@ -70,35 +70,43 @@ class SkillFragment : Fragment() {
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
-                viewModel.viewModelScope.launch {
-                    withContext(Dispatchers.IO){
-                        binding.skill = viewModel.database.getSkill(skill)
-                        binding.skillViewModel = viewModel
-                        val beforeSkills = viewModel.database.getALlBeforeSkills(skill)
-                        val afterSkills = viewModel.database.getALlAfterSkills(skill)
-                        if(beforeSkills.isNotEmpty()){
-                            binding.beforeSkillsHeader.text = "Skills to learn before this one:"
-                        }else{
-                            binding.beforeSkillsHeader.text = ""
-                        }
-                        adapterBefore.submitList(beforeSkills)
-                        if(afterSkills.isNotEmpty()){
-                            binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
-                        }else{
-                            binding.afterSkillsHeader.text = ""
-                        }
-                        adapterAfter.submitList(afterSkills)
-
-
-                    }
-                }
+                changeSkillOnFragment(binding, skill, adapterBefore, adapterAfter)
                 viewModel.onSkillNavigated()
             }
         })
-
-
+        if(viewModel.lastViewedSkillId != ""){
+            changeSkillOnFragment(binding,viewModel.lastViewedSkillId,adapterBefore,adapterAfter)
+        }
 
         return binding.root
+    }
+
+    private fun changeSkillOnFragment(
+        binding: FragmentSkillBinding,
+        skill: String,
+        adapterBefore: SkillListAdapter,
+        adapterAfter: SkillListAdapter
+        ) {
+        viewModel.viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                binding.skill = viewModel.database.getSkill(skill)
+                binding.skillViewModel = viewModel
+                val beforeSkills = viewModel.database.getALlBeforeSkills(skill)
+                val afterSkills = viewModel.database.getALlAfterSkills(skill)
+                if (beforeSkills.isNotEmpty()) {
+                    binding.beforeSkillsHeader.text = "Skills to learn before this one:"
+                } else {
+                    binding.beforeSkillsHeader.text = ""
+                }
+                adapterBefore.submitList(beforeSkills)
+                if (afterSkills.isNotEmpty()) {
+                    binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
+                } else {
+                    binding.afterSkillsHeader.text = ""
+                }
+                adapterAfter.submitList(afterSkills)
+            }
+        }
     }
 
 }

@@ -15,6 +15,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<String>();
+    var lastViewedSkillId = ""
 
 
     init {
@@ -25,6 +26,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId
+        lastViewedSkillId = skillId
     }
     fun onSkillNavigated(){
         chosenSkillId.value = null
