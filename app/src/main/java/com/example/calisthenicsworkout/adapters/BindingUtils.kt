@@ -27,20 +27,20 @@ fun TextView.setSkillDescriptionFormatted(item: Skill?){
 fun ImageView.setSkillImage(item: Skill?){
     item?.let {
         setImageResource(
-            when (item.skillName) {
-                "Dip" -> R.drawable.dip
-                "Handstand" -> R.drawable.handstand
-                "Push up" -> R.drawable.pushup
-                "Muscle up" -> R.drawable.muscleup
-                "Front lever " -> R.drawable.front
-                "Pull up" -> R.drawable.pull_up
-                "Back lever" -> R.drawable.backlever
-                "Sit up" -> R.drawable.situp
-                "Squat" -> R.drawable.squat
-                "Pike Push up" -> R.drawable.pikepushup
-                "Lsit" -> R.drawable.lsit
-                "Planche" -> R.drawable.planche
-                "Knee Push up" -> R.drawable.knee_pushup
+            when (item.skillId) {
+                "bUtOavsF1sgr0e2X4lVc" -> R.drawable.dip
+                "qUpBbiFy2b1Vj9l8F4Pk" -> R.drawable.handstand
+                "mDrWpi7wfuxfW4fdNRDH" -> R.drawable.pushup
+                "diNPnsIMXFD77XS27c47" -> R.drawable.muscleup
+                "XvyQCdNMgkxoumtsrAVY" -> R.drawable.front
+                "eZvOsXPA6xm78eH5pq4W" -> R.drawable.pull_up
+                "SD2dc0gnxKi7hWPHxN3U" -> R.drawable.backlever
+                "NXVQJbsy3rhb312tOW3E" -> R.drawable.situp
+                "ZayZ4SIq1Iv1DNmbIVOS" -> R.drawable.squat
+                "92DfStRxQd25WPujS74J" -> R.drawable.pikepushup
+                "wJyxVbujrKQWhYFiWIqh" -> R.drawable.lsit
+                "wcgFzEKmWHkGjjSjTJ0A" -> R.drawable.planche
+                "RV6ZgL068YaRdfBkffTv" -> R.drawable.knee_pushup
                 else -> R.drawable.nothing
             }
         )

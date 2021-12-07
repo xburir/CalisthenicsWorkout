@@ -30,6 +30,9 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM skillandskillscrossref ORDER BY skillId DESC")
     fun getALlCrossRefs(): LiveData<List<SkillAndSkillCrossRef>>
 
+    @Query("SELECT `Minimal amount` FROM skillandskillscrossref WHERE skillId = :key AND childSkillId = :key2")
+    fun getCrossRefAmount(key: String, key2: String): Int
+
 
 
 

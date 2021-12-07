@@ -95,6 +95,9 @@ class SkillFragment : Fragment() {
                 val afterSkills = viewModel.database.getALlAfterSkills(skill)
                 if (beforeSkills.isNotEmpty()) {
                     binding.beforeSkillsHeader.text = "Skills to learn before this one:"
+                    beforeSkills.forEach { skillInList ->
+                        skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"x"
+                    }
                 } else {
                     binding.beforeSkillsHeader.text = ""
                 }
