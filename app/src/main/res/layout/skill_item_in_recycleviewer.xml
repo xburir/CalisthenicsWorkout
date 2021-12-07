@@ -10,6 +10,9 @@
         <variable
             name="clickListener"
             type="com.example.calisthenicsworkout.adapters.SkillListAdapter.SkillListener" />
+        <variable
+            name="viewModel"
+            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
 
     </data>
 

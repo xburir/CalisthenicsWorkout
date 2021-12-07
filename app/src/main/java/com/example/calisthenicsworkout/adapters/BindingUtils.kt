@@ -14,6 +14,8 @@ fun TextView.setSkillNameFormatted(item: Skill?){
     }
 }
 
+
+
 @BindingAdapter("skillDescriptionFormatted")
 fun TextView.setSkillDescriptionFormatted(item: Skill?){
     item?.let{

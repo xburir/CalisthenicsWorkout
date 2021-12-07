@@ -1,11 +1,13 @@
 package com.example.calisthenicsworkout.fragments
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -25,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class SkillFragment : Fragment() {
 
     private lateinit var viewModel: SkillViewModel;
@@ -34,6 +37,8 @@ class SkillFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         //Inflate the layout for this fragment
         val binding: FragmentSkillBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_skill,container,false)
@@ -61,22 +66,35 @@ class SkillFragment : Fragment() {
         binding.afterSkills.layoutManager = managerAfter
 
 
+
+
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
                 viewModel.viewModelScope.launch {
                     withContext(Dispatchers.IO){
                         binding.skill = viewModel.database.getSkill(skill)
-                        adapterBefore.submitList(viewModel.database.getALlBeforeSkills(skill))
-                        adapterAfter.submitList(viewModel.database.getALlAfterSkills(skill))
+                        binding.skillViewModel = viewModel
+                        val beforeSkills = viewModel.database.getALlBeforeSkills(skill)
+                        val afterSkills = viewModel.database.getALlAfterSkills(skill)
+                        if(beforeSkills.isNotEmpty()){
+                            binding.beforeSkillsHeader.text = "Skills to learn before this one:"
+                        }else{
+                            binding.beforeSkillsHeader.text = ""
+                        }
+                        adapterBefore.submitList(beforeSkills)
+                        if(afterSkills.isNotEmpty()){
+                            binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
+                        }else{
+                            binding.afterSkillsHeader.text = ""
+                        }
+                        adapterAfter.submitList(afterSkills)
+
+
                     }
                 }
                 viewModel.onSkillNavigated()
             }
         })
-
-
-
-
 
 
 
