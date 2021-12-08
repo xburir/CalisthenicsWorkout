@@ -118,7 +118,7 @@ class TitleFragment : Fragment() {
                     val skill = Skill(
                         entry.id,
                         entry.data.getValue("name").toString(),
-                        entry.data.getValue("decription").toString()
+                        entry.data.getValue("description").toString()
                     )
                     viewModel.addSkillToDatabase(skill)
                 }
@@ -130,7 +130,8 @@ class TitleFragment : Fragment() {
                     val crossRef = SkillAndSkillCrossRef(
                         entry.data.getValue("skillId").toString(),
                         entry.data.getValue("childId").toString(),
-                        entry.data.getValue("amount").toString().toInt()
+                        entry.data.getValue("amount").toString().toInt(),
+                        entry.data.getValue("amountType").toString()
                     )
                     viewModel.addSkillAndSkillCrossRef(crossRef)
                 }

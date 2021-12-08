@@ -96,7 +96,11 @@ class SkillFragment : Fragment() {
                 if (beforeSkills.isNotEmpty()) {
                     binding.beforeSkillsHeader.text = "Skills to learn before this one:"
                     beforeSkills.forEach { skillInList ->
-                        skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"x"
+                        if(viewModel.database.getCrossRefAmountType(skill,skillInList.skillId) == "reps"){
+                            skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"x"
+                        }else{
+                            skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"s"
+                        }
                     }
                 } else {
                     binding.beforeSkillsHeader.text = ""

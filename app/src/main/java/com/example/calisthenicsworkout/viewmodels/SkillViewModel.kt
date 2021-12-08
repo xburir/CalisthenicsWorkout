@@ -60,30 +60,6 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         Log.i("Debug","ViewModel cleared")
     }
 
-    suspend fun addData(){
-        withContext(Dispatchers.IO){
-            val skillWithSkillsRelations = listOf(
-                SkillAndSkillCrossRef("diNPnsIMXFD77XS27c47","eZvOsXPA6xm78eH5pq4W", 10),
-                SkillAndSkillCrossRef("diNPnsIMXFD77XS27c47","bUtOavsF1sgr0e2X4lVc", 10),
-                SkillAndSkillCrossRef("bUtOavsF1sgr0e2X4lVc","mDrWpi7wfuxfW4fdNRDH", 5),
-                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","eZvOsXPA6xm78eH5pq4W", 20),
-                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","wJyxVbujrKQWhYFiWIqh", 30),
-                SkillAndSkillCrossRef("XvyQCdNMgkxoumtsrAVY","NXVQJbsy3rhb312tOW3E", 50),
-                SkillAndSkillCrossRef("mDrWpi7wfuxfW4fdNRDH","RV6ZgL068YaRdfBkffTv", 5),
-                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","92DfStRxQd25WPujS74J", 20),
-                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","NXVQJbsy3rhb312tOW3E", 50),
-                SkillAndSkillCrossRef("wcgFzEKmWHkGjjSjTJ0A","wJyxVbujrKQWhYFiWIqh", 20),
-                SkillAndSkillCrossRef("SD2dc0gnxKi7hWPHxN3U","wJyxVbujrKQWhYFiWIqh", 10),
-                SkillAndSkillCrossRef("SD2dc0gnxKi7hWPHxN3U","NXVQJbsy3rhb312tOW3E", 30),
-                SkillAndSkillCrossRef("wJyxVbujrKQWhYFiWIqh","NXVQJbsy3rhb312tOW3E", 30),
-                SkillAndSkillCrossRef("92DfStRxQd25WPujS74J","mDrWpi7wfuxfW4fdNRDH", 5),
-            )
-            skillWithSkillsRelations.onEach {
-                database.insertSkillAndSkillCrossRef(it)
-            }
-        }
-
-    }
 
 
 }

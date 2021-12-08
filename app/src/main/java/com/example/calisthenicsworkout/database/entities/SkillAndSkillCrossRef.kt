@@ -9,4 +9,5 @@ data class SkillAndSkillCrossRef(
     val childSkillId: String,
     @ColumnInfo(name = "Minimal amount")
     var minAmount: Int,
+    var amountType: String
 )
