@@ -30,11 +30,7 @@ class MainActivity : AppCompatActivity() {
         //find navigation controller in activity
         val navController = this.findNavController(R.id.myNavHostFragment)
 
-        //if there is something in bundle because app waas shut down by OS, restore it
-        /*
-        if(savedInstanceState != null){
-            variable = savedInstanceState.getInt("key");
-        }*/
+
 
         //link navigation controller to action bar
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
