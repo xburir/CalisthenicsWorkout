@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-
+        val userId = intent.getStringExtra("user_id");
+        Toast.makeText(this,userId, Toast.LENGTH_SHORT).show()
 
         //find navigation controller in activity
         val navController = this.findNavController(R.id.myNavHostFragment)

@@ -45,6 +45,8 @@ class AddSkillFragment : Fragment() {
 //            )
 //        }
 
+
+
         return binding.root
     }
 

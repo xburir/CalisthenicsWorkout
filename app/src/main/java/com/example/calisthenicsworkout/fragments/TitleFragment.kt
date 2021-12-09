@@ -1,5 +1,6 @@
 package com.example.calisthenicsworkout.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentTitleBinding
@@ -20,6 +22,7 @@ import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.databinding.DataBindingUtil as DataBindingUtil1
 
@@ -69,7 +72,11 @@ class TitleFragment : Fragment() {
 
         //sets a click listener to a button that then does an action
         binding.searchButton.setOnClickListener {
-            Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
+
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(context,AuthActivity::class.java))
+            requireActivity().finish()
         }
 
 
