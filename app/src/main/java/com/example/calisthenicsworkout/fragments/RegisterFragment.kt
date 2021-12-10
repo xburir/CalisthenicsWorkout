@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class RegisterFragment : Fragment() {
@@ -52,11 +54,11 @@ class RegisterFragment : Fragment() {
                             if (task.isSuccessful){
                                 val firebaseUser: FirebaseUser = task.result!!.user!!
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
-
                                 val intent = Intent(context,MainActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 intent.putExtra("user_id",firebaseUser.uid)
                                 intent.putExtra("email_id",email)
+                                addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),FirebaseAuth.getInstance().currentUser!!.uid)
                                 startActivity(intent)
                                 requireActivity().finish()
                             }else{
@@ -74,6 +76,20 @@ class RegisterFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun addUserToFirebase(email: String, name: String,id: String) {
+            val db = FirebaseFirestore.getInstance()
+            val mappedThing: MutableMap<String,Any> = HashMap()
+            mappedThing["userFullName"] = name
+            mappedThing["userEmail"] = email
+            db.collection("users").document(id).set(mappedThing)
+
+
+
+
+
+
     }
 
     private fun checkPasswordEqual(pass1: String, pass2: String): Boolean {

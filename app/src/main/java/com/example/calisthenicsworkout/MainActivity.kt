@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -25,9 +27,6 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        val userId = intent.getStringExtra("user_id");
-        Toast.makeText(this,userId, Toast.LENGTH_SHORT).show()
 
         //find navigation controller in activity
         val navController = this.findNavController(R.id.myNavHostFragment)

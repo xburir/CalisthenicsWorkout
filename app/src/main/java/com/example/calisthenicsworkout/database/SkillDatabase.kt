@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.room.*
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.User
+import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 
 @Database(entities = [
     Skill::class,
-    SkillAndSkillCrossRef::class
+    SkillAndSkillCrossRef::class,
+    User::class,
+    UserAndSkillCrossRef::class
                      ],
-            version = 8 ,
+            version = 9 ,
             exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class SkillDatabase : RoomDatabase() {

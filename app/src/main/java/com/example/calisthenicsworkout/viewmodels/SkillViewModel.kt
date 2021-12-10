@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
@@ -20,6 +21,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     init {
         Log.i("Debug","ViewModel created")
+
 
 
     }

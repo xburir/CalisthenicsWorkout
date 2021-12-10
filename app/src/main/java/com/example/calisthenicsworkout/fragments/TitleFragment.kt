@@ -144,6 +144,16 @@ class TitleFragment : Fragment() {
                 }
             }
         }
+        db.collection("users").get().addOnCompleteListener{
+            if(it.isSuccessful){
+                val loggedUser = FirebaseAuth.getInstance().currentUser!!.uid
+                for(user in it.result!!){
+                  if(loggedUser == user.id){
+                      Toast.makeText(context,"Welcome "+user.data.getValue("userFullName").toString(),Toast.LENGTH_SHORT).show()
+                  }
+              }
+            }
+        }
 
     }
 

@@ -4,16 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.User
 import com.example.calisthenicsworkout.database.relations.SkillWithSkills
 
 @Dao
 interface SkillDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun insert(skill: Skill)
+    fun insert(skill: Skill)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef)
+    fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(user: User)
 
     @Query("SELECT * FROM Skills ORDER BY skillId DESC")
     fun getALlSkills(): LiveData<List<Skill>>
@@ -36,6 +40,9 @@ interface SkillDatabaseDao {
     @Query("SELECT amountType FROM skillandskillscrossref WHERE skillId = :key AND childSkillId = :key2")
     fun getCrossRefAmountType(key: String, key2: String): String
 
+//    @Query("SELECT * FROM Skills WHERE skillId = :key AND childSkillId = :key2")
+//    fun getUsersFavoriteSkills(): List<Skill>
+
 
 
 
@@ -51,7 +58,10 @@ interface SkillDatabaseDao {
     fun clearSkillAndSkillCrossRefTable()
 
     @Update
-    fun update(skill: Skill)
+    fun updateSkill(skill: Skill)
+
+    @Update
+    fun updateUser(user: User)
 
 
 

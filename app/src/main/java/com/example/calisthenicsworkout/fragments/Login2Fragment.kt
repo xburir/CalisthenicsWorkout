@@ -14,11 +14,11 @@ import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.databinding.FragmentLogin2Binding
-import com.example.calisthenicsworkout.databinding.FragmentRegisterBinding
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+
+
+
 
 
 class Login2Fragment : Fragment() {
@@ -35,6 +35,15 @@ class Login2Fragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
         binding.authViewModel = viewModel
         binding.lifecycleOwner = this
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val i = Intent(context, MainActivity::class.java)
+            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(i)
+            requireActivity().finish()
+        }
+
 
         binding.notRegisteredText.setOnClickListener{ view: View ->
             view.findNavController().navigate(
