@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
     }
     //find navcontroller and then call navController.navigateUp
     override fun onSupportNavigateUp(): Boolean {

@@ -72,14 +72,9 @@ class AllSkillsFragment : Fragment() {
         //sets a click listener to a button that then does an action
         binding.searchButton.setOnClickListener {
             Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
-
-
         }
 
 
-
-        // create menu resource
-        setHasOptionsMenu(true)
 
 
         readFireStoreData()
@@ -87,15 +82,6 @@ class AllSkillsFragment : Fragment() {
         return binding.root
 
 
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.overflow_menu,menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return NavigationUI.onNavDestinationSelected(item,requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 
     fun saveFireStore(crossRef: SkillAndSkillCrossRef){
