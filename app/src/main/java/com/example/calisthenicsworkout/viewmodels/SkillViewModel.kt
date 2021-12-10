@@ -7,6 +7,10 @@ import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 //import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import kotlinx.coroutines.*
 
@@ -15,8 +19,9 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
     val allSkills = database.getALlSkills()
-    val chosenSkillId = MutableLiveData<String>();
+    val chosenSkillId = MutableLiveData<String>()
     var lastViewedSkillId = ""
+    val usersFavSkills = database.getUsersFavoriteSkills(FirebaseAuth.getInstance().currentUser!!.uid)
 
 
     init {
@@ -62,6 +67,28 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         Log.i("Debug","ViewModel cleared")
     }
 
+    fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
+        viewModelScope.launch {
+            if (mode == "add"){
+                insertUserAndSkillCrossRef(userId,skillId)
+            }else if (mode == "del"){
+                deleteUserAndSkillCrossRef(userId,skillId)
+            }
+
+        }
+    }
+
+    private suspend fun deleteUserAndSkillCrossRef(userId: String, skillId: String) {
+        withContext(Dispatchers.IO){
+            database.deleteUserAndSkillCrossRef(database.getUserAndSkillCrossRef(userId,skillId))
+        }
+    }
+
+    private suspend fun insertUserAndSkillCrossRef(userId: String, skillId: String) {
+        withContext(Dispatchers.IO){
+            database.insertUserAndSkillCrossRef(UserAndSkillCrossRef(userId,skillId))
+        }
+    }
 
 
 }

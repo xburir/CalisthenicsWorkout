@@ -26,6 +26,11 @@
         <argument
             android:name="skillId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_skillFragment_self"
+            app:destination="@id/skillFragment"
+            app:popUpTo="@id/skillFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/aboutFragment"

@@ -18,6 +18,7 @@ import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 import com.example.calisthenicsworkout.databinding.FragmentAllSkillsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
@@ -127,6 +128,14 @@ class AllSkillsFragment : Fragment() {
                 }
             }
         }
+        db.collection("userAndSkillCrossRef").whereEqualTo("userId",FirebaseAuth.getInstance().currentUser!!.uid).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for (entry in it.result!!){
+                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),"add")
+                }
+            }
+        }
+
     }
 
 }

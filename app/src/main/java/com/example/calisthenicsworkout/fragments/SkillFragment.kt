@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,21 +19,27 @@ import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.appcompat.app.*
+import androidx.core.view.get
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class SkillFragment : Fragment()  {
 
     private lateinit var viewModel: SkillViewModel;
     private lateinit var viewModelFactory: SkillViewModelFactory;
+    private var liked = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
         //Inflate the layout for this fragment
         val binding: FragmentSkillBinding = DataBindingUtil.inflate(inflater,
@@ -48,8 +55,6 @@ class SkillFragment : Fragment()  {
 
         // create menu resource
         setHasOptionsMenu(true)
-
-
 
         val managerBefore = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
         val adapterBefore = SkillListAdapter(SkillListAdapter.SkillListener {
@@ -68,14 +73,13 @@ class SkillFragment : Fragment()  {
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
-                changeSkillOnFragment(binding, skill, adapterBefore, adapterAfter)
+                this.findNavController().navigate(
+                    SkillFragmentDirections.actionSkillFragmentSelf(it)
+                )
                 viewModel.onSkillNavigated()
             }
         })
-        if(viewModel.lastViewedSkillId != ""){
-            changeSkillOnFragment(binding,viewModel.lastViewedSkillId,adapterBefore,adapterAfter)
-        }
-
+        changeSkillOnFragment(binding,viewModel.lastViewedSkillId,adapterBefore,adapterAfter)
         return binding.root
     }
 
@@ -99,7 +103,6 @@ class SkillFragment : Fragment()  {
                         skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"s"
                     }
                 }
-
                 requireActivity().runOnUiThread {
                     if (beforeSkills.isNotEmpty()) {
                         binding.beforeSkillsHeader.text = "Skills to learn before this one:"
@@ -114,7 +117,6 @@ class SkillFragment : Fragment()  {
                     }
                     adapterAfter.submitList(afterSkills)
                 }
-
             }
         }
     }
@@ -122,6 +124,16 @@ class SkillFragment : Fragment()  {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_buttons,menu)
+        val item = menu[1]
+        item.setIcon(R.drawable.like)
+        viewModel.usersFavSkills.observe(viewLifecycleOwner,{
+            it?.let{ list ->
+                list.forEach { skill ->
+                    if(skill.skillId == viewModel.lastViewedSkillId)
+                        item.setIcon(R.drawable.liked)
+                }
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -129,10 +141,39 @@ class SkillFragment : Fragment()  {
             NavigationUI.onNavDestinationSelected(item,requireView().findNavController())
         }
         if (item.toString() == "Like"){
-            item.setIcon(R.drawable.liked)
-            Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
+            var found = false
+            viewModel.usersFavSkills.observe(viewLifecycleOwner,{
+                it?.let{ list ->
+                    list.forEach { skill ->
+                        if(skill.skillId == viewModel.lastViewedSkillId){
+                            found = true
+                        }
+                    }
+                }
+            })
+
+            if(found){
+                viewModel.userAndSkillCrossRef(FirebaseAuth.getInstance().currentUser!!.uid,viewModel.lastViewedSkillId,"del")
+                item.setIcon(R.drawable.like)
+                Toast.makeText(context,"Unliked",Toast.LENGTH_SHORT).show()
+
+
+            }else{
+                viewModel.userAndSkillCrossRef(FirebaseAuth.getInstance().currentUser!!.uid,viewModel.lastViewedSkillId,"add")
+                item.setIcon(R.drawable.liked)
+                Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
+
+
+                val db = FirebaseFirestore.getInstance()
+                db.collection("userAndSkillCrossRef").document("").delete()
+                    .addOnSuccessListener {  }
+                    .addOnFailureListener {  }
+
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
+
 
 }

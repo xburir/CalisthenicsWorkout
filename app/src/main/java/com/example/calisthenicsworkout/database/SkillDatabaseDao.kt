@@ -5,6 +5,7 @@ import androidx.room.*
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
 import com.example.calisthenicsworkout.database.entities.User
+import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 import com.example.calisthenicsworkout.database.relations.SkillWithSkills
 
 @Dao
@@ -15,6 +16,9 @@ interface SkillDatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
@@ -40,13 +44,16 @@ interface SkillDatabaseDao {
     @Query("SELECT amountType FROM skillandskillscrossref WHERE skillId = :key AND childSkillId = :key2")
     fun getCrossRefAmountType(key: String, key2: String): String
 
-//    @Query("SELECT * FROM Skills WHERE skillId = :key AND childSkillId = :key2")
-//    fun getUsersFavoriteSkills(): List<Skill>
+    @Query("SELECT * FROM Skills WHERE skillId IN (SELECT skillId FROM UserAndSkillCrossRef WHERE userId= :userId)")
+    fun getUsersFavoriteSkills(userId : String ): LiveData<List<Skill>>
+
+    @Query("SELECT * FROM userandskillcrossref WHERE userId = :user AND skillId = :skill")
+    fun getUserAndSkillCrossRef(user: String, skill: String): UserAndSkillCrossRef
 
 
 
-
-
+    @Delete
+    fun deleteUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
     @Delete
     fun delete(skill: Skill)
