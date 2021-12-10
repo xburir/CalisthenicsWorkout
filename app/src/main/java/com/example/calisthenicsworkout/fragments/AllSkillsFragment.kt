@@ -12,21 +12,20 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.databinding.FragmentTitleBinding
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.databinding.FragmentAllSkillsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.databinding.DataBindingUtil as DataBindingUtil1
 
-class TitleFragment : Fragment() {
+class AllSkillsFragment : Fragment() {
 
     private lateinit var viewModel: SkillViewModel
     private lateinit var viewModelFactory: SkillViewModelFactory
@@ -38,8 +37,8 @@ class TitleFragment : Fragment() {
     ): View? {
 
 
-        val binding: FragmentTitleBinding = DataBindingUtil1.inflate(inflater,
-            R.layout.fragment_title, container, false)
+        val binding: FragmentAllSkillsBinding = DataBindingUtil1.inflate(inflater,
+            R.layout.fragment_all_skills, container, false)
 
         Log.i("Debug","ViewModelProvider called")
         val application = requireNotNull(this.activity).application
@@ -64,7 +63,7 @@ class TitleFragment : Fragment() {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
             skill?.let {
                 this.findNavController().navigate(
-                    TitleFragmentDirections.actionTitleFragmentToSkillFragment(skill)
+                    AllSkillsFragmentDirections.actionTitleFragmentToSkillFragment(skill)
                 )
             }
         })
@@ -72,11 +71,9 @@ class TitleFragment : Fragment() {
 
         //sets a click listener to a button that then does an action
         binding.searchButton.setOnClickListener {
-            //Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
 
-            FirebaseAuth.getInstance().signOut()
-            startActivity(Intent(context,AuthActivity::class.java))
-            requireActivity().finish()
+
         }
 
 
@@ -144,17 +141,6 @@ class TitleFragment : Fragment() {
                 }
             }
         }
-        db.collection("users").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                val loggedUser = FirebaseAuth.getInstance().currentUser!!.uid
-                for(user in it.result!!){
-                  if(loggedUser == user.id){
-                      Toast.makeText(context,"Welcome "+user.data.getValue("userFullName").toString(),Toast.LENGTH_SHORT).show()
-                  }
-              }
-            }
-        }
-
     }
 
 }

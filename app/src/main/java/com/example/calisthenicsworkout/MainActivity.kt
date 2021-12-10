@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity() {
 
         //find navigation controller in activity
         val navController = this.findNavController(R.id.myNavHostFragment)
-
-
-
         //link navigation controller to action bar
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)

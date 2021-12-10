@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/titleFragment">
-
+    app:startDestination="@id/homeFragment">
 
 
     <fragment
         android:id="@+id/titleFragment"
-        android:name="com.example.calisthenicsworkout.fragments.TitleFragment"
-        android:label="Calisthenics App"
-        tools:layout="@layout/fragment_title">
+        android:name="com.example.calisthenicsworkout.fragments.AllSkillsFragment"
+        android:label="Skills"
+        tools:layout="@layout/fragment_all_skills">
         <action
             android:id="@+id/action_titleFragment_to_skillFragment"
             app:destination="@id/skillFragment"
@@ -43,4 +42,9 @@
             app:popUpTo="@id/titleFragment"
             app:popUpToInclusive="false" />
     </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.calisthenicsworkout.fragments.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
 </navigation>

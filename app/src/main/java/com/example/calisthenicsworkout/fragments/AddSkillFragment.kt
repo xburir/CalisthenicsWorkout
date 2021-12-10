@@ -33,7 +33,7 @@ class AddSkillFragment : Fragment() {
         val application = requireNotNull(this.activity).application;
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = SkillViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(requireActivity()).get(SkillViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
         binding.skillViewModel = viewModel;
         binding.lifecycleOwner = this;
 
