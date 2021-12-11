@@ -53,6 +53,12 @@ class Login2Fragment : Fragment() {
             )
         }
 
+        binding.forgottenPassword.setOnClickListener{
+            it.findNavController().navigate(
+                Login2FragmentDirections.actionLoginFragmentToForgottenPasswordFragment()
+            )
+        }
+
         binding.loginButton.setOnClickListener{
             if(checkInputsFilled(binding)){
                 val email: String = binding.inputLoginEmail.text.toString().trim{it <= ' ' }

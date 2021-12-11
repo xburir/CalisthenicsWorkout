@@ -69,10 +69,11 @@ class FavSkillsFragment : Fragment() {
                                 skillsList.add(skill)
                             }
                         }
-                        requireActivity().runOnUiThread {
-                            adapter.submitList(skillsList)
+                        if(isAdded){
+                            requireActivity().runOnUiThread {
+                                adapter.submitList(skillsList)
+                            }
                         }
-
                     }
                 }
             }
