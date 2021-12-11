@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calisthenicsworkout.R
+import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.databinding.FragmentAddSkillBinding
 import com.example.calisthenicsworkout.databinding.FragmentFavSkillsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
@@ -31,7 +35,9 @@ class FavSkillsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding: FragmentFavSkillsBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_add_skill,container,false)
+            R.layout.fragment_fav_skills,container,false)
+
+
 
 
         val application = requireNotNull(this.activity).application;
@@ -42,16 +48,44 @@ class FavSkillsFragment : Fragment() {
         binding.skillViewModel = viewModel;
         binding.lifecycleOwner = this;
 
-        val user = FirebaseAuth.getInstance().currentUser!!.uid
 
-        viewModel.viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                // TODO: get crossrefs from database annd display skills
+        val adapter = SkillListAdapter(SkillListAdapter.SkillListener {
+                skillId -> viewModel.onSkillClicked(skillId)
+        })
+        val manager = GridLayoutManager(activity, 3)
+        binding.favSkillsList.layoutManager = manager
+        binding.favSkillsList.adapter = adapter
 
+
+
+        viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{
+            viewModel.viewModelScope.launch {
+                withContext(Dispatchers.IO){
+                    it?.let{ userSkillCrossRefs ->
+                        val skillsList = arrayListOf<Skill>()
+                        userSkillCrossRefs.forEach { userAndSkillCrossRef ->
+                            if(userAndSkillCrossRef.liked){
+                                val skill = viewModel.database.getSkill(userAndSkillCrossRef.skillId)
+                                skillsList.add(skill)
+                            }
+                        }
+                        requireActivity().runOnUiThread {
+                            adapter.submitList(skillsList)
+                        }
+
+                    }
+                }
             }
-        }
 
+        })
 
+        viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
+            skill?.let {
+                this.findNavController().navigate(
+                    FavSkillsFragmentDirections.actionFavSkillsFragmentToSkillFragment(skill)
+                )
+            }
+        })
 
         return binding.root
     }

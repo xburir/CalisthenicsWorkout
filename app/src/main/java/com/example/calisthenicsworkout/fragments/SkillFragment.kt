@@ -99,20 +99,23 @@ class SkillFragment : Fragment()  {
                         skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"s"
                     }
                 }
-                requireActivity().runOnUiThread {
-                    if (beforeSkills.isNotEmpty()) {
-                        binding.beforeSkillsHeader.text = "Skills to learn before this one:"
-                    } else{
-                        binding.beforeSkillsHeader.text = ""
+                if(isAdded){
+                    requireActivity().runOnUiThread {
+                        if (beforeSkills.isNotEmpty()) {
+                            binding.beforeSkillsHeader.text = "Skills to learn before this one:"
+                        } else{
+                            binding.beforeSkillsHeader.text = ""
+                        }
+                        adapterBefore.submitList(beforeSkills)
+                        if (afterSkills.isNotEmpty()) {
+                            binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
+                        } else {
+                            binding.afterSkillsHeader.text = ""
+                        }
+                        adapterAfter.submitList(afterSkills)
                     }
-                    adapterBefore.submitList(beforeSkills)
-                    if (afterSkills.isNotEmpty()) {
-                        binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
-                    } else {
-                        binding.afterSkillsHeader.text = ""
-                    }
-                    adapterAfter.submitList(afterSkills)
                 }
+
             }
         }
     }

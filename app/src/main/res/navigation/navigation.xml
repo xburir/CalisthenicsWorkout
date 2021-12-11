@@ -7,7 +7,7 @@
 
 
     <fragment
-        android:id="@+id/titleFragment"
+        android:id="@+id/allSkillsFragment"
         android:name="com.example.calisthenicsworkout.fragments.AllSkillsFragment"
         android:label="Skills"
         tools:layout="@layout/fragment_all_skills">
@@ -16,7 +16,7 @@
             app:destination="@id/skillFragment"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
-            app:popUpTo="@id/titleFragment" />
+            app:popUpTo="@id/allSkillsFragment" />
     </fragment>
     <fragment
         android:id="@+id/skillFragment"
@@ -43,8 +43,8 @@
         tools:layout="@layout/fragment_add_skill" >
         <action
             android:id="@+id/action_addSkillFragment_to_titleFragment"
-            app:destination="@id/titleFragment"
-            app:popUpTo="@id/titleFragment"
+            app:destination="@id/allSkillsFragment"
+            app:popUpTo="@id/allSkillsFragment"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
@@ -52,4 +52,14 @@
         android:name="com.example.calisthenicsworkout.fragments.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/favSkillsFragment"
+        android:name="com.example.calisthenicsworkout.fragments.FavSkillsFragment"
+        android:label="Favorite Skills"
+        tools:layout="@layout/fragment_fav_skills" >
+        <action
+            android:id="@+id/action_favSkillsFragment_to_skillFragment"
+            app:destination="@id/skillFragment"
+            app:popUpTo="@id/allSkillsFragment" />
+    </fragment>
 </navigation>
