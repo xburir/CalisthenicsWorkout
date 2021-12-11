@@ -131,7 +131,7 @@ class AllSkillsFragment : Fragment() {
         db.collection("userAndSkillCrossRef").whereEqualTo("userId",FirebaseAuth.getInstance().currentUser!!.uid).get().addOnCompleteListener{
             if(it.isSuccessful){
                 for (entry in it.result!!){
-                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),"add")
+                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),entry.data.getValue("liked").toString())
                 }
             }
         }

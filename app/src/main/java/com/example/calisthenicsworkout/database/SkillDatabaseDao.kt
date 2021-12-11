@@ -44,8 +44,8 @@ interface SkillDatabaseDao {
     @Query("SELECT amountType FROM skillandskillscrossref WHERE skillId = :key AND childSkillId = :key2")
     fun getCrossRefAmountType(key: String, key2: String): String
 
-    @Query("SELECT * FROM Skills WHERE skillId IN (SELECT skillId FROM UserAndSkillCrossRef WHERE userId= :userId)")
-    fun getUsersFavoriteSkills(userId : String ): LiveData<List<Skill>>
+    @Query("SELECT * FROM userandskillcrossref WHERE userId= :userId")
+    fun getUserSkillCrossRefs(userId : String ): LiveData<List<UserAndSkillCrossRef>>
 
     @Query("SELECT * FROM userandskillcrossref WHERE userId = :user AND skillId = :skill")
     fun getUserAndSkillCrossRef(user: String, skill: String): UserAndSkillCrossRef
@@ -55,20 +55,16 @@ interface SkillDatabaseDao {
     @Delete
     fun deleteUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
-    @Delete
-    fun delete(skill: Skill)
 
-    @Query("DELETE  FROM Skills")
-    fun clearSkillTable()
-
-    @Query("DELETE  FROM SkillAndSkillsCrossRef")
-    fun clearSkillAndSkillCrossRefTable()
 
     @Update
     fun updateSkill(skill: Skill)
 
     @Update
     fun updateUser(user: User)
+
+    @Update
+    fun updateUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
 
 

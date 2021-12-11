@@ -1,7 +1,6 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -20,13 +19,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.core.view.get
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 
 class SkillFragment : Fragment()  {
@@ -126,11 +122,14 @@ class SkillFragment : Fragment()  {
         inflater.inflate(R.menu.action_bar_buttons,menu)
         val item = menu[1]
         item.setIcon(R.drawable.like)
-        viewModel.usersFavSkills.observe(viewLifecycleOwner,{
+        viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{
             it?.let{ list ->
-                list.forEach { skill ->
-                    if(skill.skillId == viewModel.lastViewedSkillId)
-                        item.setIcon(R.drawable.liked)
+                list.forEach { userSkillCrossRef ->
+                    if(userSkillCrossRef.skillId == viewModel.lastViewedSkillId){
+                        if(userSkillCrossRef.liked){
+                            item.setIcon(R.drawable.liked)
+                        }
+                    }
                 }
             }
         })
@@ -141,33 +140,27 @@ class SkillFragment : Fragment()  {
             NavigationUI.onNavDestinationSelected(item,requireView().findNavController())
         }
         if (item.toString() == "Like"){
-            var found = false
-            viewModel.usersFavSkills.observe(viewLifecycleOwner,{
+            var likeed = false
+            viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{
                 it?.let{ list ->
-                    list.forEach { skill ->
-                        if(skill.skillId == viewModel.lastViewedSkillId){
-                            found = true
+                    list.forEach { userAndSkillCrossRef ->
+                        if(userAndSkillCrossRef.skillId == viewModel.lastViewedSkillId){
+                            if(userAndSkillCrossRef.liked){
+                                likeed = true
+                            }
                         }
                     }
                 }
             })
-
-            if(found){
-                viewModel.userAndSkillCrossRef(FirebaseAuth.getInstance().currentUser!!.uid,viewModel.lastViewedSkillId,"del")
+            val fireAuth = FirebaseAuth.getInstance()
+            if(likeed){
+                viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setUnliked")
                 item.setIcon(R.drawable.like)
                 Toast.makeText(context,"Unliked",Toast.LENGTH_SHORT).show()
-
-
             }else{
-                viewModel.userAndSkillCrossRef(FirebaseAuth.getInstance().currentUser!!.uid,viewModel.lastViewedSkillId,"add")
+                viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setLiked")
                 item.setIcon(R.drawable.liked)
                 Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
-
-
-                val db = FirebaseFirestore.getInstance()
-                db.collection("userAndSkillCrossRef").document("").delete()
-                    .addOnSuccessListener {  }
-                    .addOnFailureListener {  }
 
             }
 

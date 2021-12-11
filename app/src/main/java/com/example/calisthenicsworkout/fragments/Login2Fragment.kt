@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class Login2Fragment : Fragment() {
         }
 
 
+
         binding.notRegisteredText.setOnClickListener{ view: View ->
             view.findNavController().navigate(
                 Login2FragmentDirections.actionLoginFragmentToRegisterFragment()
@@ -58,11 +60,9 @@ class Login2Fragment : Fragment() {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful){
-                            Toast.makeText(context,"Logged in successfully", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(context,"Logged in successfully", Toast.LENGTH_SHORT).show()
                             val intent = Intent(context, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra("user_id",FirebaseAuth.getInstance().currentUser!!.uid)
-                            intent.putExtra("email_id",email)
                             startActivity(intent)
                             requireActivity().finish()
                         }else{

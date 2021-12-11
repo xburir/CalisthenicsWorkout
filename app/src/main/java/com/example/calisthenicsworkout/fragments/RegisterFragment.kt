@@ -56,9 +56,9 @@ class RegisterFragment : Fragment() {
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
                                 val intent = Intent(context,MainActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.putExtra("user_id",firebaseUser.uid)
-                                intent.putExtra("email_id",email)
-                                addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),FirebaseAuth.getInstance().currentUser!!.uid)
+                                val userId = FirebaseAuth.getInstance().currentUser!!.uid
+                                addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),userId)
+                                pairSkillToUser(userId)
                                 startActivity(intent)
                                 requireActivity().finish()
                             }else{
@@ -78,18 +78,28 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
+    private fun pairSkillToUser(userId: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("skills").get().addOnCompleteListener() {
+            if(it.isSuccessful){
+                for(skill in it.result!!){
+                    val skillId = skill.id
+                    val mappedThing: MutableMap<String,Any> = HashMap()
+                    mappedThing["skillId"] = skillId
+                    mappedThing["userId"] = userId
+                    mappedThing["liked"] = false
+                    db.collection("userAndSkillCrossRef").add(mappedThing)
+                }
+            }
+        }
+    }
+
     private fun addUserToFirebase(email: String, name: String,id: String) {
             val db = FirebaseFirestore.getInstance()
             val mappedThing: MutableMap<String,Any> = HashMap()
             mappedThing["userFullName"] = name
             mappedThing["userEmail"] = email
             db.collection("users").document(id).set(mappedThing)
-
-
-
-
-
-
     }
 
     private fun checkPasswordEqual(pass1: String, pass2: String): Boolean {

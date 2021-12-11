@@ -1,14 +1,12 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
 import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
-import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 //import com.example.calisthenicsworkout.database.SkillDatabaseDao
@@ -21,7 +19,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<String>()
     var lastViewedSkillId = ""
-    val usersFavSkills = database.getUsersFavoriteSkills(FirebaseAuth.getInstance().currentUser!!.uid)
+    val userSkillCrossRefs = database.getUserSkillCrossRefs(FirebaseAuth.getInstance().currentUser!!.uid)
 
 
     init {
@@ -69,12 +67,51 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
         viewModelScope.launch {
-            if (mode == "add"){
-                insertUserAndSkillCrossRef(userId,skillId)
-            }else if (mode == "del"){
-                deleteUserAndSkillCrossRef(userId,skillId)
+            when (mode) {
+                "true" -> {
+                    insertUserAndSkillCrossRef(userId,skillId,true)
+                }
+                "false" -> {
+                    insertUserAndSkillCrossRef(userId,skillId,false)
+                }
+                "del" -> {
+                    deleteUserAndSkillCrossRef(userId,skillId)
+                }
+                "setLiked" -> {
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
+                        if(it.isSuccessful){
+                            var entryId = ""
+                            for(entry in it.result!!){
+                                entryId = entry.id
+                            }
+                            db.collection("userAndSkillCrossRef").document(entryId).update("liked",true)
+                        }
+                    }
+                    updateUserAndSkillCrossRef(userId,skillId,true)
+                }
+                "setUnliked" -> {
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
+                        if(it.isSuccessful){
+                            var entryId = ""
+                            for(entry in it.result!!){
+                                entryId = entry.id
+                            }
+                            db.collection("userAndSkillCrossRef").document(entryId).update("liked",false)
+                        }
+                    }
+                    updateUserAndSkillCrossRef(userId,skillId,false)
+                }
             }
 
+        }
+    }
+
+    private suspend fun updateUserAndSkillCrossRef(userId: String, skillId: String, liked: Boolean) {
+        withContext(Dispatchers.IO){
+            val crossref = UserAndSkillCrossRef(userId,skillId, liked)
+            database.updateUserAndSkillCrossRef(crossref)
         }
     }
 
@@ -84,9 +121,9 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
-    private suspend fun insertUserAndSkillCrossRef(userId: String, skillId: String) {
+    private suspend fun insertUserAndSkillCrossRef(userId: String, skillId: String, liked: Boolean) {
         withContext(Dispatchers.IO){
-            database.insertUserAndSkillCrossRef(UserAndSkillCrossRef(userId,skillId))
+            database.insertUserAndSkillCrossRef(UserAndSkillCrossRef(userId,skillId,liked))
         }
     }
 
