@@ -17,7 +17,9 @@ data class Skill(
     @ColumnInfo(name = "skillDescription")
     var skillDescription: String,
 
-    val skillImage: Bitmap
+    val skillImage: Bitmap,
+
+    val skillType: String
 
 )
 

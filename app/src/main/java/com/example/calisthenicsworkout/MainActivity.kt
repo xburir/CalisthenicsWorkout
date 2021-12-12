@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                     val id = entry.id
                     val name = entry.data.getValue("name").toString()
                     val desc = entry.data.getValue("description").toString()
+                    val type = entry.data.getValue("type").toString()
                     val pictureRef = fbStorage.reference.child("skillImages").child("$id.png")
                     var bitmap: Bitmap
                     pictureRef.downloadUrl
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                             backUpPicRef.downloadUrl.addOnSuccessListener {
                                 viewModel.viewModelScope.launch{
                                     bitmap = getBitmap(it)
-                                    val skill = Skill(id,name,desc,bitmap)
+                                    val skill = Skill(id,name,desc,bitmap,type)
                                     viewModel.addSkillToDatabase(skill)
                                 }
                             }
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                         .addOnSuccessListener {
                             viewModel.viewModelScope.launch{
                                 bitmap = getBitmap(it)
-                                val skill = Skill(id,name,desc,bitmap)
+                                val skill = Skill(id,name,desc,bitmap,type)
                                 viewModel.addSkillToDatabase(skill)
                             }
                         }
@@ -144,8 +145,7 @@ class MainActivity : AppCompatActivity() {
                     val crossRef = SkillAndSkillCrossRef(
                         entry.data.getValue("skillId").toString(),
                         entry.data.getValue("childId").toString(),
-                        entry.data.getValue("amount").toString().toInt(),
-                        entry.data.getValue("amountType").toString()
+                        entry.data.getValue("amount").toString().toInt()
                     )
                     viewModel.addSkillAndSkillCrossRef(crossRef)
                 }

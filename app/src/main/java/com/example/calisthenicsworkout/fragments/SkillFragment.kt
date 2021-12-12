@@ -93,7 +93,7 @@ class SkillFragment : Fragment()  {
                 val afterSkills = viewModel.database.getALlAfterSkills(skill)
 
                 beforeSkills.forEach { skillInList ->
-                    if(viewModel.database.getCrossRefAmountType(skill,skillInList.skillId) == "reps"){
+                    if(skillInList.skillType == "reps"){
                         skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"x"
                     }else{
                         skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"s"
