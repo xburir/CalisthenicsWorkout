@@ -1,5 +1,6 @@
 package com.example.calisthenicsworkout.database.entities
 
+import android.graphics.Bitmap
 import androidx.room.*
 import com.example.calisthenicsworkout.database.Converters
 import com.google.gson.Gson
@@ -15,6 +16,8 @@ data class Skill(
 
     @ColumnInfo(name = "skillDescription")
     var skillDescription: String,
+
+    val skillImage: Bitmap
 
 )
 

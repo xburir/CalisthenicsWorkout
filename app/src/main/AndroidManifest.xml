@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.calisthenicsworkout">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".WorkoutApplication"
         android:allowBackup="true"
@@ -11,25 +13,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalisthenicsWorkout">
         <activity
+            android:name=".WelcomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
             android:name=".AuthActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait"
-            >
-
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

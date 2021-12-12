@@ -1,22 +1,40 @@
 package com.example.calisthenicsworkout
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
+import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.Skill
+import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
+import com.example.calisthenicsworkout.viewmodels.SkillViewModel
+import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var viewModel: SkillViewModel
+    private lateinit var viewModelFactory: SkillViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -25,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
+        val application = requireNotNull(this).application
+        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
+        viewModelFactory = SkillViewModelFactory(dataSource,application);
+        viewModel = ViewModelProvider(this,viewModelFactory).get(SkillViewModel::class.java)
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -37,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         Timber.i("onCreate");
 
 
-
+        readFireStoreData()
 
 
     }
@@ -82,5 +104,68 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState);
         //              key    variable
         //outState.putInt("key",3);
+    }
+
+    private fun readFireStoreData(){
+        val db = FirebaseFirestore.getInstance()
+        val fbStorage = FirebaseStorage.getInstance()
+        db.collection("skills").get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for(entry in it.result!!){
+                    val id = entry.id
+                    val name = entry.data.getValue("name").toString()
+                    val desc = entry.data.getValue("description").toString()
+                    val pictureRef = fbStorage.reference.child("skillImages").child("$id.png")
+                    var bitmap: Bitmap
+                    pictureRef.downloadUrl
+                        .addOnFailureListener {
+                            val backUpPicRef = fbStorage.reference.child("skillImages").child("nothing.png")
+                            backUpPicRef.downloadUrl.addOnSuccessListener {
+                                viewModel.viewModelScope.launch{
+                                    bitmap = getBitmap(it)
+                                    val skill = Skill(id,name,desc,bitmap)
+                                    viewModel.addSkillToDatabase(skill)
+                                }
+                            }
+                        }
+                        .addOnSuccessListener {
+                            viewModel.viewModelScope.launch{
+                                bitmap = getBitmap(it)
+                                val skill = Skill(id,name,desc,bitmap)
+                                viewModel.addSkillToDatabase(skill)
+                            }
+                        }
+                }
+            }
+        }
+        db.collection("skillAndSkillsCrossRef").get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for(entry in it.result!!){
+                    val crossRef = SkillAndSkillCrossRef(
+                        entry.data.getValue("skillId").toString(),
+                        entry.data.getValue("childId").toString(),
+                        entry.data.getValue("amount").toString().toInt(),
+                        entry.data.getValue("amountType").toString()
+                    )
+                    viewModel.addSkillAndSkillCrossRef(crossRef)
+                }
+            }
+        }
+        db.collection("userAndSkillCrossRef").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for (entry in it.result!!){
+                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),entry.data.getValue("liked").toString())
+                }
+            }
+
+        }
+
+
+    }
+    private suspend fun getBitmap(source: Uri): Bitmap {
+        val loading = ImageLoader(this)
+        val request = ImageRequest.Builder(this).data(source).build()
+        val result = (loading.execute(request) as SuccessResult).drawable
+        return (result as BitmapDrawable).bitmap
     }
 }

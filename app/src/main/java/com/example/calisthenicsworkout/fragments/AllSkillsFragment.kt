@@ -78,7 +78,7 @@ class AllSkillsFragment : Fragment() {
 
 
 
-        readFireStoreData()
+
 
         return binding.root
 
@@ -101,41 +101,6 @@ class AllSkillsFragment : Fragment() {
             }
     }
 
-    private fun readFireStoreData(){
-        val db = FirebaseFirestore.getInstance()
-        db.collection("skills").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val skill = Skill(
-                        entry.id,
-                        entry.data.getValue("name").toString(),
-                        entry.data.getValue("description").toString()
-                    )
-                    viewModel.addSkillToDatabase(skill)
-                }
-            }
-        }
-        db.collection("skillAndSkillsCrossRef").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val crossRef = SkillAndSkillCrossRef(
-                        entry.data.getValue("skillId").toString(),
-                        entry.data.getValue("childId").toString(),
-                        entry.data.getValue("amount").toString().toInt(),
-                        entry.data.getValue("amountType").toString()
-                    )
-                    viewModel.addSkillAndSkillCrossRef(crossRef)
-                }
-            }
-        }
-        db.collection("userAndSkillCrossRef").whereEqualTo("userId",FirebaseAuth.getInstance().currentUser!!.uid).get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for (entry in it.result!!){
-                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),entry.data.getValue("liked").toString())
-                }
-            }
-        }
 
-    }
 
 }

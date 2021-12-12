@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
+import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentRegisterBinding
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.google.android.gms.tasks.OnCompleteListener
@@ -54,7 +55,7 @@ class RegisterFragment : Fragment() {
                             if (task.isSuccessful){
                                 val firebaseUser: FirebaseUser = task.result!!.user!!
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
-                                val intent = Intent(context,MainActivity::class.java)
+                                val intent = Intent(context, WelcomeActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
                                 addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),userId)
