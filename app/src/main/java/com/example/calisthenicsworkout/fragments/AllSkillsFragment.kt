@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -70,9 +71,17 @@ class AllSkillsFragment : Fragment() {
         })
 
 
-        //sets a click listener to a button that then does an action
-        binding.searchButton.setOnClickListener {
-            Toast.makeText(context,binding.searchBar.text.toString(),Toast.LENGTH_SHORT).show()
+
+        binding.searchBar.addTextChangedListener {
+            val list = arrayListOf<Skill>()
+            viewModel.allSkills.observe(viewLifecycleOwner,{
+                it.forEach { skill ->
+                    if(skill.skillName.contains(binding.searchBar.text.toString())){
+                        list.add(skill)
+                    }
+                }
+                adapter.submitList(list)
+            })
         }
 
 
