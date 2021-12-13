@@ -29,7 +29,6 @@ class SkillFragment : Fragment()  {
 
     private lateinit var viewModel: SkillViewModel;
     private lateinit var viewModelFactory: SkillViewModelFactory;
-    private var liked = false
 
 
     override fun onCreateView(

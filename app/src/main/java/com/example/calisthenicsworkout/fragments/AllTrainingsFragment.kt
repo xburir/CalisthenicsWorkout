@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
@@ -39,7 +40,7 @@ class AllTrainingsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter = TrainingListAdapter(TrainingListAdapter.TrainingListener {
-                trainingId -> viewModel.onSkillClicked(trainingId)
+                trainingId -> viewModel.onTrainingClicked(trainingId)
         })
         val manager = LinearLayoutManager(activity)
         binding.recyclerView.layoutManager = manager
@@ -48,6 +49,14 @@ class AllTrainingsFragment : Fragment() {
         viewModel.allTrainings.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+
+        viewModel.chosenTrainingId.observe(viewLifecycleOwner, { training ->
+            training?.let {
+                this.findNavController().navigate(
+                    AllTrainingsFragmentDirections.actionAllTrainingsFragmentToTrainingFragment(training)
+                )
             }
         })
 

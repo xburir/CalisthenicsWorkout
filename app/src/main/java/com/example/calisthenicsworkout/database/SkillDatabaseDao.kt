@@ -51,6 +51,9 @@ interface SkillDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTraining(training: Training)
 
+    @Query("SELECT * from Trainings WHERE id = :key")
+    fun getTraining(key: String): Training
+
 
     @Delete
     fun deleteUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)

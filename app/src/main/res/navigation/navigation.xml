@@ -65,6 +65,20 @@
     <fragment
         android:id="@+id/allTrainingsFragment"
         android:name="com.example.calisthenicsworkout.fragments.AllTrainingsFragment"
-        android:label="fragment_all_trainings"
-        tools:layout="@layout/fragment_all_trainings" />
+        android:label="All Trainings"
+        tools:layout="@layout/fragment_all_trainings" >
+        <action
+            android:id="@+id/action_allTrainingsFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment"
+            app:popUpTo="@id/allTrainingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainingFragment"
+        android:name="com.example.calisthenicsworkout.fragments.TrainingFragment"
+        android:label="Training"
+        tools:layout="@layout/fragment_training" >
+        <argument
+            android:name="trainingId"
+            app:argType="string" />
+    </fragment>
 </navigation>

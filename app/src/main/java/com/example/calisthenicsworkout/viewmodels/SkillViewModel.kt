@@ -19,9 +19,12 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<String>()
+
     var lastViewedSkillId = ""
     val userSkillCrossRefs = database.getUserSkillCrossRefs(FirebaseAuth.getInstance().currentUser!!.uid)
     val allTrainings = database.getALlTrainings()
+    val chosenTrainingId = MutableLiveData<String>()
+    var lastViewedTrainingId = ""
 
 
     init {
@@ -29,9 +32,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
-        viewModelScope.launch {
-            addTrainingToDatabase()
-        }
+
 
 
 
@@ -52,9 +53,18 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         chosenSkillId.value = skillId
         lastViewedSkillId = skillId
     }
+
+
     fun onSkillNavigated(){
         chosenSkillId.value = null
 
+    }
+    fun onTrainingClicked(trainingId: String) {
+        chosenTrainingId.value = trainingId
+        lastViewedTrainingId = trainingId
+    }
+    fun onTrainingNavigated(){
+        chosenTrainingId.value = null
     }
 
     fun addSkillToDatabase(skill: Skill){
