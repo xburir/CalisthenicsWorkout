@@ -2,8 +2,6 @@ package com.example.calisthenicsworkout.database.entities
 
 import android.graphics.Bitmap
 import androidx.room.*
-import com.example.calisthenicsworkout.database.Converters
-import com.google.gson.Gson
 
 @Entity(tableName = "Skills")
 data class Skill(
