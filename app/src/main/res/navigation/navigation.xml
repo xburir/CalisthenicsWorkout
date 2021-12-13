@@ -80,5 +80,8 @@
         <argument
             android:name="trainingId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_trainingFragment_to_skillFragment"
+            app:destination="@id/skillFragment" />
     </fragment>
 </navigation>

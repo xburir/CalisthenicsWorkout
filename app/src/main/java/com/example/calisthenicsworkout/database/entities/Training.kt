@@ -1,5 +1,6 @@
 package com.example.calisthenicsworkout.database.entities
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -9,5 +10,7 @@ data class Training(
     val target: String,
 
     @PrimaryKey(autoGenerate = false)
-    val id: String
+    val id: String,
+
+    val image: Bitmap
 )

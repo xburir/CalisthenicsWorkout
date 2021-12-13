@@ -17,8 +17,10 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
@@ -26,7 +28,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -159,7 +163,16 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+        viewModel.viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                viewModel.database.insertTraining(Training("Brucho","Abs","DOSAK",getBitmap(Uri.parse("https://www.t-nation.com/wp-content/uploads/2020/08/Bodybuilder-Abs-Athlete-Core-1280x720.jpg"))))
+                viewModel.database.insertTraining(Training("Nohy","Legs","DOdSAK",getBitmap(Uri.parse("https://www.muscleandfitness.com/wp-content/uploads/2013/08/muscular-legs.jpg?quality=86&strip=all"))))
+                viewModel.database.insertTraining(Training("Bicepsova smrt","Biceps","DadsOSAK",getBitmap(Uri.parse("https://images.medicinenet.com/images/article/main_image/where-are-your-biceps.jpg"))))
+                viewModel.database.insertExercise(Exercise("DOSAK","wJyxVbujrKQWhYFiWIqh",3,5,getBitmap(Uri.parse("https://cdn.gmb.io/wp-content/uploads/2017/09/Ryan-Lsit.jpg")),"Lsit"))
+                viewModel.database.insertExercise(Exercise("DOSAK","NXVQJbsy3rhb312tOW3E",5,10,getBitmap(Uri.parse("https://farmingdalephysicaltherapywest.com/wp-content/uploads/2016/12/man-exercising-at-home.jpg")),"Sit Up"))
 
+            }
+        }
 
     }
     private suspend fun getBitmap(source: Uri): Bitmap {

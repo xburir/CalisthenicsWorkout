@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.adapters
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.Training
 
@@ -43,5 +44,34 @@ fun TextView.setTrainingName(item: Training?){
 fun TextView.setTrainingTarget(item: Training?){
     item?.let{
         text = "Targeted muscles"+item.target
+    }
+}
+
+@BindingAdapter("trainingImage")
+fun ImageView.setSkillImage(item: Training?){
+    item?.let {
+        setImageBitmap(it.image)
+    }
+}
+
+@BindingAdapter("exerciseName")
+fun TextView.setExerciseName(item: Exercise?){
+    item?.let{
+        text = item.skillName
+    }
+}
+
+
+@BindingAdapter("exerciseAmount")
+fun TextView.setExerciseAmount(item: Exercise?){
+    item?.let{
+        text = item.repetitions.toString()+"X"+item.sets.toString()
+    }
+}
+
+@BindingAdapter("skillImage")
+fun ImageView.setSkillImage(item: Exercise?){
+    item?.let {
+        setImageBitmap(it.skillImage)
     }
 }

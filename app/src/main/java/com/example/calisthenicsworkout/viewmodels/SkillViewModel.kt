@@ -1,17 +1,22 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.entities.Training
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 //import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import kotlinx.coroutines.*
+import kotlin.coroutines.coroutineContext
 
 
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
@@ -19,9 +24,10 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<String>()
-
     var lastViewedSkillId = ""
+
     val userSkillCrossRefs = database.getUserSkillCrossRefs(FirebaseAuth.getInstance().currentUser!!.uid)
+
     val allTrainings = database.getALlTrainings()
     val chosenTrainingId = MutableLiveData<String>()
     var lastViewedTrainingId = ""
@@ -33,8 +39,11 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
+        viewModelScope.launch {
+            addTrainingToDatabase()
+            addExercisesToDatabase()
 
-
+        }
 
 
 
@@ -42,12 +51,19 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     private suspend fun addTrainingToDatabase() {
         withContext(Dispatchers.IO){
-            database.insertTraining(Training("Brucho","Abs","DOSAK"))
-            database.insertTraining(Training("Nohy","Legs","DOdSAK"))
-            database.insertTraining(Training("Bicepsova smrt","Biceps","DadsOSAK"))
+
         }
 
     }
+
+    private suspend fun addExercisesToDatabase(){
+        withContext(Dispatchers.IO){
+
+
+        }
+    }
+
+
 
     fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId
