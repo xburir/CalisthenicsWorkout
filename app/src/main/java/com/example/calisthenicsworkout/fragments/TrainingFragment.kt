@@ -21,6 +21,8 @@ import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
 import com.example.calisthenicsworkout.databinding.FragmentTrainingBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +50,7 @@ class TrainingFragment : Fragment() {
 
 
 
+
         val adapter = ExerciseListAdapter(ExerciseListAdapter.ExerciseListener {
                 skillId -> viewModel.onSkillClicked(skillId)
         })
@@ -56,7 +59,7 @@ class TrainingFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
 
-
+        getExercisesForTraining(viewModel.lastViewedTrainingId)
         changeTrainingOnFragment(binding,viewModel.lastViewedTrainingId,adapter)
 
 
@@ -90,5 +93,26 @@ class TrainingFragment : Fragment() {
             viewModel.onTrainingNavigated()
         })
 
+    }
+
+    private fun getExercisesForTraining(training: String){
+        val db = FirebaseFirestore.getInstance()
+        db.collection("exercises").whereEqualTo("trainingId",training).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for(entry in it.result!!){
+                    val skillId = entry.data.getValue("skillId").toString()
+                    val trainingId = entry.data.getValue("trainingId").toString()
+                    val reps = entry.data.getValue("reps").toString().toInt()
+                    val sets = entry.data.getValue("sets").toString().toInt()
+                    viewModel.viewModelScope.launch {
+                        withContext(Dispatchers.IO){
+                            val skill = viewModel.database.getSkill(skillId)
+                            val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName)
+                            viewModel.database.insertExercise(exercise)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -43,7 +43,7 @@ fun TextView.setTrainingName(item: Training?){
 @BindingAdapter("trainingTarget")
 fun TextView.setTrainingTarget(item: Training?){
     item?.let{
-        text = "Targeted muscles"+item.target
+        text = "Targeted muscles: "+item.target
     }
 }
 

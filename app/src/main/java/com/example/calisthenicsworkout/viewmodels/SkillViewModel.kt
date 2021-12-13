@@ -39,31 +39,17 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
-        viewModelScope.launch {
-            addTrainingToDatabase()
-            addExercisesToDatabase()
-
-        }
-
 
 
     }
 
-    private suspend fun addTrainingToDatabase() {
+
+
+    suspend fun addTrainingToDatabase(training: Training) {
         withContext(Dispatchers.IO){
-
-        }
-
-    }
-
-    private suspend fun addExercisesToDatabase(){
-        withContext(Dispatchers.IO){
-
-
+            database.insertTraining(training)
         }
     }
-
-
 
     fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId

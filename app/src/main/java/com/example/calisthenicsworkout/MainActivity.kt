@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -113,6 +114,7 @@ class MainActivity : AppCompatActivity() {
     private fun readFireStoreData(){
         val db = FirebaseFirestore.getInstance()
         val fbStorage = FirebaseStorage.getInstance()
+        val backUpPicRef = fbStorage.reference.child("skillImages").child("nothing.png")
         db.collection("skills").get().addOnCompleteListener{
             if(it.isSuccessful){
                 for(entry in it.result!!){
@@ -124,7 +126,6 @@ class MainActivity : AppCompatActivity() {
                     var bitmap: Bitmap
                     pictureRef.downloadUrl
                         .addOnFailureListener {
-                            val backUpPicRef = fbStorage.reference.child("skillImages").child("nothing.png")
                             backUpPicRef.downloadUrl.addOnSuccessListener {
                                 viewModel.viewModelScope.launch{
                                     bitmap = getBitmap(it)
@@ -163,22 +164,43 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        viewModel.viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                viewModel.database.insertTraining(Training("Brucho","Abs","DOSAK",getBitmap(Uri.parse("https://www.t-nation.com/wp-content/uploads/2020/08/Bodybuilder-Abs-Athlete-Core-1280x720.jpg"))))
-                viewModel.database.insertTraining(Training("Nohy","Legs","DOdSAK",getBitmap(Uri.parse("https://www.muscleandfitness.com/wp-content/uploads/2013/08/muscular-legs.jpg?quality=86&strip=all"))))
-                viewModel.database.insertTraining(Training("Bicepsova smrt","Biceps","DadsOSAK",getBitmap(Uri.parse("https://images.medicinenet.com/images/article/main_image/where-are-your-biceps.jpg"))))
-                viewModel.database.insertExercise(Exercise("DOSAK","wJyxVbujrKQWhYFiWIqh",3,5,getBitmap(Uri.parse("https://cdn.gmb.io/wp-content/uploads/2017/09/Ryan-Lsit.jpg")),"Lsit"))
-                viewModel.database.insertExercise(Exercise("DOSAK","NXVQJbsy3rhb312tOW3E",5,10,getBitmap(Uri.parse("https://farmingdalephysicaltherapywest.com/wp-content/uploads/2016/12/man-exercising-at-home.jpg")),"Sit Up"))
-
+        db.collection("trainings").get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for(entry in it.result!!){
+                    val id = entry.id
+                    val name = entry.data.getValue("name").toString()
+                    val target = entry.data.getValue("target").toString()
+                    val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
+                    pictureRef.downloadUrl
+                        .addOnFailureListener {
+                            backUpPicRef.downloadUrl.addOnSuccessListener {
+                                viewModel.viewModelScope.launch {
+                                    val bitmap = getBitmap(it)
+                                    val training = Training(name,target,id,bitmap)
+                                    viewModel.addTrainingToDatabase(training)
+                                }
+                            }
+                        }
+                        .addOnSuccessListener {
+                        viewModel.viewModelScope.launch {
+                            val bitmap = getBitmap(it)
+                            val training = Training(name,target,id,bitmap)
+                            viewModel.addTrainingToDatabase(training)
+                        }
+                    }
+                }
             }
         }
 
+
+
     }
+
     private suspend fun getBitmap(source: Uri): Bitmap {
         val loading = ImageLoader(this)
         val request = ImageRequest.Builder(this).data(source).build()
         val result = (loading.execute(request) as SuccessResult).drawable
         return (result as BitmapDrawable).bitmap
     }
+
 }
