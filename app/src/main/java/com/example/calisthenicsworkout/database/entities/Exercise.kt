@@ -7,8 +7,8 @@ import androidx.room.Entity
 data class Exercise(
     val trainingId: String,
     val skillId: String,
-    val sets: Int,
-    val repetitions: Int,
+    val sets: String,
+    val repetitions: String,
     val skillImage: Bitmap,
     val skillName: String
 )

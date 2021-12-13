@@ -102,12 +102,18 @@ class TrainingFragment : Fragment() {
                 for(entry in it.result!!){
                     val skillId = entry.data.getValue("skillId").toString()
                     val trainingId = entry.data.getValue("trainingId").toString()
-                    val reps = entry.data.getValue("reps").toString().toInt()
-                    val sets = entry.data.getValue("sets").toString().toInt()
+                    val reps = entry.data.getValue("reps").toString()
+                    val sets = entry.data.getValue("sets").toString()
                     viewModel.viewModelScope.launch {
                         withContext(Dispatchers.IO){
                             val skill = viewModel.database.getSkill(skillId)
-                            val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName)
+                            var repsToPass = reps
+                            if(skill.skillType == "reps"){
+                                repsToPass += " repetitions"
+                            }else if (skill.skillType == "time"){
+                                repsToPass += " seconds"
+                            }
+                            val exercise = Exercise(trainingId,skillId,sets,repsToPass,skill.skillImage,skill.skillName)
                             viewModel.database.insertExercise(exercise)
                         }
                     }
