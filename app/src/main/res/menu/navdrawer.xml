@@ -23,4 +23,12 @@
                 android:title="Favorite Skills" />
         </menu>
     </item>
+
+    <item android:title="Trainings">
+        <menu>
+            <item
+                android:id="@+id/allTrainingsFragment"
+                android:title="Trainings" />
+        </menu>
+    </item>
 </menu>

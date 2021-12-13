@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,12 +21,30 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     val chosenSkillId = MutableLiveData<String>()
     var lastViewedSkillId = ""
     val userSkillCrossRefs = database.getUserSkillCrossRefs(FirebaseAuth.getInstance().currentUser!!.uid)
+    val allTrainings = database.getALlTrainings()
 
 
     init {
         Log.i("Debug","ViewModel created")
 
 
+
+        viewModelScope.launch {
+            addTrainingToDatabase()
+        }
+
+
+
+
+
+    }
+
+    private suspend fun addTrainingToDatabase() {
+        withContext(Dispatchers.IO){
+            database.insertTraining(Training("Brucho","Abs","DOSAK"))
+            database.insertTraining(Training("Nohy","Legs","DOdSAK"))
+            database.insertTraining(Training("Bicepsova smrt","Biceps","DadsOSAK"))
+        }
 
     }
 

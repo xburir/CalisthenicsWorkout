@@ -62,4 +62,9 @@
             app:destination="@id/skillFragment"
             app:popUpTo="@id/allSkillsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/allTrainingsFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AllTrainingsFragment"
+        android:label="fragment_all_trainings"
+        tools:layout="@layout/fragment_all_trainings" />
 </navigation>

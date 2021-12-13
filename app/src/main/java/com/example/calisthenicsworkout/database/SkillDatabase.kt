@@ -2,18 +2,17 @@ package com.example.calisthenicsworkout.database
 
 import android.content.Context
 import androidx.room.*
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.entities.User
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.*
 
 @Database(entities = [
     Skill::class,
     SkillAndSkillCrossRef::class,
     User::class,
-    UserAndSkillCrossRef::class
+    UserAndSkillCrossRef::class,
+    Exercise::class,
+    Training::class
                      ],
-            version = 13 ,
+            version = 14 ,
             exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class SkillDatabase : RoomDatabase() {

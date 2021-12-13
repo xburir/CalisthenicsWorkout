@@ -2,10 +2,7 @@ package com.example.calisthenicsworkout.database;
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.entities.User
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.database.relations.SkillWithSkills
 
 @Dao
@@ -47,6 +44,12 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM userandskillcrossref WHERE userId = :user AND skillId = :skill")
     fun getUserAndSkillCrossRef(user: String, skill: String): UserAndSkillCrossRef
 
+
+    @Query("SELECT * FROM Trainings")
+    fun getALlTrainings(): LiveData<List<Training>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertTraining(training: Training)
 
 
     @Delete
