@@ -51,6 +51,12 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
+    suspend fun addExerciseToDatabase(exercise: Exercise){
+        withContext(Dispatchers.IO){
+            database.insertExercise(exercise)
+        }
+    }
+
     fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId
         lastViewedSkillId = skillId

@@ -12,7 +12,7 @@ import com.example.calisthenicsworkout.database.entities.*
     Exercise::class,
     Training::class
                      ],
-            version = 17 ,
+            version = 18 ,
             exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class SkillDatabase : RoomDatabase() {

@@ -88,5 +88,14 @@
         android:id="@+id/createTrainingFragment"
         android:name="com.example.calisthenicsworkout.fragments.CreateTrainingFragment"
         android:label="Create Training"
-        tools:layout="@layout/fragment_create_training" />
+        tools:layout="@layout/fragment_create_training" >
+        <action
+            android:id="@+id/action_createTrainingFragment_to_skillFragment"
+            app:destination="@id/skillFragment" />
+        <action
+            android:id="@+id/action_createTrainingFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

@@ -29,6 +29,7 @@ class HomeFragment : Fragment() {
         getUser(binding)
 
         binding.logoutButton.setOnClickListener{
+
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(context, AuthActivity::class.java))
             requireActivity().finish()

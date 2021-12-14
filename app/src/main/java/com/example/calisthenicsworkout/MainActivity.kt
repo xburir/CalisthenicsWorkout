@@ -1,11 +1,14 @@
 package com.example.calisthenicsworkout
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -109,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun readFireStoreData(){
         val db = FirebaseFirestore.getInstance()
         val fbStorage = FirebaseStorage.getInstance()
+        val fbAuth = FirebaseAuth.getInstance()
         val backUpPicRef = fbStorage.reference.child("skillImages").child("nothing.png")
         db.collection("skills").get().addOnCompleteListener{
             if(it.isSuccessful){
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        db.collection("trainings").get().addOnCompleteListener{
+        db.collection("trainings").whereEqualTo("owner","admin").get().addOnCompleteListener{
             if(it.isSuccessful){
                 for(entry in it.result!!){
                     val id = entry.id
@@ -171,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                             backUpPicRef.downloadUrl.addOnSuccessListener {
                                 viewModel.viewModelScope.launch {
                                     val bitmap = getBitmap(it)
-                                    val training = Training(name,target,id,bitmap)
+                                    val training = Training(name,target,id,"admin",bitmap)
                                     viewModel.addTrainingToDatabase(training)
                                 }
                             }
@@ -179,10 +183,37 @@ class MainActivity : AppCompatActivity() {
                         .addOnSuccessListener {
                         viewModel.viewModelScope.launch {
                             val bitmap = getBitmap(it)
-                            val training = Training(name,target,id,bitmap)
+                            val training = Training(name,target,id,"admin",bitmap)
                             viewModel.addTrainingToDatabase(training)
                         }
                     }
+                }
+            }
+        }
+        db.collection("trainings").whereEqualTo("owner",fbAuth.currentUser!!.uid).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                for(entry in it.result!!){
+                    val id = entry.id
+                    val name = entry.data.getValue("name").toString()
+                    val target = entry.data.getValue("target").toString()
+                    val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
+                    pictureRef.downloadUrl
+                        .addOnFailureListener {
+                            backUpPicRef.downloadUrl.addOnSuccessListener {
+                                viewModel.viewModelScope.launch {
+                                    val bitmap = getBitmap(it)
+                                    val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap)
+                                    viewModel.addTrainingToDatabase(training)
+                                }
+                            }
+                        }
+                        .addOnSuccessListener {
+                            viewModel.viewModelScope.launch {
+                                val bitmap = getBitmap(it)
+                                val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap)
+                                viewModel.addTrainingToDatabase(training)
+                            }
+                        }
                 }
             }
         }
@@ -214,6 +245,14 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener{
                 Log.i("Debug","not added")
             }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(this.currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
 }
