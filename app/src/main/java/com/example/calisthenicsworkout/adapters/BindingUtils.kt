@@ -65,7 +65,7 @@ fun TextView.setExerciseName(item: Exercise?){
 @BindingAdapter("exerciseAmount")
 fun TextView.setExerciseAmount(item: Exercise?){
     item?.let{
-        text = item.sets+" sets "+item.repetitions
+        text = item.sets+"x "+item.repetitions
 
     }
 }

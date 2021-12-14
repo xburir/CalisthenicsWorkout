@@ -94,21 +94,7 @@ class AllSkillsFragment : Fragment() {
 
     }
 
-    fun saveFireStore(crossRef: SkillAndSkillCrossRef){
-        val db = FirebaseFirestore.getInstance()
-        val mappedThing: MutableMap<String,Any> = HashMap()
-        mappedThing["skillId"] = crossRef.skillId
-        mappedThing["childId"] = crossRef.childSkillId
-        mappedThing["amount"] = crossRef.minAmount
 
-        db.collection("skillAndSkillsCrossRef").add(mappedThing)
-            .addOnSuccessListener {
-                Log.i("Debug","added succesfully")
-            }
-            .addOnFailureListener{
-                Log.i("Debug","not added")
-            }
-    }
 
 
 
