@@ -38,7 +38,10 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import android.provider.MediaStore
 import android.util.Base64
+import androidx.core.net.toUri
+import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 
 class CreateTrainingFragment : Fragment() {
@@ -124,7 +127,9 @@ class CreateTrainingFragment : Fragment() {
                     viewModel.viewModelScope.launch {
                         training.name = name
                         training.target = target
-                        try {training.image = getBitmap(imgUrl)
+                        try {
+                            training.image = getBitmap(imgUrl)
+                            saveTrainingImageToFireBaseStorage(training)
                         }catch (e:Exception){   }
                         viewModel.addTrainingToDatabase(training)
                         exerciseList.forEach {
@@ -139,7 +144,6 @@ class CreateTrainingFragment : Fragment() {
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
             hideKeyBoard()
-
         }
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill->
@@ -151,6 +155,23 @@ class CreateTrainingFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun saveTrainingImageToFireBaseStorage(training: Training) {
+        val file = File(requireContext().cacheDir,"CUSTOM NAME")
+        file.delete()
+        file.createNewFile()
+        val fileOutputStream = file.outputStream()
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        training.image.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream)
+        val bytearray = byteArrayOutputStream.toByteArray()
+        fileOutputStream.write(bytearray)
+        fileOutputStream.flush()
+        fileOutputStream.close()
+        byteArrayOutputStream.close()
+        val urlka = file.toUri()
+        FirebaseStorage.getInstance().reference.child("trainingImages").child(training.id+".png").putFile(urlka)
+
     }
 
     private fun hideKeyBoard() {
@@ -175,6 +196,7 @@ class CreateTrainingFragment : Fragment() {
             mappedExercise["trainingId"] = it.trainingId
             database.collection("exercises").add(mappedExercise)
         }
+
     }
 
 
