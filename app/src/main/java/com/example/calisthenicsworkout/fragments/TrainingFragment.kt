@@ -1,11 +1,10 @@
 package com.example.calisthenicsworkout.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,24 +12,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
-import com.example.calisthenicsworkout.adapters.TrainingListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.Exercise
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
+import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.databinding.FragmentTrainingBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class TrainingFragment : Fragment() {
 
-    private lateinit var viewModel: SkillViewModel;
-    private lateinit var viewModelFactory: SkillViewModelFactory;
+    private lateinit var viewModel: SkillViewModel
+    private lateinit var viewModelFactory: SkillViewModelFactory
+    private lateinit var trainingOnScreenId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +46,7 @@ class TrainingFragment : Fragment() {
         binding.lifecycleOwner = this
 
 
-
+        setHasOptionsMenu(true)
 
 
 
@@ -78,6 +77,7 @@ class TrainingFragment : Fragment() {
     private fun changeTrainingOnFragment(binding: FragmentTrainingBinding, training: String, adapter: ExerciseListAdapter) {
         viewModel.viewModelScope.launch {
             withContext(Dispatchers.IO){
+                trainingOnScreenId = viewModel.database.getTraining(training).id
                 binding.training = viewModel.database.getTraining(training)
             }
         }
@@ -123,4 +123,60 @@ class TrainingFragment : Fragment() {
             }
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.action_bar_training,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if(item.toString() == "Delete Training"){
+            var chosenTraining: Training
+            viewModel.allTrainings.observe(viewLifecycleOwner,{
+                it.forEach { training ->
+                    if (training.id == trainingOnScreenId){
+                        chosenTraining = training
+                        if(chosenTraining.owner != FirebaseAuth.getInstance().currentUser!!.uid){
+                            Toast.makeText(context,"You can delete only delete your own trainings",Toast.LENGTH_SHORT).show()
+                        }else{
+                            deleteTraining()
+                        }
+
+                    }
+                }
+            })
+        }
+
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteTraining() {
+        val db = FirebaseFirestore.getInstance()
+        AlertDialog.Builder(context)
+            .setMessage("Are you sure you want to delete this training?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO){
+                        viewModel.database.deleteTrainingExercises(trainingOnScreenId)
+                        viewModel.database.deleteTraining(trainingOnScreenId)
+                    }
+                }
+                db.collection("exercises").whereEqualTo("trainingId",trainingOnScreenId).get().addOnCompleteListener{
+                    if(it.isSuccessful){
+                        for(entry in it.result!!){
+                            db.collection("exercises").document(entry.id).delete()
+                        }
+                    }
+                }
+                db.collection("trainings").document(trainingOnScreenId).delete()
+
+                findNavController().navigate(TrainingFragmentDirections.actionTrainingFragmentToHomeFragment())
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
 }

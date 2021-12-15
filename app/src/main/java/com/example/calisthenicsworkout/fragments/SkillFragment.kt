@@ -121,7 +121,7 @@ class SkillFragment : Fragment()  {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.action_bar_buttons,menu)
+        inflater.inflate(R.menu.action_bar_skill,menu)
         val item = menu[1]
         item.setIcon(R.drawable.like)
         viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{

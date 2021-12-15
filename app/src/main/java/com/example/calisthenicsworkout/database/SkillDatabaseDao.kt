@@ -64,6 +64,11 @@ interface SkillDatabaseDao {
     fun deleteUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
 
+    @Query("DELETE FROM exercises WHERE trainingId = :trainingId")
+    fun deleteTrainingExercises(trainingId: String)
+
+    @Query("DELETE FROM Trainings WHERE id = :trainingId")
+    fun deleteTraining(trainingId: String)
 
     @Update
     fun updateSkill(skill: Skill)
