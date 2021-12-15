@@ -12,5 +12,6 @@ data class Training(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     var owner: String,
-    var image: Bitmap
+    var image: Bitmap,
+    var numberOfExercises: Int
 )

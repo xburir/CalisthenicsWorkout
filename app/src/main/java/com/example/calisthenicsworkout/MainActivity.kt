@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -113,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val fbStorage = FirebaseStorage.getInstance()
         val fbAuth = FirebaseAuth.getInstance()
-        val backUpPicRef = fbStorage.reference.child("skillImages").child("nothing.png")
         db.collection("skills").get().addOnCompleteListener{
             if(it.isSuccessful){
                 for(entry in it.result!!){
@@ -122,24 +123,21 @@ class MainActivity : AppCompatActivity() {
                     val desc = entry.data.getValue("description").toString()
                     val type = entry.data.getValue("type").toString()
                     val pictureRef = fbStorage.reference.child("skillImages").child("$id.png")
-                    var bitmap: Bitmap
+                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
+                    val skill = Skill(id,name,desc,bitmap,type)
                     pictureRef.downloadUrl
-                        .addOnFailureListener {
-                            backUpPicRef.downloadUrl.addOnSuccessListener {
-                                viewModel.viewModelScope.launch{
-                                    bitmap = getBitmap(it)
-                                    val skill = Skill(id,name,desc,bitmap,type)
-                                    viewModel.addSkillToDatabase(skill)
-                                }
-                            }
-                        }
                         .addOnSuccessListener {
                             viewModel.viewModelScope.launch{
-                                bitmap = getBitmap(it)
-                                val skill = Skill(id,name,desc,bitmap,type)
+                                skill.skillImage = getBitmap(it)
                                 viewModel.addSkillToDatabase(skill)
                             }
                         }
+                        .addOnFailureListener {
+                            viewModel.viewModelScope.launch {
+                                viewModel.addSkillToDatabase(skill)
+                            }
+                        }
+
                 }
             }
         }
@@ -169,24 +167,23 @@ class MainActivity : AppCompatActivity() {
                     val id = entry.id
                     val name = entry.data.getValue("name").toString()
                     val target = entry.data.getValue("target").toString()
+                    val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
+                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
+                    val training = Training(name,target,id,"admin",bitmap,numberOfExercises)
                     val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
                     pictureRef.downloadUrl
-                        .addOnFailureListener {
-                            backUpPicRef.downloadUrl.addOnSuccessListener {
-                                viewModel.viewModelScope.launch {
-                                    val bitmap = getBitmap(it)
-                                    val training = Training(name,target,id,"admin",bitmap)
-                                    viewModel.addTrainingToDatabase(training)
-                                }
-                            }
-                        }
                         .addOnSuccessListener {
                         viewModel.viewModelScope.launch {
-                            val bitmap = getBitmap(it)
-                            val training = Training(name,target,id,"admin",bitmap)
+                            training.image = getBitmap(it)
                             viewModel.addTrainingToDatabase(training)
                         }
                     }
+                        .addOnFailureListener {
+                            viewModel.viewModelScope.launch {
+                                viewModel.addTrainingToDatabase(training)
+                            }
+                        }
+
                 }
             }
         }
@@ -196,30 +193,27 @@ class MainActivity : AppCompatActivity() {
                     val id = entry.id
                     val name = entry.data.getValue("name").toString()
                     val target = entry.data.getValue("target").toString()
+                    val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
                     val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
+                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
+                    val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap,numberOfExercises)
                     pictureRef.downloadUrl
-                        .addOnFailureListener {
-                            backUpPicRef.downloadUrl.addOnSuccessListener {
-                                viewModel.viewModelScope.launch {
-                                    val bitmap = getBitmap(it)
-                                    val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap)
-                                    viewModel.addTrainingToDatabase(training)
-                                }
-                            }
-                        }
                         .addOnSuccessListener {
                             viewModel.viewModelScope.launch {
-                                val bitmap = getBitmap(it)
-                                val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap)
+                                training.image = getBitmap(it)
                                 viewModel.addTrainingToDatabase(training)
                             }
                         }
+                        .addOnFailureListener {
+                            viewModel.viewModelScope.launch {
+                                viewModel.addTrainingToDatabase(training)
+                            }
+                        }
+
+
                 }
             }
         }
-
-
-
     }
 
     private suspend fun getBitmap(source: Uri): Bitmap {
@@ -247,12 +241,12 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (currentFocus != null) {
-            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(this.currentFocus!!.windowToken, 0)
-        }
-        return super.dispatchTouchEvent(ev)
-    }
+//    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+//        if (currentFocus != null) {
+//            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//            imm.hideSoftInputFromWindow(this.currentFocus!!.windowToken, 0)
+//        }
+//        return super.dispatchTouchEvent(ev)
+//    }
 
 }

@@ -1,14 +1,19 @@
 package com.example.calisthenicsworkout.fragments
 
+import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -31,6 +36,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import android.provider.MediaStore
+import android.util.Base64
+import java.io.ByteArrayOutputStream
+
 
 class CreateTrainingFragment : Fragment() {
 
@@ -66,9 +75,9 @@ class CreateTrainingFragment : Fragment() {
 
         val fb = FirebaseAuth.getInstance()
         val key =  getRandomString(20)
-        val emptyBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val emptyBitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.nothing)
         val exerciseList = mutableListOf<Exercise>()
-        val training = Training("undefined","undefined",key, fb.currentUser!!.uid  ,emptyBitmap)
+        val training = Training("undefined","undefined",key, fb.currentUser!!.uid  ,emptyBitmap,0)
 
         binding.addSkillToTrainingButton.setOnClickListener{
             val nameOfSkill = binding.skillOptions.text.toString()
@@ -81,12 +90,13 @@ class CreateTrainingFragment : Fragment() {
                     it.forEach { skill->
                         if(skill.skillName == nameOfSkill){
                             found = true
+                            training.numberOfExercises++
                             exercise = if(skill.skillType == "reps"){
-                                if(numberOfReps == "1"){ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps repetition", skill.skillImage,skill.skillName) }
-                                else{ Exercise(key,skill.skillId ,numberOfSets,"$numberOfReps repetitions", skill.skillImage,skill.skillName)  }
+                                if(numberOfReps == "1"){ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps repetition", skill.skillImage,skill.skillName,training.numberOfExercises) }
+                                else{ Exercise(key,skill.skillId ,numberOfSets,"$numberOfReps repetitions", skill.skillImage,skill.skillName,training.numberOfExercises)  }
                             }else{
-                                if (numberOfReps == "1"){  Exercise(key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName)  }
-                                else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName) }
+                                if (numberOfReps == "1"){  Exercise(key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName,training.numberOfExercises)  }
+                                else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
                             }
                             exerciseList.add(exercise)
                         }
@@ -100,6 +110,7 @@ class CreateTrainingFragment : Fragment() {
                     }else{
                         adapter.submitList(exerciseList)
                     }
+                    hideKeyBoard()
                 })
             }
         }
@@ -113,8 +124,8 @@ class CreateTrainingFragment : Fragment() {
                     viewModel.viewModelScope.launch {
                         training.name = name
                         training.target = target
-                        try { training.image = getBitmap(Uri.parse(imgUrl))
-                        }catch (e: Exception){ training.image = BitmapFactory.decodeResource(requireContext().resources, R.drawable.nothing) }
+                        try {training.image = getBitmap(imgUrl)
+                        }catch (e:Exception){   }
                         viewModel.addTrainingToDatabase(training)
                         exerciseList.forEach {
                             viewModel.addExerciseToDatabase(it)
@@ -125,12 +136,9 @@ class CreateTrainingFragment : Fragment() {
                             CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(training.id)
                         )
                     }
-
-
-
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
-
+            hideKeyBoard()
 
         }
 
@@ -142,11 +150,12 @@ class CreateTrainingFragment : Fragment() {
             }
         })
 
-
-
-
-
         return binding.root
+    }
+
+    private fun hideKeyBoard() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
     }
 
     private fun saveToFirestore(training: Training, exerciseList: MutableList<Exercise>) {
@@ -154,16 +163,27 @@ class CreateTrainingFragment : Fragment() {
         val mappedTraining: MutableMap<String,Any> = HashMap()
         mappedTraining["name"] = training.name
         mappedTraining["owner"] = training.owner
+        mappedTraining["numberOfExercises"] = training.numberOfExercises
         mappedTraining["target"] = training.target
         database.collection("trainings").document(training.id).set(mappedTraining)
         exerciseList.forEach{
             val mappedExercise: MutableMap<String,Any> = HashMap()
             mappedExercise["reps"] = it.repetitions
             mappedExercise["sets"] = it.sets
+            mappedExercise["order"] = it.order
             mappedExercise["skillId"] = it.skillId
             mappedExercise["trainingId"] = it.trainingId
             database.collection("exercises").add(mappedExercise)
         }
+    }
+
+
+    fun bitmapToString(bmp: Bitmap): String {
+        val bao = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao)
+        bmp.recycle()
+        val byteArray = bao.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.URL_SAFE)
     }
 
     private fun getRandomString(length: Int) : String {
@@ -189,10 +209,11 @@ class CreateTrainingFragment : Fragment() {
         }
     }
 
-    private suspend fun getBitmap(source: Uri): Bitmap {
+    private suspend fun getBitmap(source: String): Bitmap {
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext()).data(source).build()
         val result = (loading.execute(request) as SuccessResult).drawable
         return (result as BitmapDrawable).bitmap
     }
+
 }

@@ -10,5 +10,6 @@ data class Exercise(
     val sets: String,
     val repetitions: String,
     val skillImage: Bitmap,
-    val skillName: String
+    val skillName: String,
+    val order: Int
 )

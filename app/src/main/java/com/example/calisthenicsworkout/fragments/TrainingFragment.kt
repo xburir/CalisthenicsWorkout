@@ -89,6 +89,7 @@ class TrainingFragment : Fragment() {
                     exerciseList.add(exercise)
                 }
             }
+            exerciseList.sortBy { it.order }
             adapter.submitList(exerciseList)
             viewModel.onTrainingNavigated()
         })
@@ -101,6 +102,7 @@ class TrainingFragment : Fragment() {
             if(it.isSuccessful){
                 for(entry in it.result!!){
                     val skillId = entry.data.getValue("skillId").toString()
+                    val order = entry.data.getValue("order").toString().toInt()
                     val trainingId = entry.data.getValue("trainingId").toString()
                     val reps = entry.data.getValue("reps").toString()
                     val sets = entry.data.getValue("sets").toString()
@@ -113,7 +115,7 @@ class TrainingFragment : Fragment() {
                             }else if (skill.skillType == "time"){
                                 repsToPass += " seconds"
                             }
-                            val exercise = Exercise(trainingId,skillId,sets,repsToPass,skill.skillImage,skill.skillName)
+                            val exercise = Exercise(trainingId,skillId,sets,repsToPass,skill.skillImage,skill.skillName,order)
                             viewModel.database.insertExercise(exercise)
                         }
                     }

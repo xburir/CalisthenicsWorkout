@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -47,12 +48,7 @@ class AddSkillFragment : Fragment() {
 
         //sets a click listener to a button that then does an action (changing the fragment)
         binding.button.setOnClickListener{ view: View ->
-            val fbStorage = FirebaseStorage.getInstance()
-            val pictureRef = fbStorage.getReference().child("skillImages").child("test.png")
-            pictureRef.downloadUrl.addOnSuccessListener {
-                    viewModel.viewModelScope.launch{
-                        val bitmap = getBitmap(it) }
-                }
+
         }
 
 
@@ -60,11 +56,5 @@ class AddSkillFragment : Fragment() {
         return binding.root
     }
 
-    private suspend fun getBitmap(source: Uri): Bitmap {
-        val loading = ImageLoader(requireContext())
-        val request = ImageRequest.Builder(requireContext()).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
 
 }
