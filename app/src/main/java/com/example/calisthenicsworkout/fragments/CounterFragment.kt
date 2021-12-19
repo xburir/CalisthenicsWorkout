@@ -14,22 +14,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.TimerExpiredReceiver
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.databinding.FragmentChooseRestBinding
 import com.example.calisthenicsworkout.databinding.FragmentCounterBinding
 import com.example.calisthenicsworkout.util.NotificationUtil
 import com.example.calisthenicsworkout.util.PrefUtil
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
-import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class CounterFragment : Fragment() {
@@ -83,7 +75,8 @@ class CounterFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(TimerViewModel::class.java)
         binding.lifecycleOwner = this
         PrefUtil.getTrainingId(requireContext())?.let {
-            viewModel.trainingId = it
+            viewModel.trainingId.value = it
+            Log.i("Debug","Found "+ it)
         }
 
 
@@ -92,23 +85,28 @@ class CounterFragment : Fragment() {
         val timeBetweenExercises = args.betweenExercises.toString()
         val timeBetweenSets = args.betweenSets.toString()
 
+        viewModel.trainingId.observe(viewLifecycleOwner,{
+           it?.let {
+               viewModel.loadExercises(it,requireActivity())
+               viewModel.loadTraining(it,requireActivity())
+           }
+        })
+
         viewModel.training.observe(viewLifecycleOwner,{
             it?.let{
                 binding.trainingNameText.text = it.name
-                viewModel.loadExercises(it)
             }
-
         })
 
 
-//        viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
-//            binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
-//
-//            viewModel.currentSet.observe(viewLifecycleOwner,{
-//                binding.setNumber.text = "Set number "+it.toString()+"/"+ exercise.sets
-//            })
-//
-//        })
+        viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
+            binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
+
+            viewModel.currentSet.observe(viewLifecycleOwner,{
+                binding.setNumber.text = "Set number "+it.toString()+"/"+ exercise.sets
+            })
+
+        })
 
 
 
