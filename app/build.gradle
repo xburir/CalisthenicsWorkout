@@ -75,12 +75,17 @@ dependencies {
 
     //Database
     def room_version = "2.2.5"
-
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version" // optional - Kotlin Extensions and Coroutines support for Room
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation("io.coil-kt:coil:1.4.0")
+
+    //progress bar on timer
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+
+    //preference manager
+    implementation 'androidx.preference:preference:1.1.1'
 
 
 }

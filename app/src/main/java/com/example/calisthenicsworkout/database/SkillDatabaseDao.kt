@@ -60,6 +60,9 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM Exercises WHERE trainingId = :key")
     fun getExercisesOfTraining(key: String): LiveData<List<Exercise>>
 
+    @Query("SELECT * FROM Exercises WHERE trainingId = :key")
+    fun getExercisesOfTrainingDirect(key: String): List<Exercise>
+
     @Delete
     fun deleteUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 

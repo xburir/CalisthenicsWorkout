@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.CounterFragment">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/trainingNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/exerciseNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="58dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trainingNameText" />
+
+        <TextView
+            android:id="@+id/setNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/exerciseNumber" />
+
+        <Button
+            android:id="@+id/playPauseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="start training"
+            app:layout_constraintBottom_toBottomOf="@+id/skipCountDownButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/skipCountDownButton" />
+
+        <Button
+            android:id="@+id/skipCountDownButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="26dp"
+            android:text="Skip rest"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/playPauseButton" />
+
+        <Button
+            android:id="@+id/stopTrainingButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="22dp"
+            android:text="Stop"
+            app:layout_constraintBottom_toBottomOf="@+id/playPauseButton"
+            app:layout_constraintEnd_toStartOf="@+id/playPauseButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/playPauseButton" />
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.MaterialProgressBar.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="306dp"
+            android:minWidth="306dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/playPauseButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trainingNameText" />
+
+        <TextView
+            android:id="@+id/countDownTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            tools:text="TextView"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toTopOf="@+id/playPauseButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trainingNameText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

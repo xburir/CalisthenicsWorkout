@@ -3,6 +3,7 @@
     package="com.example.calisthenicsworkout">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".WorkoutApplication"
@@ -12,11 +13,24 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.CalisthenicsWorkout">
+        <receiver
+            android:name=".TimerNotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false"></receiver>
+        <receiver
+            android:name=".TimerExpiredReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".TimerActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".AuthActivity"
             android:exported="true"
@@ -30,7 +44,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

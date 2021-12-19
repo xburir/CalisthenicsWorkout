@@ -19,7 +19,7 @@ class WelcomeActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
 
-        setContentView(R.layout.activity_welcome)
+
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
@@ -27,7 +27,7 @@ class WelcomeActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(intent)
             finish()
-        }, 1000)
+        }, 300)
 
 
     }

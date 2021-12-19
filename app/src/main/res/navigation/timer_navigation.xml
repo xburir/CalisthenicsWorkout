@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/timer_navigation"
+    app:startDestination="@id/chooseRestFragment">
+
+    <fragment
+        android:id="@+id/chooseRestFragment"
+        android:name="com.example.calisthenicsworkout.fragments.ChooseRestFragment"
+        android:label="fragment_choose_rest"
+        tools:layout="@layout/fragment_choose_rest" >
+        <action
+            android:id="@+id/action_chooseRestFragment_to_counterFragment"
+            app:destination="@id/counterFragment" />
+        <argument
+            android:name="trainingId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/counterFragment"
+        android:name="com.example.calisthenicsworkout.fragments.CounterFragment"
+        android:label="fragment_counter"
+        tools:layout="@layout/fragment_counter" >
+        <argument
+            android:name="betweenSets"
+            app:argType="integer" />
+        <argument
+            android:name="betweenExercises"
+            app:argType="integer" />
+    </fragment>
+</navigation>

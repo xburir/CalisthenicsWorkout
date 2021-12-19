@@ -33,15 +33,6 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     var lastViewedTrainingId = ""
 
 
-    init {
-        Log.i("Debug","ViewModel created")
-
-
-
-
-
-
-    }
 
 
 
@@ -97,10 +88,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
-    override fun onCleared() {
-        super.onCleared();
-        Log.i("Debug","ViewModel cleared")
-    }
+
 
     fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
         viewModelScope.launch {
