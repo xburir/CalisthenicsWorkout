@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.calisthenicsworkout.R
+import com.example.calisthenicsworkout.TimerActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +24,7 @@ class NotificationUtil {
             val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
             nBuilder.setContentTitle("Time expired!")
             nBuilder.setContentText("Time to train")
+            //nBuilder.setContentIntent(getPendingIntentWithStack(context,TimerActivity::class.java))
             val nManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nManager.createNotificationChannel(CHANNEL_ID_TIMER, CHANNEL_NAME_TIMER,true)
             nManager.notify(TIMER_ID,nBuilder.build())
@@ -40,6 +42,7 @@ class NotificationUtil {
             val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
             nBuilder.setContentTitle("Timer is running.")
             nBuilder.setContentText("End"+df.format(Date(wakeUpTime)))
+            //nBuilder.setContentIntent(getPendingIntentWithStack(context,TimerActivity::class.java))
             val nManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nManager.createNotificationChannel(CHANNEL_ID_TIMER, CHANNEL_NAME_TIMER,true)
             nManager.notify(TIMER_ID,nBuilder.build())

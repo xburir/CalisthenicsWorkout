@@ -74,10 +74,8 @@ class CounterFragment : Fragment() {
         viewModelFactory = TimerViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(TimerViewModel::class.java)
         binding.lifecycleOwner = this
-        PrefUtil.getTrainingId(requireContext())?.let {
-            viewModel.trainingId.value = it
-            Log.i("Debug","Found "+ it)
-        }
+
+
 
 
 
@@ -85,12 +83,7 @@ class CounterFragment : Fragment() {
         val timeBetweenExercises = args.betweenExercises.toString()
         val timeBetweenSets = args.betweenSets.toString()
 
-        viewModel.trainingId.observe(viewLifecycleOwner,{
-           it?.let {
-               viewModel.loadExercises(it,requireActivity())
-               viewModel.loadTraining(it,requireActivity())
-           }
-        })
+
 
         viewModel.training.observe(viewLifecycleOwner,{
             it?.let{
@@ -102,14 +95,20 @@ class CounterFragment : Fragment() {
         viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
             binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
 
-            viewModel.currentSet.observe(viewLifecycleOwner,{
-                binding.setNumber.text = "Set number "+it.toString()+"/"+ exercise.sets
-            })
+        })
 
+        viewModel.currentSet.observe(viewLifecycleOwner,{ currentSet ->
+            binding.setNumber.text = "Set number "+currentSet.toString()+"/" + viewModel.exercises[viewModel.exercisesDone].sets
         })
 
 
+        viewModel.allExercisesFinished.observe(viewLifecycleOwner,{
+            if(it == true){
+                Log.i("Debug","finished")
+                requireActivity().finish()
+            }
 
+        })
 
         binding.playPauseButton.setOnClickListener{
             when (timerState){
@@ -211,6 +210,7 @@ class CounterFragment : Fragment() {
         }
 
         updateCountDownUI()
+        binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         updateButtons()
     }
 
@@ -221,11 +221,13 @@ class CounterFragment : Fragment() {
         PrefUtil.setSecondsRemaining(timerSeconds,requireContext())
         secondsRemaining = timerSeconds
 
-        Log.i("Debug","Finished timer")
-        binding.playPauseButton.text = "Start set"
-        viewModel.currentSet.value = viewModel.currentSet.value?.plus(1)
-
+        viewModel.nextSet()
         updateCountDownUI()
+        if(viewModel.exercisesDone < viewModel.exercises.size){
+            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+        }
+
+        binding.playPauseButton.text = "Finished set"
         updateButtons()
     }
 
@@ -241,7 +243,6 @@ class CounterFragment : Fragment() {
     }
 
     private fun setNewTimerLength(){
-
         timerSeconds = 5
         binding.progressBar.max = timerSeconds.toInt()
     }
