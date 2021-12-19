@@ -20,7 +20,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
     var trainingId =  MutableLiveData("")
     val exercises = arrayListOf<Exercise>()
-    val currentSet = MutableLiveData(1)
+    val currentSet = MutableLiveData(0)
     val currentExercise =  MutableLiveData<Exercise>()
     val training = MutableLiveData<Training>()
     var exercisesDone = 0
@@ -67,6 +67,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             currentSet.value = 1
             exercisesDone++
             if(exercisesDone == exercises.size) {
+                Log.i("Debug","Channging to true")
                 allExercisesFinished.value = true
             }else{
                 currentExercise.value = exercises[exercisesDone]

@@ -38,6 +38,7 @@ class CounterFragment : Fragment() {
     private lateinit var binding: FragmentCounterBinding
 
 
+
     companion object{
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long{
             val wakeUpTime = (nowSeconds+secondsRemaining)*1000
@@ -79,11 +80,15 @@ class CounterFragment : Fragment() {
 
 
 
-        val args = CounterFragmentArgs.fromBundle(requireArguments())
-        val timeBetweenExercises = args.betweenExercises.toString()
-        val timeBetweenSets = args.betweenSets.toString()
 
 
+        viewModel.allExercisesFinished.observe(viewLifecycleOwner,{
+            if(it == true){
+                Log.i("Debug","finishing")
+                requireActivity().finish()
+            }
+
+        })
 
         viewModel.training.observe(viewLifecycleOwner,{
             it?.let{
@@ -102,13 +107,7 @@ class CounterFragment : Fragment() {
         })
 
 
-        viewModel.allExercisesFinished.observe(viewLifecycleOwner,{
-            if(it == true){
-                Log.i("Debug","finished")
-                requireActivity().finish()
-            }
 
-        })
 
         binding.playPauseButton.setOnClickListener{
             when (timerState){
@@ -144,6 +143,7 @@ class CounterFragment : Fragment() {
                 .setMessage("Are you sure you want to cancel this training?")
                 .setCancelable(true)
                 .setPositiveButton("Yes") {_,_->
+                    removeAlarm(requireContext())
                     requireActivity().finish()
                 }
                 .setNegativeButton("No") {_,_->
@@ -210,21 +210,25 @@ class CounterFragment : Fragment() {
         }
 
         updateCountDownUI()
-        binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         updateButtons()
     }
 
     private fun onTimerFinished(){
+
+
+
         timerState = State.Stopped
+        viewModel.nextSet()
         setNewTimerLength()
         binding.progressBar.progress = 0
         PrefUtil.setSecondsRemaining(timerSeconds,requireContext())
         secondsRemaining = timerSeconds
 
-        viewModel.nextSet()
+
         updateCountDownUI()
-        if(viewModel.exercisesDone < viewModel.exercises.size){
-            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+
+        if(viewModel.allExercisesFinished.value == false){
+        binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         }
 
         binding.playPauseButton.text = "Finished set"
@@ -243,8 +247,25 @@ class CounterFragment : Fragment() {
     }
 
     private fun setNewTimerLength(){
-        timerSeconds = 5
-        binding.progressBar.max = timerSeconds.toInt()
+        val args = CounterFragmentArgs.fromBundle(requireArguments())
+        val timeBetweenExercises = args.betweenExercises.toString()
+        val timeBetweenSets = args.betweenSets.toString()
+
+        if(viewModel.allExercisesFinished.value == false){
+            timerSeconds = if(viewModel.currentSet.value!! == viewModel.exercises[viewModel.exercisesDone].sets.toInt()){
+                timeBetweenExercises.toLong()
+            }  else if (timerState == State.Stopped && viewModel.currentSet.value == 0){
+                5
+            }
+            else{
+                timeBetweenSets.toLong()
+            }
+            binding.progressBar.max = timerSeconds.toInt()
+        }else{
+            Log.i("Debug","Finisheddddd")
+        }
+
+
     }
 
     private fun setPreviousTimerLength(){
@@ -253,10 +274,20 @@ class CounterFragment : Fragment() {
     }
 
     private fun updateCountDownUI(){
-        val secondsUntilFinished = secondsRemaining
-        val secondsStr = secondsUntilFinished.toString()
-        binding.countDownTime.text = secondsStr
+        if(viewModel.currentSet.value!! == 0){
+            binding.countDownTime.text = "Prepare yourself"
+
+
+        }else{
+            val secondsUntilFinished = secondsRemaining
+            val secondsStr = secondsUntilFinished.toString()
+            binding.countDownTime.text = secondsStr
+
+        }
         binding.progressBar.progress = secondsRemaining.toInt()
+
+
+
     }
 
     private fun updateButtons(){
