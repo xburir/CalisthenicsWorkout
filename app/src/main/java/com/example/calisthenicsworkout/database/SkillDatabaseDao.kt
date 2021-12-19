@@ -57,6 +57,9 @@ interface SkillDatabaseDao {
     @Query("SELECT * from Trainings WHERE id = :key")
     fun getTraining(key: String): Training
 
+    @Query("SELECT * from Trainings WHERE id = :key")
+    fun getTrainingAsLiveData(key: String): LiveData<Training>
+
     @Query("SELECT * FROM Exercises WHERE trainingId = :key")
     fun getExercisesOfTraining(key: String): LiveData<List<Exercise>>
 

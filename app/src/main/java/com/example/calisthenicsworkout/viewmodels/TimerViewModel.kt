@@ -16,29 +16,27 @@ import kotlinx.coroutines.withContext
 
 class TimerViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
-    lateinit var training: Training
+
+
     var trainingId =  ""
     val exercises = arrayListOf<Exercise>()
     val currentSet = MutableLiveData(1)
-    lateinit var currentExercise: MutableLiveData<Exercise>
+    val training = database.getTrainingAsLiveData(trainingId)
 
 
 
-    init {
+
+
+
+    fun loadExercises(training: Training) {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                training = database.getTraining(trainingId)
-                database.getExercisesOfTrainingDirect(trainingId).forEach {
+                database.getExercisesOfTrainingDirect(training.id).forEach {
                     exercises.add(it)
                 }
                 exercises.sortBy { it.order  }
-                currentExercise = MutableLiveData(exercises[0])
-
-
-
             }
         }
-
     }
 
 }

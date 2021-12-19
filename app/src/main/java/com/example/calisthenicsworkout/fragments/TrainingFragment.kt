@@ -21,6 +21,7 @@ import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.databinding.FragmentTrainingBinding
+import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -77,7 +78,7 @@ class TrainingFragment : Fragment() {
 
         binding.startTimerButton.setOnClickListener{
             val intent = Intent(context, TimerActivity::class.java)
-            intent.putExtra("training",trainingOnScreenId)
+            PrefUtil.setTrainingId(trainingOnScreenId,requireContext())
             startActivity(intent)
 
 

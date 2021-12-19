@@ -82,21 +82,33 @@ class CounterFragment : Fragment() {
         viewModelFactory = TimerViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(TimerViewModel::class.java)
         binding.lifecycleOwner = this
+        PrefUtil.getTrainingId(requireContext())?.let {
+            viewModel.trainingId = it
+        }
+
 
 
         val args = CounterFragmentArgs.fromBundle(requireArguments())
         val timeBetweenExercises = args.betweenExercises.toString()
         val timeBetweenSets = args.betweenSets.toString()
-        binding.trainingNameText.text = viewModel.training.name
 
-        viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
-            binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
-
-            viewModel.currentSet.observe(viewLifecycleOwner,{
-                binding.setNumber.text = "Set number "+it.toString()+"/"+ exercise.sets
-            })
+        viewModel.training.observe(viewLifecycleOwner,{
+            it?.let{
+                binding.trainingNameText.text = it.name
+                viewModel.loadExercises(it)
+            }
 
         })
+
+
+//        viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
+//            binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
+//
+//            viewModel.currentSet.observe(viewLifecycleOwner,{
+//                binding.setNumber.text = "Set number "+it.toString()+"/"+ exercise.sets
+//            })
+//
+//        })
 
 
 

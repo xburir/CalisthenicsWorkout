@@ -20,19 +20,14 @@ class TimerActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityTimerBinding
-    private lateinit var viewModel: TimerViewModel;
-    private lateinit var viewModelFactory: TimerViewModelFactory;
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timer)
-        val application = requireNotNull(this).application
-        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = TimerViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(this,viewModelFactory).get(TimerViewModel::class.java)
-        viewModel.trainingId = intent.getStringExtra("training").toString()
+
 
 
 
