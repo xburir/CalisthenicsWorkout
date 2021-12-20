@@ -130,13 +130,7 @@ class TrainingFragment : Fragment() {
                     viewModel.viewModelScope.launch {
                         withContext(Dispatchers.IO){
                             val skill = viewModel.database.getSkill(skillId)
-                            var repsToPass = reps
-                            if(skill.skillType == "reps"){
-                                repsToPass += " repetitions"
-                            }else if (skill.skillType == "time"){
-                                repsToPass += " seconds"
-                            }
-                            val exercise = Exercise(trainingId,skillId,sets,repsToPass,skill.skillImage,skill.skillName,order)
+                            val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
                             viewModel.database.insertExercise(exercise)
                         }
                     }

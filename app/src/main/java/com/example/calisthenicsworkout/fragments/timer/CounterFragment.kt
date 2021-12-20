@@ -127,6 +127,7 @@ class CounterFragment : Fragment() {
                     updateButtons()
                 }
                 State.Stopped -> {
+                    viewModel.nextSet()
                     startTimer()
                     timerState = State.Running
                     updateButtons()
@@ -173,7 +174,6 @@ class CounterFragment : Fragment() {
         initTimer()
         removeAlarm(requireContext())
         if(viewModel.currentSet.value != 0 && timerState== State.Stopped){
-            viewModel.nextSet()
             binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         }
         updateButtons()
@@ -235,7 +235,6 @@ class CounterFragment : Fragment() {
         timerState = State.Stopped
         vibratePhone(1000)
         playSound()
-        viewModel.nextSet()
         setNewTimerLength()
         binding.progressBar.progress = 0
         PrefUtil.setSecondsRemaining(timerSeconds,requireContext())
