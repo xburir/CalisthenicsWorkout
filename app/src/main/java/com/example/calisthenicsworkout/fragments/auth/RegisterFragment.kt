@@ -49,9 +49,8 @@ class RegisterFragment : Fragment() {
                     val email: String = binding.inputEmail.text.toString().trim{it <= ' ' }
                     val password: String = binding.inputPassword.text.toString().trim{it <= ' ' }
                     FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
-                        .addOnCompleteListener(OnCompleteListener { task ->
+                        .addOnCompleteListener { task ->
                             if (task.isSuccessful){
-                                val firebaseUser: FirebaseUser = task.result!!.user!!
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
                                 val intent = Intent(context, WelcomeActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -63,7 +62,7 @@ class RegisterFragment : Fragment() {
                             }else{
                                 Toast.makeText(context,task.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
                             }
-                        })
+                        }
 
                 }else{
                     Toast.makeText(context,"Passwords are not the same",Toast.LENGTH_SHORT).show()

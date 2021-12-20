@@ -19,6 +19,7 @@ class VideoActivity : AppCompatActivity() {
         val videoRef = fbStorage.reference.child("skillVideos").child("$skillId.mp4")
         videoRef.downloadUrl
             .addOnSuccessListener {
+                Toast.makeText(this,"Video is downloading...",Toast.LENGTH_SHORT).show()
                 videoHolder.setVideoURI(it)
                 val mediaController = MediaController(this)
                 mediaController.setAnchorView(videoHolder)
@@ -26,8 +27,9 @@ class VideoActivity : AppCompatActivity() {
                 videoHolder.start()
             }
             .addOnFailureListener {
-                Toast.makeText(this,"video not found",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"Video not found",Toast.LENGTH_SHORT).show()
             }
+
 
 
     }
