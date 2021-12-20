@@ -4,14 +4,16 @@ import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
-import android.os.Bundle
-import android.os.CountDownTimer
+import android.media.MediaPlayer
+import android.os.*
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.R
@@ -23,6 +25,14 @@ import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
 import java.util.*
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+
+import android.media.RingtoneManager
+
+import android.media.Ringtone
+import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
+
 
 class CounterFragment : Fragment() {
 
@@ -223,6 +233,8 @@ class CounterFragment : Fragment() {
 
 
         timerState = State.Stopped
+        vibratePhone(1000)
+        playSound()
         viewModel.nextSet()
         setNewTimerLength()
         binding.progressBar.progress = 0
@@ -316,5 +328,27 @@ class CounterFragment : Fragment() {
                 binding.stopTrainingButton.isEnabled = true
             }
         }
+    }
+
+
+    fun vibratePhone(time: Long) {
+
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =  requireActivity().getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+             val vib  = vibratorManager.defaultVibrator;
+             vib.vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+             val vib = requireActivity().getSystemService(VIBRATOR_SERVICE) as Vibrator
+             vib.vibrate(time)
+        }
+
+    }
+
+    fun playSound(){
+        val mp = MediaPlayer.create(requireContext(),R.raw.bell)
+        mp.start()
+
+
+
     }
 }

@@ -199,13 +199,7 @@ class CreateTrainingFragment : Fragment() {
     }
 
 
-    fun bitmapToString(bmp: Bitmap): String {
-        val bao = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao)
-        bmp.recycle()
-        val byteArray = bao.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.URL_SAFE)
-    }
+
 
     private fun getRandomString(length: Int) : String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')

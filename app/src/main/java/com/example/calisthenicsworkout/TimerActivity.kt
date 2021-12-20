@@ -1,12 +1,15 @@
 package com.example.calisthenicsworkout
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.ActivityTimerBinding
+import com.example.calisthenicsworkout.fragments.timer.CounterFragment
 import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
@@ -21,6 +24,8 @@ class TimerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timer)
         val application = requireNotNull(this).application
@@ -42,5 +47,20 @@ class TimerActivity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage("Are you sure you want to cancel this training?")
+            .setCancelable(true)
+            .setPositiveButton("Yes") {_,_->
+                CounterFragment.removeAlarm(this)
+                this.finish()
+            }
+            .setNegativeButton("No") {_,_->
+            }
+            .setOnCancelListener {
+            }
+            .show()
     }
 }
