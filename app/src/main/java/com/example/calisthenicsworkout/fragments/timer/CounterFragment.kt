@@ -50,13 +50,13 @@ class CounterFragment : Fragment() {
 
 
     companion object{
-        fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long{
-            val wakeUpTime = (nowSeconds+secondsRemaining)*1000
+        fun setAlarm(context: Context, nowMilliSeconds: Long, secondsRemaining: Long): Long{
+            val wakeUpTime = nowMilliSeconds+(secondsRemaining*1000)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context,TimerExpiredReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(context,0,intent,0)
             alarmManager.setExact(AlarmManager.RTC_WAKEUP,wakeUpTime,pendingIntent)
-            PrefUtil.setAlarmSetTime(nowSeconds,context)
+            PrefUtil.setAlarmSetTime(nowMilliSeconds,context)
             return wakeUpTime
         }
 
@@ -69,8 +69,8 @@ class CounterFragment : Fragment() {
 
         }
 
-        val nowSeconds: Long
-            get() = Calendar.getInstance().timeInMillis/1000
+        val nowMilliSeconds: Long
+            get() = Calendar.getInstance().timeInMillis
     }
 
     override fun onCreateView(
@@ -184,10 +184,10 @@ class CounterFragment : Fragment() {
         super.onPause()
         if(timerState == State.Running){
             timer.cancel()
-            val wakeUpTime = setAlarm(requireContext(), nowSeconds,secondsRemaining)
+            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
             NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
         }else if (timerState == State.Paused){
-            val wakeUpTime = setAlarm(requireContext(), nowSeconds,secondsRemaining)
+            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
             NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
         }
         PrefUtil.setPreviousTimerLengthSeconds(timerSeconds,requireContext())
@@ -218,7 +218,7 @@ class CounterFragment : Fragment() {
 
         val alarmSetTime = PrefUtil.getAlarmSetTime(requireContext())
         if(alarmSetTime > 0){
-            secondsRemaining -= nowSeconds - alarmSetTime
+            secondsRemaining -= nowMilliSeconds - alarmSetTime/1000
         }
         if(secondsRemaining <= 0){
             onTimerFinished()
@@ -294,12 +294,12 @@ class CounterFragment : Fragment() {
 
 
         }else{
-            val secondsUntilFinished = secondsRemaining
+            val secondsUntilFinished = secondsRemaining+1
             val secondsStr = secondsUntilFinished.toString()
             binding.countDownTime.text = secondsStr
 
         }
-        binding.progressBar.progress = secondsRemaining.toInt()
+        binding.progressBar.progress = (secondsRemaining+1).toInt()
 
 
 
