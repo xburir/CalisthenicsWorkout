@@ -1,30 +1,21 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.skill
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
 import com.example.calisthenicsworkout.databinding.FragmentAllSkillsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import androidx.databinding.DataBindingUtil as DataBindingUtil1
 
 class AllSkillsFragment : Fragment() {
@@ -65,7 +56,9 @@ class AllSkillsFragment : Fragment() {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
             skill?.let {
                 this.findNavController().navigate(
-                    AllSkillsFragmentDirections.actionTitleFragmentToSkillFragment(skill)
+                    AllSkillsFragmentDirections.actionTitleFragmentToSkillFragment(
+                        skill
+                    )
                 )
             }
         })

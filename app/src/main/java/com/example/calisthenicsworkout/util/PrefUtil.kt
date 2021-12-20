@@ -2,7 +2,7 @@ package com.example.calisthenicsworkout.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.example.calisthenicsworkout.fragments.CounterFragment
+import com.example.calisthenicsworkout.fragments.timer.CounterFragment
 
 class PrefUtil {
     companion object{

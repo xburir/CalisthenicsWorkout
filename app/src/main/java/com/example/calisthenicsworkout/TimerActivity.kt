@@ -5,17 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.ActivityTimerBinding
-import com.example.calisthenicsworkout.fragments.ChooseRestFragmentDirections
 import com.example.calisthenicsworkout.util.PrefUtil
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
-import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
-import java.util.*
 
 class TimerActivity : AppCompatActivity() {
 

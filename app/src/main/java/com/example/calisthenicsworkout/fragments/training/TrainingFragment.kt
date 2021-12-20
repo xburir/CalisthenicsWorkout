@@ -1,10 +1,8 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.training
 
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -13,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.TimerActivity
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
@@ -71,7 +68,9 @@ class TrainingFragment : Fragment() {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill->
             skill?.let {
                 this.findNavController().navigate(
-                    TrainingFragmentDirections.actionTrainingFragmentToSkillFragment(skill)
+                    TrainingFragmentDirections.actionTrainingFragmentToSkillFragment(
+                        skill
+                    )
                 )
             }
         })

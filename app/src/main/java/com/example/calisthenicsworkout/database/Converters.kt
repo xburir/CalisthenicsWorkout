@@ -3,9 +3,7 @@ package com.example.calisthenicsworkout.database
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 class Converters {
 

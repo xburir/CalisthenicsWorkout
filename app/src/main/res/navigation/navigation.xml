@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/allSkillsFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AllSkillsFragment"
+        android:name="com.example.calisthenicsworkout.fragments.skill.AllSkillsFragment"
         android:label="Skills"
         tools:layout="@layout/fragment_all_skills">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/skillFragment"
-        android:name="com.example.calisthenicsworkout.fragments.SkillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.skill.SkillFragment"
         android:label="Chosen skill"
         tools:layout="@layout/fragment_skill" >
         <argument
@@ -54,7 +54,7 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/favSkillsFragment"
-        android:name="com.example.calisthenicsworkout.fragments.FavSkillsFragment"
+        android:name="com.example.calisthenicsworkout.fragments.skill.FavSkillsFragment"
         android:label="Favorite Skills"
         tools:layout="@layout/fragment_fav_skills" >
         <action
@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/allTrainingsFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AllTrainingsFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.AllTrainingsFragment"
         android:label="All Trainings"
         tools:layout="@layout/fragment_all_trainings" >
         <action
@@ -74,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/trainingFragment"
-        android:name="com.example.calisthenicsworkout.fragments.TrainingFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.TrainingFragment"
         android:label="Training"
         tools:layout="@layout/fragment_training" >
         <argument
@@ -91,7 +91,7 @@
     </fragment>
     <fragment
         android:id="@+id/createTrainingFragment"
-        android:name="com.example.calisthenicsworkout.fragments.CreateTrainingFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.CreateTrainingFragment"
         android:label="Create Training"
         tools:layout="@layout/fragment_create_training" >
         <action

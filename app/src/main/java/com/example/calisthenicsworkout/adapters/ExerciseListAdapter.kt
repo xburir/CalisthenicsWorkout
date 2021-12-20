@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.database.entities.Exercise
-import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.databinding.ExerciseItemInRecycleviewerBinding
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 
 
 class ExerciseListAdapter(val clickListener: ExerciseListener): ListAdapter<Exercise, ExerciseListAdapter.ViewHolder>(ExerciseDiffCallBack()) {

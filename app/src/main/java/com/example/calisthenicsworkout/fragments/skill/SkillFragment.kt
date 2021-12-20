@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.skill
 
 import android.os.Bundle
 import android.view.*
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
-//import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
@@ -69,7 +68,9 @@ class SkillFragment : Fragment()  {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
                 this.findNavController().navigate(
-                    SkillFragmentDirections.actionSkillFragmentSelf(it)
+                    SkillFragmentDirections.actionSkillFragmentSelf(
+                        it
+                    )
                 )
                 viewModel.onSkillNavigated()
             }

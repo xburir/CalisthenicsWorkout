@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.auth
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.databinding.FragmentForgottenPasswordBinding
-import com.example.calisthenicsworkout.databinding.FragmentLogin2Binding
 import com.google.firebase.auth.FirebaseAuth
 
 

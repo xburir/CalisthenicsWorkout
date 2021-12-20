@@ -3,7 +3,7 @@ package com.example.calisthenicsworkout
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.calisthenicsworkout.fragments.CounterFragment
+import com.example.calisthenicsworkout.fragments.timer.CounterFragment
 import com.example.calisthenicsworkout.util.NotificationUtil
 import com.example.calisthenicsworkout.util.PrefUtil
 

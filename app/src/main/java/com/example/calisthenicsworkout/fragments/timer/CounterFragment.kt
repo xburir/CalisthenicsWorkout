@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.timer
 
 import android.app.AlarmManager
 import android.app.AlertDialog
@@ -162,7 +162,7 @@ class CounterFragment : Fragment() {
         super.onResume()
         initTimer()
         removeAlarm(requireContext())
-        if(viewModel.currentSet.value != 0 && timerState==State.Stopped){
+        if(viewModel.currentSet.value != 0 && timerState== State.Stopped){
             viewModel.nextSet()
             binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         }
@@ -251,7 +251,9 @@ class CounterFragment : Fragment() {
     }
 
     private fun setNewTimerLength(){
-        val args = CounterFragmentArgs.fromBundle(requireArguments())
+        val args = CounterFragmentArgs.fromBundle(
+            requireArguments()
+        )
         val timeBetweenExercises = args.betweenExercises.toString()
         val timeBetweenSets = args.betweenSets.toString()
 

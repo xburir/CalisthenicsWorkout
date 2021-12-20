@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/chooseRestFragment"
-        android:name="com.example.calisthenicsworkout.fragments.ChooseRestFragment"
+        android:name="com.example.calisthenicsworkout.fragments.timer.ChooseRestFragment"
         android:label="fragment_choose_rest"
         tools:layout="@layout/fragment_choose_rest" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/counterFragment"
-        android:name="com.example.calisthenicsworkout.fragments.CounterFragment"
+        android:name="com.example.calisthenicsworkout.fragments.timer.CounterFragment"
         android:label="fragment_counter"
         tools:layout="@layout/fragment_counter" >
         <argument

@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.TimerActivity
 import java.text.SimpleDateFormat
 import java.util.*
 

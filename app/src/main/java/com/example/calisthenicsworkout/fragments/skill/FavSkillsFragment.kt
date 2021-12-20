@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.skill
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,11 +14,9 @@ import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.databinding.FragmentAddSkillBinding
 import com.example.calisthenicsworkout.databinding.FragmentFavSkillsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -83,7 +81,9 @@ class FavSkillsFragment : Fragment() {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
                 this.findNavController().navigate(
-                    FavSkillsFragmentDirections.actionFavSkillsFragmentToSkillFragment(skill)
+                    FavSkillsFragmentDirections.actionFavSkillsFragmentToSkillFragment(
+                        skill
+                    )
                 )
             }
         })

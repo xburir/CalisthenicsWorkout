@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.training
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,13 +8,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.adapters.SkillListAdapter
 import com.example.calisthenicsworkout.adapters.TrainingListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.databinding.FragmentAllSkillsBinding
 import com.example.calisthenicsworkout.databinding.FragmentAllTrainingsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
@@ -55,7 +52,9 @@ class AllTrainingsFragment : Fragment() {
         viewModel.chosenTrainingId.observe(viewLifecycleOwner, { training ->
             training?.let {
                 this.findNavController().navigate(
-                    AllTrainingsFragmentDirections.actionAllTrainingsFragmentToTrainingFragment(training)
+                    AllTrainingsFragmentDirections.actionAllTrainingsFragmentToTrainingFragment(
+                        training
+                    )
                 )
             }
         })

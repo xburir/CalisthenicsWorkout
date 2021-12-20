@@ -1,14 +1,10 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.training
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +32,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import android.provider.MediaStore
 import android.util.Base64
 import androidx.core.net.toUri
 import com.google.firebase.storage.FirebaseStorage
@@ -138,7 +133,9 @@ class CreateTrainingFragment : Fragment() {
                         saveToFirestore(training,exerciseList)
                         viewModel.lastViewedTrainingId = training.id
                         findNavController().navigate(
-                            CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(training.id)
+                            CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(
+                                training.id
+                            )
                         )
                     }
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
@@ -149,7 +146,9 @@ class CreateTrainingFragment : Fragment() {
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill->
             skill?.let {
                 this.findNavController().navigate(
-                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToSkillFragment(skill)
+                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToSkillFragment(
+                        skill
+                    )
                 )
             }
         })

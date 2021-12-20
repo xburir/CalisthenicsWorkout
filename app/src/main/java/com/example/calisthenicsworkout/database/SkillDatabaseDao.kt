@@ -3,7 +3,6 @@ package com.example.calisthenicsworkout.database;
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.calisthenicsworkout.database.entities.*
-import com.example.calisthenicsworkout.database.relations.SkillWithSkills
 
 @Dao
 interface SkillDatabaseDao {

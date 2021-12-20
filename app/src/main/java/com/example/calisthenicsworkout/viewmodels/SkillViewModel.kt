@@ -1,22 +1,12 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-//import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import kotlinx.coroutines.*
-import kotlin.coroutines.coroutineContext
 
 
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {

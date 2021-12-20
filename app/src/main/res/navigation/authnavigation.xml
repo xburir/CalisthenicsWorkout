@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.calisthenicsworkout.fragments.Login2Fragment"
+        android:name="com.example.calisthenicsworkout.fragments.auth.Login2Fragment"
         android:label="fragment_login2"
         tools:layout="@layout/fragment_login2" >
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.calisthenicsworkout.fragments.RegisterFragment"
+        android:name="com.example.calisthenicsworkout.fragments.auth.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/forgottenPasswordFragment"
-        android:name="com.example.calisthenicsworkout.fragments.ForgottenPasswordFragment"
+        android:name="com.example.calisthenicsworkout.fragments.auth.ForgottenPasswordFragment"
         android:label="fragment_forgotten_password"
         tools:layout="@layout/fragment_forgotten_password" >
         <action
