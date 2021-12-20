@@ -18,22 +18,24 @@
             android:id="@+id/training_name_in_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="30dp"
+            android:layout_marginEnd="16dp"
             android:text="TextView"
-            app:trainingName="@{training}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/training_image_in_fragment"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="30sp"
+            app:layout_constraintEnd_toStartOf="@+id/training_image_in_fragment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:trainingName="@{training}" />
 
         <ImageView
             android:id="@+id/training_image_in_fragment"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="20dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:src="@drawable/ic_launcher_foreground"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:trainingImage="@{training}" />
 
@@ -42,13 +44,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
             android:text="TextView"
-            app:trainingTarget="@{training}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/training_image_in_fragment"
-            app:layout_constraintTop_toBottomOf="@+id/training_name_in_fragment" />
+            app:layout_constraintEnd_toStartOf="@+id/training_image_in_fragment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            app:trainingTarget="@{training}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -58,6 +60,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toTopOf="@+id/startTimerButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,5 +75,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Targeted muscles:"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/training_name_in_fragment" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

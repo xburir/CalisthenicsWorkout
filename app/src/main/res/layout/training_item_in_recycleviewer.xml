@@ -29,11 +29,11 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:trainingImage="@{training}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_launcher_foreground" />
+            app:srcCompat="@drawable/ic_launcher_foreground"
+            app:trainingImage="@{training}" />
 
         <TextView
             android:id="@+id/training_name_in_recycleview"
@@ -43,20 +43,32 @@
             android:layout_marginEnd="16dp"
             android:text="TextView"
             android:textSize="30sp"
-            app:trainingName="@{training}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
-            app:layout_constraintTop_toTopOf="@+id/training_image_in_recycleview" />
+            app:layout_constraintTop_toTopOf="@+id/training_image_in_recycleview"
+            app:trainingName="@{training}" />
 
         <TextView
             android:id="@+id/training_target_in_recycleview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:text="TextView"
-            app:trainingTarget="@{training}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
+            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            app:trainingTarget="@{training}" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Targeted muscles:"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
             app:layout_constraintTop_toBottomOf="@+id/training_name_in_recycleview" />
