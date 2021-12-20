@@ -22,17 +22,18 @@
         <activity
             android:name=".TimerActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar" />
         <activity
             android:name=".AuthActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +42,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.CalisthenicsWorkout"/>
 
         <meta-data
             android:name="preloaded_fonts"
