@@ -162,6 +162,11 @@ class CounterFragment : Fragment() {
         super.onResume()
         initTimer()
         removeAlarm(requireContext())
+        if(viewModel.currentSet.value != 0 && timerState==State.Stopped){
+            viewModel.nextSet()
+            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+        }
+        updateButtons()
         NotificationUtil.hideTimerNotification(requireContext())
     }
 
@@ -231,7 +236,6 @@ class CounterFragment : Fragment() {
         binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
         }
 
-        binding.playPauseButton.text = "Finished set"
         updateButtons()
     }
 
@@ -261,8 +265,6 @@ class CounterFragment : Fragment() {
                 timeBetweenSets.toLong()
             }
             binding.progressBar.max = timerSeconds.toInt()
-        }else{
-            Log.i("Debug","Finisheddddd")
         }
 
 
@@ -300,6 +302,11 @@ class CounterFragment : Fragment() {
             State.Stopped -> {
                 binding.stopTrainingButton.isEnabled = true
                 binding.skipCountDownButton.isEnabled = false
+                if(viewModel.currentSet.value == 0){
+                    binding.playPauseButton.text = "Start"
+                }else{
+                    binding.playPauseButton.text = "Finished set"
+                }
             }
             State.Paused -> {
                 binding.playPauseButton.text = "Resume"
