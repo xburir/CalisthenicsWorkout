@@ -6,13 +6,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <EditText
             android:id="@+id/betweenSetsInput"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="50dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="Rest between sets"
             android:inputType="numberSigned"
@@ -22,9 +25,11 @@
 
         <EditText
             android:id="@+id/betweenExercisesInput"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="34dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="Rest between exercises"
             android:inputType="numberSigned"

@@ -23,7 +23,7 @@
             android:name=".TimerActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar" />
+            android:theme="@style/Theme.CalisthenicsWorkout.Timer" />
         <activity
             android:name=".WelcomeActivity"
             android:exported="true"
