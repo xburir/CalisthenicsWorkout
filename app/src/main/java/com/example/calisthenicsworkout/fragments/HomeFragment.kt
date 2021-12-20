@@ -7,11 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -26,7 +30,6 @@ class HomeFragment : Fragment() {
         getUser(binding)
 
         binding.logoutButton.setOnClickListener{
-
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(context, AuthActivity::class.java))
             requireActivity().finish()

@@ -8,4 +8,10 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete Training"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ShareTrainingButton"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="Share Training"
+        app:showAsAction="always" />
 </menu>

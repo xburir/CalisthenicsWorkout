@@ -1,10 +1,14 @@
 package com.example.calisthenicsworkout.fragments.training
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+
+
 
 
 class TrainingFragment : Fragment() {
@@ -151,22 +158,45 @@ class TrainingFragment : Fragment() {
                 it.forEach { training ->
                     if (training.id == trainingOnScreenId){
                         chosenTraining = training
-                        if(chosenTraining.owner != FirebaseAuth.getInstance().currentUser!!.uid){
-                            Toast.makeText(context,"You can delete only delete your own trainings",Toast.LENGTH_SHORT).show()
+                        if(chosenTraining.owner == FirebaseAuth.getInstance().currentUser!!.uid){
+                            deleteOwnTraining()
+                        }else if (chosenTraining.owner == "admin"){
+                            Toast.makeText(context,"You can't delete this training",Toast.LENGTH_SHORT).show()
                         }else{
-                            deleteTraining()
+                            deleteFollowedTraining()
                         }
 
                     }
                 }
             })
+        }else if(item.toString() == "Share Training"){
+            val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText("text", trainingOnScreenId)
+            clipboardManager.setPrimaryClip(clipData)
+            Toast.makeText(context,"Training ID copied to clipboard",Toast.LENGTH_SHORT).show()
         }
-
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteTraining() {
+    private fun deleteFollowedTraining() {
+        AlertDialog.Builder(context)
+            .setMessage("Are you sure you want to delete this training?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO){
+                        viewModel.database.deleteTrainingExercises(trainingOnScreenId)
+                        viewModel.database.deleteTraining(trainingOnScreenId)
+                    }
+                }
+                findNavController().navigate(TrainingFragmentDirections.actionTrainingFragmentToHomeFragment())
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun deleteOwnTraining() {
         val db = FirebaseFirestore.getInstance()
         AlertDialog.Builder(context)
             .setMessage("Are you sure you want to delete this training?")
