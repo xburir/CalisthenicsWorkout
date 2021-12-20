@@ -1,5 +1,6 @@
 package com.example.calisthenicsworkout.fragments.skill
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -21,6 +22,8 @@ import androidx.core.view.get
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.calisthenicsworkout.MainActivity
+import com.example.calisthenicsworkout.VideoActivity
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -124,13 +127,13 @@ class SkillFragment : Fragment()  {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_skill,menu)
         val item = menu[1]
-        item.setIcon(R.drawable.like)
+        item.setIcon(android.R.drawable.btn_star_big_off)
         viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{
             it?.let{ list ->
                 list.forEach { userSkillCrossRef ->
                     if(userSkillCrossRef.skillId == viewModel.lastViewedSkillId){
                         if(userSkillCrossRef.liked){
-                            item.setIcon(R.drawable.liked)
+                            item.setIcon(android.R.drawable.btn_star_big_on)
                         }
                     }
                 }
@@ -139,6 +142,11 @@ class SkillFragment : Fragment()  {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.toString() == "Video"){
+            val intent = Intent(context, VideoActivity::class.java)
+            intent.putExtra("skillId",viewModel.lastViewedSkillId)
+            startActivity(intent)
+        }
         if(item.toString() == "About"){
             NavigationUI.onNavDestinationSelected(item,requireView().findNavController())
         }
@@ -158,11 +166,11 @@ class SkillFragment : Fragment()  {
             val fireAuth = FirebaseAuth.getInstance()
             if(likeed){
                 viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setUnliked")
-                item.setIcon(R.drawable.like)
+                item.setIcon(android.R.drawable.btn_star_big_off)
                 Toast.makeText(context,"Unliked",Toast.LENGTH_SHORT).show()
             }else{
                 viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setLiked")
-                item.setIcon(R.drawable.liked)
+                item.setIcon(android.R.drawable.btn_star_big_on)
                 Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
 
             }

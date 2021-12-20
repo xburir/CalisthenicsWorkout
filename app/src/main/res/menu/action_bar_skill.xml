@@ -7,9 +7,15 @@
         android:title="@string/about"
         app:showAsAction="never"/>
 
+
     <item
         android:id="@+id/Like"
-        android:icon="@drawable/like"
+        android:icon="@android:drawable/btn_star_big_off"
         android:title="Like"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/VideoButton"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="Video"
         app:showAsAction="always"/>
 </menu>
