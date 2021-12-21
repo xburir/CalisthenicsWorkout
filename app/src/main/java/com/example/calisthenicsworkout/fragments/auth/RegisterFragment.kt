@@ -23,7 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterFragment : Fragment() {
 
-    private lateinit var viewModel: AuthViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,8 +31,7 @@ class RegisterFragment : Fragment() {
         val binding: FragmentRegisterBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_register, container, false)
 
-        viewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
-        binding.authViewModel = viewModel
+
         binding.lifecycleOwner = this
 
 
