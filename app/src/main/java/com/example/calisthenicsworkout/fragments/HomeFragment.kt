@@ -30,9 +30,6 @@ class HomeFragment : Fragment() {
 
 
 
-        binding.logoutButton.setOnClickListener{
-
-        }
 
         return binding.root
     }
