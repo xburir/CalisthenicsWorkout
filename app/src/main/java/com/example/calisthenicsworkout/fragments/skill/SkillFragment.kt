@@ -148,8 +148,11 @@ class SkillFragment : Fragment()  {
             intent.putExtra("skillId",viewModel.lastViewedSkillId)
             startActivity(intent)
         }
-        if(item.toString() == "About"){
-            NavigationUI.onNavDestinationSelected(item,requireView().findNavController())
+        if(item.toString() == "Add Before Skill"){
+            findNavController().navigate(
+                SkillFragmentDirections.actionSkillFragmentToAboutFragment(viewModel.lastViewedSkillId)
+
+            )
         }
         if (item.toString() == "Like"){
             var likeed = false

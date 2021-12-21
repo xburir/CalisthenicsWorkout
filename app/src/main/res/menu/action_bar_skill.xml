@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/aboutFragment"
-        android:title="@string/about"
+        android:id="@+id/beforeSkillAdd"
+        android:title="Add Before Skill"
         app:showAsAction="never"/>
 
 

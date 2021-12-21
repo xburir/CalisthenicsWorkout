@@ -33,7 +33,6 @@ class AllSkillsFragment : Fragment() {
         val binding: FragmentAllSkillsBinding = DataBindingUtil1.inflate(inflater,
             R.layout.fragment_all_skills, container, false)
 
-        Log.i("Debug","ViewModelProvider called")
         val application = requireNotNull(this.activity).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = SkillViewModelFactory(dataSource,application);

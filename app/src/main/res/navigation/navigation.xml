@@ -31,21 +31,22 @@
             app:destination="@id/skillFragment"
             app:popUpTo="@id/skillFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_skillFragment_to_aboutFragment"
+            app:destination="@id/addBeforeSkillFragment"
+            app:popUpTo="@id/skillFragment" />
     </fragment>
     <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AboutFragment"
-        android:label="O aplikacii" />
-    <fragment
-        android:id="@+id/addSkillFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AddSkillFragment"
-        android:label="Add new skill"
-        tools:layout="@layout/fragment_add_skill" >
+        android:id="@+id/addBeforeSkillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AddBeforeSkillFragment"
+        android:label="Add Before Skill">
         <action
-            android:id="@+id/action_addSkillFragment_to_titleFragment"
-            app:destination="@id/allSkillsFragment"
-            app:popUpTo="@id/allSkillsFragment"
-            app:popUpToInclusive="false" />
+            android:id="@+id/action_aboutFragment_to_skillFragment"
+            app:destination="@id/skillFragment"
+            app:popUpTo="@id/skillFragment" />
+        <argument
+            android:name="skillId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"

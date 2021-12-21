@@ -16,9 +16,6 @@
     <item android:title="Skills">
         <menu>
             <item
-                android:id="@+id/addSkillFragment"
-                android:title="Add Skill" />
-            <item
                 android:id="@+id/allSkillsFragment"
                 android:title="Skills" />
 
