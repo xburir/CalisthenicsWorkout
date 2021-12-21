@@ -24,7 +24,6 @@ import com.google.firebase.auth.FirebaseAuth
 
 class Login2Fragment : Fragment() {
 
-    private lateinit var viewModel: AuthViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,8 +32,6 @@ class Login2Fragment : Fragment() {
         val binding: FragmentLogin2Binding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_login2, container, false)
 
-        viewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
-        binding.authViewModel = viewModel
         binding.lifecycleOwner = this
 
         val user = FirebaseAuth.getInstance().currentUser

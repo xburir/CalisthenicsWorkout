@@ -103,4 +103,9 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.calisthenicsworkout.fragments.ProfileFragment"
+        android:label="My profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

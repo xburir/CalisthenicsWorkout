@@ -47,7 +47,8 @@ class SkillFragment : Fragment()  {
         viewModelFactory = SkillViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
         binding.skillViewModel = viewModel;
-        binding.lifecycleOwner = this
+
+
 
 
         // create menu resource

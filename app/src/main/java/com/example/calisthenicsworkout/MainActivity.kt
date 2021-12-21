@@ -18,17 +18,17 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.database.entities.Training
-import com.example.calisthenicsworkout.database.entities.UserAndSkillCrossRef
+import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
+import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -113,12 +113,29 @@ class MainActivity : AppCompatActivity() {
         getUserAndSkillCrossRefFromFireBase(db)
         getPredefinedTrainings(db,fbStorage)
         getUsersTrainings(db,fbAuth,fbStorage)
+        getUser(fbAuth)
 
 
         checkIfNewSkillsWereAdded(fbAuth,db)
 
 
 
+    }
+
+    private fun getUser(fbAuth: FirebaseAuth) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnCompleteListener{
+            if(it.isSuccessful){
+                val email =  it.result!!.data?.getValue("userEmail").toString()
+                val name = it.result!!.data?.getValue("userFullName").toString()
+                val id = it.result!!.id
+                viewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO){
+                        viewModel.database.insertUser(User(id,email,name))
+                    }
+                }
+            }
+        }
     }
 
     private fun checkIfNewSkillsWereAdded(fbAuth: FirebaseAuth,db: FirebaseFirestore) {
