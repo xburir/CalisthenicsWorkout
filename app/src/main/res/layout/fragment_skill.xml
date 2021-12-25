@@ -37,35 +37,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/skill_description_viewed"
+                    <ScrollView
+                        android:id="@+id/scrollDescription"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:text="TextView"
-                        android:textAlignment="center"
-                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/skill_image_viewed"
-                        app:layout_constraintTop_toBottomOf="@+id/skill_name_viewed"
-                        app:skillDescriptionFormatted="@{skill}" />
+                        app:layout_constraintStart_toEndOf="@id/skill_image_viewed"
+                        app:layout_constraintTop_toBottomOf="@id/skill_name_viewed">
+
+                        <TextView
+                            android:id="@+id/skill_description_viewed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="TextView"
+                            android:textAlignment="center"
+                            android:textSize="20sp"
+                            app:skillDescriptionFormatted="@{skill}" />
+
+                    </ScrollView>
 
                     <TextView
                         android:id="@+id/skill_name_viewed"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:autoSizeMaxTextSize="30sp"
+                        android:autoSizeMinTextSize="10sp"
+                        android:autoSizeTextType="uniform"
                         android:text="TextView"
                         android:textAlignment="center"
                         android:textSize="50sp"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/scrollDescription"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/skill_image_viewed"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/skill_image_viewed"
                         app:skillNameFormatted="@{skill}" />
 
                     <ImageView
@@ -74,9 +85,7 @@
                         android:layout_height="150dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_launcher_foreground"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:skillImage="@{skill}" />
@@ -93,6 +102,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:textAlignment="textStart"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toEndOf="parent"
