@@ -32,6 +32,8 @@ import android.media.RingtoneManager
 import android.media.Ringtone
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import android.app.Application
+import com.example.calisthenicsworkout.TimerActivity
 
 
 class CounterFragment : Fragment() {
@@ -183,7 +185,7 @@ class CounterFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         if(timerState == State.Running){
-            timer.cancel()
+//            timer.cancel()
             val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
             NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
         }else if (timerState == State.Paused){
@@ -239,7 +241,6 @@ class CounterFragment : Fragment() {
         binding.progressBar.progress = 0
         PrefUtil.setSecondsRemaining(timerSeconds,requireContext())
         secondsRemaining = timerSeconds
-
 
         updateCountDownUI()
 
