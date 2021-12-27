@@ -10,8 +10,8 @@ import com.example.calisthenicsworkout.util.PrefUtil
 class TimerExpiredReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        NotificationUtil.showTimerExpired(context)
-        PrefUtil.setTimerState(CounterFragment.State.Stopped, context)
-        PrefUtil.setAlarmSetTime(0,context)
+//        NotificationUtil.showTimerExpired(context)
+//        PrefUtil.setTimerState(CounterFragment.State.Stopped, context)
+//        PrefUtil.setAlarmSetTime(0,context)
     }
 }

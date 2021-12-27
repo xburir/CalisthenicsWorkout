@@ -21,12 +21,5 @@
         android:id="@+id/counterFragment"
         android:name="com.example.calisthenicsworkout.fragments.timer.CounterFragment"
         android:label="fragment_counter"
-        tools:layout="@layout/fragment_counter" >
-        <argument
-            android:name="betweenSets"
-            app:argType="integer" />
-        <argument
-            android:name="betweenExercises"
-            app:argType="integer" />
-    </fragment>
+        tools:layout="@layout/fragment_counter" />
 </navigation>

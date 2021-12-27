@@ -13,40 +13,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.TimerExpiredReceiver
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentCounterBinding
-import com.example.calisthenicsworkout.util.NotificationUtil
 import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
 import java.util.*
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-
-import android.media.RingtoneManager
-
-import android.media.Ringtone
-import android.net.Uri
-import androidx.test.core.app.ApplicationProvider
-import android.app.Application
-import com.example.calisthenicsworkout.TimerActivity
 
 
 class CounterFragment : Fragment() {
 
     private lateinit var viewModel: TimerViewModel;
     private lateinit var viewModelFactory: TimerViewModelFactory;
-    enum class State{
-        Stopped,Paused,Running
-    }
-    private lateinit var timer: CountDownTimer
-    private var timerSeconds = 0L
-    private var timerState = State.Stopped
-    private var secondsRemaining = 0L
     private lateinit var binding: FragmentCounterBinding
 
 
@@ -99,7 +81,6 @@ class CounterFragment : Fragment() {
                 Log.i("Debug","finishing")
                 requireActivity().finish()
             }
-
         })
 
         viewModel.training.observe(viewLifecycleOwner,{
@@ -107,7 +88,6 @@ class CounterFragment : Fragment() {
                 binding.trainingNameText.text = it.name
             }
         })
-
 
         viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
             binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
@@ -118,40 +98,65 @@ class CounterFragment : Fragment() {
             binding.setNumber.text = "Set number "+currentSet.toString()+"/" + viewModel.exercises[viewModel.exercisesDone].sets
         })
 
+        viewModel.secondsRemaining.observe(viewLifecycleOwner,{ it?.let { secondsRemaining ->
+            if(viewModel.currentSet.value == 0){
+                binding.countDownTime.text = "Prepare yourself"
+            }else if(viewModel.timerState.value == TimerViewModel.State.Running){
+                val secondsStr = (secondsRemaining+1).toString()
+                binding.countDownTime.text = secondsStr
+            }else{
+                vibratePhone(1000)
+                playSound()
+                binding.progressBar.progress = 0
+                if(viewModel.allExercisesFinished.value == false){
+                    binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+                }
+            }
+            binding.progressBar.progress = (secondsRemaining+1).toInt()
+
+        }})
+
+
+        viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
+            when(timerState){
+                TimerViewModel.State.Running -> {
+                    binding.playPauseButton.text = "Pause"
+                    binding.stopTrainingButton.isEnabled = true
+                    binding.skipCountDownButton.isEnabled = true
+                }
+                TimerViewModel.State.Stopped -> {
+                    binding.stopTrainingButton.isEnabled = true
+                    binding.skipCountDownButton.isEnabled = false
+                    if(viewModel.currentSet.value == 0){
+                        binding.playPauseButton.text = "Start"
+                    }else{
+                        binding.playPauseButton.text = "Finished set"
+                    }
+                }
+                TimerViewModel.State.Paused -> {
+                    binding.playPauseButton.text = "Resume"
+                    binding.skipCountDownButton.isEnabled = true
+                    binding.stopTrainingButton.isEnabled = true
+                }
+            }
+        }
+        })
+
+        viewModel.timerSeconds.observe(viewLifecycleOwner, { it?.let{ timerSeconds ->
+            binding.progressBar.max = timerSeconds.toInt()
+        } })
 
 
 
         binding.playPauseButton.setOnClickListener{
-            when (timerState){
-                State.Running -> {
-                    timer.cancel()
-                    timerState = State.Paused
-                    updateButtons()
-                }
-                State.Stopped -> {
-                    viewModel.nextSet()
-                    startTimer()
-                    timerState = State.Running
-                    updateButtons()
-                }
-                State.Paused -> {
-                    startTimer()
-                    timerState = State.Running
-                    updateButtons()
-                }
-            }
-
+            viewModel.playPauseClick()
         }
 
         binding.skipCountDownButton.setOnClickListener{
-            onTimerFinished()
-            timer.cancel()
-            timerState = State.Stopped
-            updateButtons()
+            viewModel.skipClicked()
         }
 
         binding.stopTrainingButton.setOnClickListener {
-
             AlertDialog.Builder(context)
                 .setMessage("Are you sure you want to cancel this training?")
                 .setCancelable(true)
@@ -173,166 +178,30 @@ class CounterFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        initTimer()
-        removeAlarm(requireContext())
-        if(viewModel.currentSet.value != 0 && timerState== State.Stopped){
-            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
-        }
-        updateButtons()
-        NotificationUtil.hideTimerNotification(requireContext())
+//        viewModel.initTimer()
+//        removeAlarm(requireContext())
+//        if(viewModel.currentSet.value != 0 && viewModel.timerState.value == TimerViewModel.State.Stopped){
+//            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+//        }
+//        NotificationUtil.hideTimerNotification(requireContext())
     }
 
     override fun onPause() {
         super.onPause()
-        if(timerState == State.Running){
-//            timer.cancel()
-            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
-            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
-        }else if (timerState == State.Paused){
-            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
-            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
-        }
-        PrefUtil.setPreviousTimerLengthSeconds(timerSeconds,requireContext())
-        PrefUtil.setSecondsRemaining(secondsRemaining,requireContext())
-        PrefUtil.setTimerState(timerState,requireContext())
+//        if(viewModel.timerState.value == TimerViewModel.State.Running){
+////            timer.cancel()
+//            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
+//            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
+//        }else if (viewModel.timerState.value == TimerViewModel.State.Paused){
+//            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
+//            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
+//        }
+//        PrefUtil.setPreviousTimerLengthSeconds(timerSeconds,requireContext())
+//        PrefUtil.setSecondsRemaining(secondsRemaining,requireContext())
+//        PrefUtil.setTimerState(timerState,requireContext())
     }
-
-    private fun initTimer(){
-        timerState = PrefUtil.getTimerState(requireContext())
-        if(timerState == State.Stopped){
-            setNewTimerLength()
-        }else{
-            setPreviousTimerLength()
-        }
-
-        when (timerState) {
-            State.Paused -> {
-                secondsRemaining = PrefUtil.getSecondsRemaining(requireContext())
-            }
-            State.Running -> {
-                secondsRemaining = PrefUtil.getSecondsRemaining(requireContext())
-                startTimer()
-            }
-            else -> {
-                secondsRemaining = timerSeconds
-            }
-        }
-
-        val alarmSetTime = PrefUtil.getAlarmSetTime(requireContext())
-        if(alarmSetTime > 0){
-            secondsRemaining -= nowMilliSeconds - alarmSetTime/1000
-        }
-        if(secondsRemaining <= 0){
-            onTimerFinished()
-        }
-
-        updateCountDownUI()
-        updateButtons()
-    }
-
-    private fun onTimerFinished(){
-
-
-
-        timerState = State.Stopped
-        vibratePhone(1000)
-        playSound()
-        setNewTimerLength()
-        binding.progressBar.progress = 0
-        PrefUtil.setSecondsRemaining(timerSeconds,requireContext())
-        secondsRemaining = timerSeconds
-
-        updateCountDownUI()
-
-        if(viewModel.allExercisesFinished.value == false){
-        binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
-        }
-
-        updateButtons()
-    }
-
-    private fun startTimer(){
-        timerState = State.Running
-        timer = object : CountDownTimer(secondsRemaining*1000,1000){
-            override fun onFinish() = onTimerFinished()
-            override fun onTick(millisUntilFinished: Long) {
-                secondsRemaining = millisUntilFinished / 1000
-                updateCountDownUI()
-            }
-        }.start()
-    }
-
-    private fun setNewTimerLength(){
-        val args = CounterFragmentArgs.fromBundle(
-            requireArguments()
-        )
-        val timeBetweenExercises = args.betweenExercises.toString()
-        val timeBetweenSets = args.betweenSets.toString()
-
-        if(viewModel.allExercisesFinished.value == false){
-            timerSeconds = if(viewModel.currentSet.value!! == viewModel.exercises[viewModel.exercisesDone].sets.toInt()){
-                timeBetweenExercises.toLong()
-            }  else if (timerState == State.Stopped && viewModel.currentSet.value == 0){
-                5
-            }
-            else{
-                timeBetweenSets.toLong()
-            }
-            binding.progressBar.max = timerSeconds.toInt()
-        }
-
-
-    }
-
-    private fun setPreviousTimerLength(){
-        timerSeconds = PrefUtil.getPreviousTimerLengthSeconds(requireContext())
-        binding.progressBar.max = timerSeconds.toInt()
-    }
-
-    private fun updateCountDownUI(){
-        if(viewModel.currentSet.value!! == 0){
-            binding.countDownTime.text = "Prepare yourself"
-
-
-        }else{
-            val secondsUntilFinished = secondsRemaining+1
-            val secondsStr = secondsUntilFinished.toString()
-            binding.countDownTime.text = secondsStr
-
-        }
-        binding.progressBar.progress = (secondsRemaining+1).toInt()
-
-
-
-    }
-
-    private fun updateButtons(){
-        when(timerState){
-            State.Running -> {
-                binding.playPauseButton.text = "Pause"
-                binding.stopTrainingButton.isEnabled = true
-                binding.skipCountDownButton.isEnabled = true
-            }
-            State.Stopped -> {
-                binding.stopTrainingButton.isEnabled = true
-                binding.skipCountDownButton.isEnabled = false
-                if(viewModel.currentSet.value == 0){
-                    binding.playPauseButton.text = "Start"
-                }else{
-                    binding.playPauseButton.text = "Finished set"
-                }
-            }
-            State.Paused -> {
-                binding.playPauseButton.text = "Resume"
-                binding.skipCountDownButton.isEnabled = true
-                binding.stopTrainingButton.isEnabled = true
-            }
-        }
-    }
-
 
     fun vibratePhone(time: Long) {
-
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =  requireActivity().getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
              val vib  = vibratorManager.defaultVibrator;
@@ -341,14 +210,11 @@ class CounterFragment : Fragment() {
              val vib = requireActivity().getSystemService(VIBRATOR_SERVICE) as Vibrator
              vib.vibrate(time)
         }
-
     }
 
     fun playSound(){
         val mp = MediaPlayer.create(requireContext(),R.raw.bell)
         mp.start()
-
-
 
     }
 }

@@ -7,7 +7,8 @@ import com.example.calisthenicsworkout.database.SkillDatabaseDao
 
 class TimerViewModelFactory (
     private val skillDatabaseDao: SkillDatabaseDao,
-    private val application: Application) : ViewModelProvider.Factory {
+    private val application: Application
+) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
 

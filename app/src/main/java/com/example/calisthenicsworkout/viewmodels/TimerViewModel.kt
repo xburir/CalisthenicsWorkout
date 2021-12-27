@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
@@ -16,7 +17,8 @@ import kotlinx.coroutines.withContext
 class TimerViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
 
-
+    var timeBetweenExercises = 0L
+    var timeBetweenSets = 0L
     var trainingId =  MutableLiveData("")
     val exercises = arrayListOf<Exercise>()
     val currentSet = MutableLiveData(0)
@@ -24,11 +26,13 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     val training = MutableLiveData<Training>()
     var exercisesDone = 0
     val allExercisesFinished = MutableLiveData(false)
-
-
-
-
-
+    enum class State{
+        Stopped,Paused,Running
+    }
+    private lateinit var timer: CountDownTimer
+    var timerSeconds = MutableLiveData(5L)
+    var timerState = MutableLiveData(State.Stopped)
+    var secondsRemaining = MutableLiveData(5L)
 
 
     fun loadExercises(trainingId: String, requireActivity: FragmentActivity) {
@@ -66,17 +70,64 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             currentSet.value = 1
             exercisesDone++
             if(exercisesDone == exercises.size) {
-                Log.i("Debug","Channging to true")
                 allExercisesFinished.value = true
             }else{
                 currentExercise.value = exercises[exercisesDone]
             }
         }
 
+    }
 
+    fun playPauseClick() {
+        when (timerState.value){
+            State.Running -> {
+                timer.cancel()
+                timerState.value = State.Paused
 
+            }
+            State.Stopped -> {
+                nextSet()
+                startTimer()
+                timerState.value = State.Running
+            }
+            State.Paused -> {
+                startTimer()
+                timerState.value = State.Running
+            }
+        }
+    }
 
+    fun skipClicked() {
+        onTimerFinished()
+        timer.cancel()
+        timerState.value = State.Stopped
+    }
 
+    fun onTimerFinished(){
+        timerState.value = State.Stopped
+        setNewTimerLength()
+        secondsRemaining.value = timerSeconds.value
+    }
+
+    fun startTimer(){
+        timerState.value = State.Running
+        val secs = secondsRemaining.value?.times(1000)!!
+        timer = object : CountDownTimer(secs,1000){
+            override fun onFinish() = onTimerFinished()
+            override fun onTick(millisUntilFinished: Long) {
+                secondsRemaining.value = millisUntilFinished / 1000
+            }
+        }.start()
+    }
+
+    private fun setNewTimerLength(){
+        if(allExercisesFinished.value == false){
+            timerSeconds.value = if(currentSet.value!! == exercises[exercisesDone].sets.toInt()){
+                timeBetweenExercises
+            }   else{
+                timeBetweenSets
+            }
+        }
     }
 
 }

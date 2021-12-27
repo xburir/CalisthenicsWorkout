@@ -23,18 +23,18 @@ class PrefUtil {
 
         private const val TIMER_STATE_ID = "com.example.calisthenicsworkout.timer_state"
 
-        fun getTimerState(context: Context): CounterFragment.State{
-            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val ordinal = preferences.getInt(TIMER_STATE_ID, 0)
-            return CounterFragment.State.values()[ordinal]
-        }
+//        fun getTimerState(context: Context): CounterFragment.State{
+//            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+//            val ordinal = preferences.getInt(TIMER_STATE_ID, 0)
+//            return CounterFragment.State.values()[ordinal]
+//        }
 
-        fun setTimerState(state: CounterFragment.State, context: Context){
-            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
-            val ordinal = state.ordinal
-            editor.putInt(TIMER_STATE_ID,ordinal)
-            editor.apply()
-        }
+//        fun setTimerState(state: CounterFragment.State, context: Context){
+//            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+//            val ordinal = state.ordinal
+//            editor.putInt(TIMER_STATE_ID,ordinal)
+//            editor.apply()
+//        }
 
         private const val SECONDS_REMAINING_ID = "com.example.calisthenicsworkout.seconds_remaining"
 
