@@ -33,29 +33,6 @@ class CounterFragment : Fragment() {
 
 
 
-    companion object{
-        fun setAlarm(context: Context, nowMilliSeconds: Long, secondsRemaining: Long): Long{
-            val wakeUpTime = nowMilliSeconds+(secondsRemaining*1000)
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context,TimerExpiredReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context,0,intent,0)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,wakeUpTime,pendingIntent)
-            PrefUtil.setAlarmSetTime(nowMilliSeconds,context)
-            return wakeUpTime
-        }
-
-        fun removeAlarm(context: Context){
-            val intent = Intent(context, TimerExpiredReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context,0,intent,0)
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.cancel(pendingIntent)
-            PrefUtil.setAlarmSetTime(0,context)
-
-        }
-
-        val nowMilliSeconds: Long
-            get() = Calendar.getInstance().timeInMillis
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +55,7 @@ class CounterFragment : Fragment() {
 
         viewModel.allExercisesFinished.observe(viewLifecycleOwner,{
             if(it == true){
-                Log.i("Debug","finishing")
+                viewModel.timer.cancel()
                 requireActivity().finish()
             }
         })
@@ -101,18 +78,20 @@ class CounterFragment : Fragment() {
         viewModel.secondsRemaining.observe(viewLifecycleOwner,{ it?.let { secondsRemaining ->
             if(viewModel.currentSet.value == 0){
                 binding.countDownTime.text = "Prepare yourself"
+                binding.progressBar.progress = binding.progressBar.max
             }else if(viewModel.timerState.value == TimerViewModel.State.Running){
                 val secondsStr = (secondsRemaining+1).toString()
                 binding.countDownTime.text = secondsStr
+                binding.progressBar.progress = (secondsRemaining+1).toInt()
             }else{
-                vibratePhone(1000)
-                playSound()
-                binding.progressBar.progress = 0
+                vibratePhone(500)
                 if(viewModel.allExercisesFinished.value == false){
                     binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+                    binding.progressBar.max = viewModel.timerSeconds.value!!.toInt()
+                    binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
                 }
             }
-            binding.progressBar.progress = (secondsRemaining+1).toInt()
+
 
         }})
 
@@ -161,7 +140,7 @@ class CounterFragment : Fragment() {
                 .setMessage("Are you sure you want to cancel this training?")
                 .setCancelable(true)
                 .setPositiveButton("Yes") {_,_->
-                    removeAlarm(requireContext())
+                    viewModel.timer.cancel()
                     requireActivity().finish()
                 }
                 .setNegativeButton("No") {_,_->
@@ -176,31 +155,6 @@ class CounterFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-//        viewModel.initTimer()
-//        removeAlarm(requireContext())
-//        if(viewModel.currentSet.value != 0 && viewModel.timerState.value == TimerViewModel.State.Stopped){
-//            binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
-//        }
-//        NotificationUtil.hideTimerNotification(requireContext())
-    }
-
-    override fun onPause() {
-        super.onPause()
-//        if(viewModel.timerState.value == TimerViewModel.State.Running){
-////            timer.cancel()
-//            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
-//            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
-//        }else if (viewModel.timerState.value == TimerViewModel.State.Paused){
-//            val wakeUpTime = setAlarm(requireContext(), nowMilliSeconds,secondsRemaining)
-//            NotificationUtil.showTimerRunning(requireContext(), wakeUpTime)
-//        }
-//        PrefUtil.setPreviousTimerLengthSeconds(timerSeconds,requireContext())
-//        PrefUtil.setSecondsRemaining(secondsRemaining,requireContext())
-//        PrefUtil.setTimerState(timerState,requireContext())
-    }
-
     fun vibratePhone(time: Long) {
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =  requireActivity().getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -212,9 +166,4 @@ class CounterFragment : Fragment() {
         }
     }
 
-    fun playSound(){
-        val mp = MediaPlayer.create(requireContext(),R.raw.bell)
-        mp.start()
-
-    }
 }

@@ -1,12 +1,14 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
-import android.os.CountDownTimer
-import android.util.Log
+import android.media.MediaPlayer
+import android.os.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
@@ -29,7 +31,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     enum class State{
         Stopped,Paused,Running
     }
-    private lateinit var timer: CountDownTimer
+    lateinit var timer: CountDownTimer
     var timerSeconds = MutableLiveData(5L)
     var timerState = MutableLiveData(State.Stopped)
     var secondsRemaining = MutableLiveData(5L)
@@ -100,13 +102,18 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     fun skipClicked() {
         onTimerFinished()
         timer.cancel()
-        timerState.value = State.Stopped
     }
 
     fun onTimerFinished(){
         timerState.value = State.Stopped
         setNewTimerLength()
+        playSound()
         secondsRemaining.value = timerSeconds.value
+    }
+
+    private fun playSound() {
+        val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.bell)
+        mp.start()
     }
 
     fun startTimer(){
@@ -129,5 +136,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             }
         }
     }
+
 
 }

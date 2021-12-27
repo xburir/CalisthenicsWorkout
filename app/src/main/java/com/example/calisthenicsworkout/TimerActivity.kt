@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.ActivityTimerBinding
-import com.example.calisthenicsworkout.fragments.timer.CounterFragment
 import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
@@ -54,7 +53,9 @@ class TimerActivity : AppCompatActivity() {
             .setMessage("Are you sure you want to cancel this training?")
             .setCancelable(true)
             .setPositiveButton("Yes") {_,_->
-                CounterFragment.removeAlarm(this)
+                if(viewModel.timerState.value == TimerViewModel.State.Running){
+                    viewModel.timer.cancel()
+                }
                 this.finish()
             }
             .setNegativeButton("No") {_,_->
