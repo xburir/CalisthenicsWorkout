@@ -154,6 +154,12 @@ class SkillFragment : Fragment()  {
 
             )
         }
+        if(item.toString() == "Add Skill"){
+            findNavController().navigate(
+                SkillFragmentDirections.actionSkillFragmentToAddSkillFragment()
+
+            )
+        }
         if (item.toString() == "Like"){
             var likeed = false
             viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{

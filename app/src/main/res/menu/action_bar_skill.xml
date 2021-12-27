@@ -6,6 +6,10 @@
         android:id="@+id/beforeSkillAdd"
         android:title="Add Before Skill"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/addSkill"
+        android:title="Add Skill"
+        app:showAsAction="never"/>
 
 
     <item
