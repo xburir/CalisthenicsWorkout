@@ -76,14 +76,12 @@ class HomeFragment : Fragment() {
         val fbStorage = FirebaseStorage.getInstance()
         val fbAuth = FirebaseAuth.getInstance()
 
-        getSkillsFromFireBase(db,fbStorage)
-        getSkillsAndSkillCrossRefFromFireBase(db)
-        getUserAndSkillCrossRefFromFireBase(db)
+
+        getSkillsFromFireBase(db,fbStorage,fbAuth)
         getPredefinedTrainings(db,fbStorage)
         getUsersTrainings(db,fbAuth,fbStorage)
-        getExercisesForTrainings(db)
         getUser(fbAuth)
-        checkIfNewSkillsWereAdded(fbAuth,db)
+
     }
 
     private fun getExercisesForTrainings(db: FirebaseFirestore) {
@@ -254,7 +252,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getSkillsFromFireBase(db: FirebaseFirestore, fbStorage: FirebaseStorage) {
+    private fun getSkillsFromFireBase(db: FirebaseFirestore, fbStorage: FirebaseStorage,fbAuth: FirebaseAuth) {
         db.collection("skills").get().addOnCompleteListener{
             if(it.isSuccessful){
                 for(entry in it.result!!){
@@ -278,6 +276,10 @@ class HomeFragment : Fragment() {
                             }
                         }
                 }
+                getSkillsAndSkillCrossRefFromFireBase(db)
+                getUserAndSkillCrossRefFromFireBase(db)
+                getExercisesForTrainings(db)
+                checkIfNewSkillsWereAdded(fbAuth,db)
             }
         }
     }
