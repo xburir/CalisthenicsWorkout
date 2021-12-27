@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var viewModel: SkillViewModel
-    private lateinit var viewModelFactory: SkillViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -45,10 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         drawerLayout = binding.drawerLayout
-        val application = requireNotNull(this).application
-        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = SkillViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(this,viewModelFactory).get(SkillViewModel::class.java)
+
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -61,8 +56,6 @@ class MainActivity : AppCompatActivity() {
         Timber.i("onCreate");
 
 
-        readFireStoreData()
-
 
     }
     //find navcontroller and then call navController.navigateUp
@@ -71,239 +64,12 @@ class MainActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController,drawerLayout)
     }
 
-    override fun onStart() {
-        super.onStart()
-        Timber.i("onStart");
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.i("onResume");
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Timber.i("onPause");
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.i("onDestroy");
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Timber.i("onRestart");
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Timber.i("onStop");
-    }
 
 
 
-    private fun readFireStoreData(){
-        val db = FirebaseFirestore.getInstance()
-        val fbStorage = FirebaseStorage.getInstance()
-        val fbAuth = FirebaseAuth.getInstance()
-
-        getSkillsFromFireBase(db,fbStorage)
-        getSkillsAndSkillCrossRefFromFireBase(db)
-        getUserAndSkillCrossRefFromFireBase(db)
-        getPredefinedTrainings(db,fbStorage)
-        getUsersTrainings(db,fbAuth,fbStorage)
-        getUser(fbAuth)
-
-
-        checkIfNewSkillsWereAdded(fbAuth,db)
 
 
 
-    }
-
-    private fun getUser(fbAuth: FirebaseAuth) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnCompleteListener{
-            if(it.isSuccessful){
-                val email =  it.result!!.data?.getValue("userEmail").toString()
-                val name = it.result!!.data?.getValue("userFullName").toString()
-                val id = it.result!!.id
-                viewModel.viewModelScope.launch {
-                    withContext(Dispatchers.IO){
-                        viewModel.database.insertUser(User(id,email,name))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun checkIfNewSkillsWereAdded(fbAuth: FirebaseAuth,db: FirebaseFirestore) {
-        viewModel.allSkills.observe(this,{
-            it?.let{ skills ->
-                skills.forEach { skill ->
-                    var crossRefFound = false
-                    viewModel.database.getUserSkillCrossRefs(fbAuth.currentUser!!.uid).observe(this,{ liveDataList ->
-                        liveDataList?.let { listOfUserSkillCrossRefs ->
-                            listOfUserSkillCrossRefs.forEach { crossRef ->
-                                if(crossRef.skillId == skill.skillId){
-                                    crossRefFound = true
-                                }
-                            }
-                            if(!crossRefFound){
-                                Log.i("Debug","Crossref between "+fbAuth.currentUser!!.uid.toString()+" and " + skill.skillName+"  not found, adding")
-                                viewModel.userAndSkillCrossRef(fbAuth.currentUser!!.uid,skill.skillId,"false")
-                                val mappedThing: MutableMap<String,Any> = HashMap()
-                                mappedThing["skillId"] = skill.skillId
-                                mappedThing["userId"] = fbAuth.currentUser!!.uid
-                                mappedThing["liked"] = false
-                                db.collection("userAndSkillCrossRef").add(mappedThing)
-                            }
-
-                        }
-                    })
-                }
-
-            }
-        })
-    }
-
-    private fun getUsersTrainings(db: FirebaseFirestore, fbAuth: FirebaseAuth, fbStorage: FirebaseStorage) {
-        db.collection("trainings").whereEqualTo("owner",fbAuth.currentUser!!.uid).get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val id = entry.id
-                    val name = entry.data.getValue("name").toString()
-                    val target = entry.data.getValue("target").toString()
-                    val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                    val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
-                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
-                    val training = Training(name,target,id,fbAuth.currentUser!!.uid,bitmap,numberOfExercises)
-                    pictureRef.downloadUrl
-                        .addOnSuccessListener {
-                            viewModel.viewModelScope.launch {
-                                training.image = getBitmap(it)
-                                viewModel.addTrainingToDatabase(training)
-                            }
-                        }
-                        .addOnFailureListener {
-                            viewModel.viewModelScope.launch {
-                                viewModel.addTrainingToDatabase(training)
-                            }
-                        }
-
-
-                }
-            }
-        }
-    }
-
-    private fun getPredefinedTrainings(db: FirebaseFirestore, fbStorage: FirebaseStorage) {
-        db.collection("trainings").whereEqualTo("owner","admin").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val id = entry.id
-                    val name = entry.data.getValue("name").toString()
-                    val target = entry.data.getValue("target").toString()
-                    val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
-                    val training = Training(name,target,id,"admin",bitmap,numberOfExercises)
-                    val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
-                    pictureRef.downloadUrl
-                        .addOnSuccessListener {
-                            viewModel.viewModelScope.launch {
-                                training.image = getBitmap(it)
-                                viewModel.addTrainingToDatabase(training)
-                            }
-                        }
-                        .addOnFailureListener {
-                            viewModel.viewModelScope.launch {
-                                viewModel.addTrainingToDatabase(training)
-                            }
-                        }
-
-                }
-            }
-        }
-    }
-
-    private fun getUserAndSkillCrossRefFromFireBase(db: FirebaseFirestore) {
-        db.collection("userAndSkillCrossRef").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for (entry in it.result!!){
-                    viewModel.userAndSkillCrossRef(entry.data.getValue("userId").toString(),entry.data.getValue("skillId").toString(),entry.data.getValue("liked").toString())
-                }
-            }
-        }
-    }
-
-    private fun getSkillsAndSkillCrossRefFromFireBase(db: FirebaseFirestore) {
-        db.collection("skillAndSkillsCrossRef").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val crossRef = SkillAndSkillCrossRef(
-                        entry.data.getValue("skillId").toString(),
-                        entry.data.getValue("childId").toString(),
-                        entry.data.getValue("amount").toString().toInt()
-                    )
-                    viewModel.addSkillAndSkillCrossRef(crossRef)
-                }
-            }
-        }
-    }
-
-    private fun getSkillsFromFireBase(db: FirebaseFirestore, fbStorage: FirebaseStorage) {
-        db.collection("skills").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val id = entry.id
-                    val name = entry.data.getValue("name").toString()
-                    val desc = entry.data.getValue("description").toString()
-                    val type = entry.data.getValue("type").toString()
-                    val pictureRef = fbStorage.reference.child("skillImages").child("$id.png")
-                    val bitmap = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nothing)
-                    val skill = Skill(id,name,desc,bitmap,type)
-                    pictureRef.downloadUrl
-                        .addOnSuccessListener {
-                            viewModel.viewModelScope.launch{
-                                skill.skillImage = getBitmap(it)
-                                viewModel.addSkillToDatabase(skill)
-                            }
-                        }
-                        .addOnFailureListener {
-                            viewModel.viewModelScope.launch {
-                                viewModel.addSkillToDatabase(skill)
-                            }
-                        }
-                }
-            }
-        }
-    }
-
-    private suspend fun getBitmap(source: Uri): Bitmap {
-        val loading = ImageLoader(this)
-        val request = ImageRequest.Builder(this).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
-
-    fun saveFireStore(crossRef: SkillAndSkillCrossRef){
-        val db = FirebaseFirestore.getInstance()
-        val mappedThing: MutableMap<String,Any> = HashMap()
-        mappedThing["skillId"] = crossRef.skillId
-        mappedThing["childId"] = crossRef.childSkillId
-        mappedThing["amount"] = crossRef.minAmount
-
-
-
-        db.collection("skillAndSkillsCrossRef").add(mappedThing)
-            .addOnSuccessListener {
-                Log.i("Debug","added succesfully")
-            }
-            .addOnFailureListener{
-                Log.i("Debug","not added")
-            }
-    }
 
 
 

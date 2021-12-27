@@ -56,71 +56,73 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         chosenTrainingId.value = null
     }
 
-    fun addSkillToDatabase(skill: Skill){
-        viewModelScope.launch {
-            insertSkillToDatabase(skill)
-        }
-    }
+
     suspend fun insertSkillToDatabase(skill: Skill){
         withContext(Dispatchers.IO){
             database.insert(skill)
         }
     }
 
-    fun addSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
-        viewModelScope.launch {
-            insertSkillAndSkillCrossRef(crossRef)
-        }
-    }
     suspend fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
         withContext(Dispatchers.IO){
             database.insertSkillAndSkillCrossRef(crossRef)
         }
     }
 
-
-
-    fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
-        viewModelScope.launch {
-            when (mode) {
-                "true" -> {
-                    insertUserAndSkillCrossRef(userId,skillId,true)
-                }
-                "false" -> {
-                    insertUserAndSkillCrossRef(userId,skillId,false)
-                }
-                "del" -> {
-                    deleteUserAndSkillCrossRef(userId,skillId)
-                }
-                "setLiked" -> {
-                    val db = FirebaseFirestore.getInstance()
-                    db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
-                        if(it.isSuccessful){
-                            var entryId = ""
-                            for(entry in it.result!!){
-                                entryId = entry.id
-                            }
-                            db.collection("userAndSkillCrossRef").document(entryId).update("liked",true)
-                        }
-                    }
-                    updateUserAndSkillCrossRef(userId,skillId,true)
-                }
-                "setUnliked" -> {
-                    val db = FirebaseFirestore.getInstance()
-                    db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
-                        if(it.isSuccessful){
-                            var entryId = ""
-                            for(entry in it.result!!){
-                                entryId = entry.id
-                            }
-                            db.collection("userAndSkillCrossRef").document(entryId).update("liked",false)
-                        }
-                    }
-                    updateUserAndSkillCrossRef(userId,skillId,false)
-                }
-            }
-
+    suspend fun insertExercise(exercise: Exercise){
+        withContext(Dispatchers.IO){
+            database.insertExercise(exercise)
         }
+    }
+
+    suspend fun insertUser(user: User){
+        withContext(Dispatchers.IO){
+            database.insertUser(user)
+        }
+    }
+
+
+    suspend fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
+
+        when (mode) {
+            "true" -> {
+                insertUserAndSkillCrossRef(userId,skillId,true)
+            }
+            "false" -> {
+                insertUserAndSkillCrossRef(userId,skillId,false)
+            }
+            "del" -> {
+                deleteUserAndSkillCrossRef(userId,skillId)
+            }
+            "setLiked" -> {
+                val db = FirebaseFirestore.getInstance()
+                db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
+                    if(it.isSuccessful){
+                        var entryId = ""
+                        for(entry in it.result!!){
+                            entryId = entry.id
+                        }
+                        db.collection("userAndSkillCrossRef").document(entryId).update("liked",true)
+                    }
+                }
+                updateUserAndSkillCrossRef(userId,skillId,true)
+            }
+            "setUnliked" -> {
+                val db = FirebaseFirestore.getInstance()
+                db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnCompleteListener{
+                    if(it.isSuccessful){
+                        var entryId = ""
+                        for(entry in it.result!!){
+                            entryId = entry.id
+                        }
+                        db.collection("userAndSkillCrossRef").document(entryId).update("liked",false)
+                    }
+                }
+                updateUserAndSkillCrossRef(userId,skillId,false)
+            }
+        }
+
+
     }
 
     private suspend fun updateUserAndSkillCrossRef(userId: String, skillId: String, liked: Boolean) {

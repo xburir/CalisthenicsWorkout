@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
@@ -16,6 +17,7 @@ import com.example.calisthenicsworkout.databinding.FragmentAddBeforeSkillBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class AddBeforeSkillFragment : Fragment() {
@@ -88,7 +90,10 @@ class AddBeforeSkillFragment : Fragment() {
                                     if(!found){
                                         Toast.makeText(context,"Relation added",Toast.LENGTH_SHORT).show()
                                         val crossRef = SkillAndSkillCrossRef(args.skillId,childId,binding.amountInput.text.toString().toInt())
-                                        viewModel.addSkillAndSkillCrossRef(crossRef)
+                                        viewModel.viewModelScope.launch {
+                                            viewModel.insertSkillAndSkillCrossRef(crossRef)
+                                        }
+
                                         val database = FirebaseFirestore.getInstance()
                                         val mappedCrossRef: MutableMap<String,Any> = HashMap()
                                         mappedCrossRef["amount"] = crossRef.minAmount

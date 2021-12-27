@@ -68,7 +68,6 @@ class TrainingFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
 
-        getExercisesForTraining(viewModel.lastViewedTrainingId)
         changeTrainingOnFragment(binding,viewModel.lastViewedTrainingId,adapter)
 
 
@@ -117,27 +116,7 @@ class TrainingFragment : Fragment() {
 
     }
 
-    private fun getExercisesForTraining(training: String){
-        val db = FirebaseFirestore.getInstance()
-        db.collection("exercises").whereEqualTo("trainingId",training).get().addOnCompleteListener{
-            if(it.isSuccessful){
-                for(entry in it.result!!){
-                    val skillId = entry.data.getValue("skillId").toString()
-                    val order = entry.data.getValue("order").toString().toInt()
-                    val trainingId = entry.data.getValue("trainingId").toString()
-                    val reps = entry.data.getValue("reps").toString()
-                    val sets = entry.data.getValue("sets").toString()
-                    viewModel.viewModelScope.launch {
-                        withContext(Dispatchers.IO){
-                            val skill = viewModel.database.getSkill(skillId)
-                            val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
-                            viewModel.database.insertExercise(exercise)
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
