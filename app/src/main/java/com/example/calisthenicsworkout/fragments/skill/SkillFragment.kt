@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout.fragments.skill
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -127,13 +128,16 @@ class SkillFragment : Fragment()  {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_skill,menu)
-        val item = menu[1]
+        val item = menu[2]
         item.setIcon(android.R.drawable.btn_star_big_off)
         viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{
             it?.let{ list ->
                 list.forEach { userSkillCrossRef ->
                     if(userSkillCrossRef.skillId == viewModel.lastViewedSkillId){
+                        Log.i("Debug","skillsid"+viewModel.lastViewedSkillId)
+                        Log.i("Debug",userSkillCrossRef.liked.toString())
                         if(userSkillCrossRef.liked){
+                            Log.i("Debug","its is liked")
                             item.setIcon(android.R.drawable.btn_star_big_on)
                         }
                     }
@@ -151,7 +155,6 @@ class SkillFragment : Fragment()  {
         if(item.toString() == "Add Before Skill"){
             findNavController().navigate(
                 SkillFragmentDirections.actionSkillFragmentToAboutFragment(viewModel.lastViewedSkillId)
-
             )
         }
         if(item.toString() == "Add Skill"){
