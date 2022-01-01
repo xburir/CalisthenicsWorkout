@@ -11,6 +11,9 @@ interface SkillDatabaseDao {
     fun insert(skill: Skill)
 
     @Query("SELECT * FROM Skills ORDER BY skillId DESC")
+    fun getALlSkillsDirect(): List<Skill>
+
+    @Query("SELECT * FROM Skills ORDER BY skillId DESC")
     fun getALlSkills(): LiveData<List<Skill>>
 
     @Query("SELECT * FROM Skills WHERE skillid IN (SELECT childskillid FROM SkillAndSkillsCrossRef WHERE skillid = :key)")
@@ -63,6 +66,9 @@ interface SkillDatabaseDao {
     fun insertUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
     @Query("SELECT * FROM userandskillcrossref WHERE userId= :userId")
+    fun getUserSkillCrossRefsDirect(userId : String ): List<UserAndSkillCrossRef>
+
+    @Query("SELECT * FROM userandskillcrossref WHERE userId= :userId")
     fun getUserSkillCrossRefs(userId : String ): LiveData<List<UserAndSkillCrossRef>>
 
     @Query("SELECT * FROM userandskillcrossref WHERE userId = :user AND skillId = :skill")
@@ -82,6 +88,9 @@ interface SkillDatabaseDao {
     //training
     @Query("SELECT * FROM Trainings")
     fun getALlTrainings(): LiveData<List<Training>>
+
+    @Query("SELECT * FROM Trainings")
+    fun getALlTrainingsDirect(): List<Training>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTraining(training: Training)

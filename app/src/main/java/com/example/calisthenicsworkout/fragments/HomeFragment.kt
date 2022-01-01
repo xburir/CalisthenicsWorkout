@@ -86,7 +86,7 @@ class HomeFragment : Fragment() {
                     if (string == "All done"){
                         dialog.hide()
                         Toast.makeText(context,"Data downloaded",Toast.LENGTH_SHORT).show()
-                    }else{
+                    }else if( string == "Starting"){
                         dialog.show()
                     }
                 }

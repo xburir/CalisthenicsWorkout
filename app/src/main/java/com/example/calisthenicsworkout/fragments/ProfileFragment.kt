@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -53,20 +54,10 @@ class ProfileFragment : Fragment() {
         })
 
         binding.logoutButton.setOnClickListener {
-            viewModel.viewModelScope.launch {
-                withContext(Dispatchers.IO){
-                    viewModel.database.clearExerciseTable()
-                    viewModel.database.clearSkillAndSkillsCrossRefTable()
-                    viewModel.database.clearUserTable()
-                    viewModel.database.clearSkillsTable()
-                    viewModel.database.clearTrainingTable()
-                    viewModel.database.clearUserAndSkillsTable()
 
-                    FirebaseAuth.getInstance().signOut()
-                    startActivity(Intent(context, AuthActivity::class.java))
-                    requireActivity().finish()
-                }
-            }
+            viewModel.logout(Intent(context, AuthActivity::class.java),requireActivity())
+
+
 
         }
 
