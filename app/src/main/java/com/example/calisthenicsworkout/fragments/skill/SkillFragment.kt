@@ -176,19 +176,13 @@ class SkillFragment : Fragment()  {
                     }
                 }
             })
-            val fireAuth = FirebaseAuth.getInstance()
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
             if(likeed){
-                viewModel.viewModelScope.launch {
-                    viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setUnliked")
-                }
-
+                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,"setUnliked")
                 item.setIcon(android.R.drawable.btn_star_big_off)
                 Toast.makeText(context,"Unliked",Toast.LENGTH_SHORT).show()
             }else{
-                viewModel.viewModelScope.launch {
-                    viewModel.userAndSkillCrossRef(fireAuth.currentUser!!.uid,viewModel.lastViewedSkillId,"setLiked")
-                }
-
+                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,"setLiked")
                 item.setIcon(android.R.drawable.btn_star_big_on)
                 Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
 

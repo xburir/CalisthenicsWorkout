@@ -44,7 +44,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         getUser()
         getSkillsFromFireBase(context)
         getSkillsAndSkillCrossRefFromFireBase()
-        getUserAndSkillCrossRefFromFireBase()
+        //getUserAndSkillCrossRefFromFireBase(activity)
 
     }
 
@@ -112,33 +112,33 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
     }
 
-    private fun checkIfNewSkillsWereAdded() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                database.getALlSkillsDirect().forEach { skillInAllSkills ->
-                    var crossRefFound = false
-                    database.getUserSkillCrossRefsDirect(user.userId).forEach { userSkillCrossRef ->
-                        if(userSkillCrossRef.skillId == skillInAllSkills.skillId){
-                            crossRefFound = true
-                        }
-                        if(!crossRefFound){
-                            Log.i("Debug","crossref not found, adding")
-                            val userId = user.userId
-                            val skillId = skillInAllSkills.skillId
-                            val liked = false
-                            val crossRef = UserAndSkillCrossRef(userId,skillId,liked)
-                            database.insertUserAndSkillCrossRef(crossRef)
-                            val mappedThing: MutableMap<String,Any> = HashMap()
-                            mappedThing["skillId"] = skillId
-                            mappedThing["userId"] = userId
-                            mappedThing["liked"] = liked
-                            db.collection("userAndSkillCrossRef").add(mappedThing)
-                        }
-                    }
-
+    private fun checkIfNewSkillsWereAdded(activity: Activity) {
+        database.getALlSkillsDirect().forEach { skillInAllSkills ->
+            var crossRefFound = false
+            database.getUserSkillCrossRefsDirect(user.userId).forEach { userSkillCrossRef ->
+                if(userSkillCrossRef.skillId == skillInAllSkills.skillId){
+                    crossRefFound = true
                 }
             }
+            if(!crossRefFound){
+                val userId = user.userId
+                val skillId = skillInAllSkills.skillId
+                val liked = false
+                val crossRef = UserAndSkillCrossRef(userId,skillId,liked)
+                database.insertUserAndSkillCrossRef(crossRef)
+                val mappedThing: MutableMap<String,Any> = HashMap()
+                mappedThing["skillId"] = skillId
+                mappedThing["userId"] = userId
+                mappedThing["liked"] = liked
+                Log.i("Debug","crossref not found, adding ")
+                //db.collection("userAndSkillCrossRef").add(mappedThing)
+            }
+
         }
+        activity.runOnUiThread {
+            finished.value = "All done"
+        }
+
 
     }
 
@@ -166,7 +166,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 }
                 getExercisesForTraining(id)
             }
-            finished.value = "All done"
+
         }
 
     }
@@ -198,21 +198,28 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         }
     }
 
-    private fun getUserAndSkillCrossRefFromFireBase() {
+    private fun getUserAndSkillCrossRefFromFireBase(activity: Activity) {
         var count = 0
         db.collection("userAndSkillCrossRef").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener{
+            //TODO: maaybe tuto vytvorit nejake pole , do neho nahadzat vsetky najdene crossrefs, potom ich naraz pridat cez coroutine do databazy a potom po pridani skontrolovat nove skills
+            val list  = mutableListOf<UserAndSkillCrossRef>()
             for (entry in it){
                 finished.value = "Downloading userSkillCrossRef" + ++count + "/" + it.size()
                 val userId = entry.data.getValue("userId").toString()
                 val skillId = entry.data.getValue("skillId").toString()
                 val liked = entry.data.getValue("liked").toString().toBoolean()
                 val crossRef = UserAndSkillCrossRef(userId,skillId,liked)
-                viewModelScope.launch {
-                    withContext(Dispatchers.IO){
+                list.add(crossRef)
+            }
+            viewModelScope.launch {
+                withContext(Dispatchers.IO){
+                    list.forEach {  crossRef ->
                         database.insertUserAndSkillCrossRef(crossRef)
                     }
+                    checkIfNewSkillsWereAdded(activity)
                 }
             }
+
         }
     }
 
