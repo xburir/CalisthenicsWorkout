@@ -62,4 +62,13 @@
     </style>
 
 
+    <style name="NavigationView.Menu" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/aclonica</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="NavigationView.Item" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/aclonica</item>
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>
