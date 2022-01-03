@@ -2,16 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/UploadTrainingButton"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="Upload Training"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/DeleteTrainingButton"
-        android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete Training"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/ShareTrainingButton"
         android:icon="@android:drawable/ic_menu_share"
         android:title="Share Training"
         app:showAsAction="always" />
+
+
+
 </menu>

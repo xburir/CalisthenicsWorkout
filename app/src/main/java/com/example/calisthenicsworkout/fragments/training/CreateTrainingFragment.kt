@@ -131,12 +131,7 @@ class CreateTrainingFragment : Fragment() {
                             viewModel.addExerciseToDatabase(it)
                         }
                         saveToFirestore(training,exerciseList)
-                        viewModel.lastViewedTrainingId = training.id
-                        findNavController().navigate(
-                            CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(
-                                training.id
-                            )
-                        )
+
                     }
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
@@ -186,6 +181,17 @@ class CreateTrainingFragment : Fragment() {
         mappedTraining["numberOfExercises"] = training.numberOfExercises
         mappedTraining["target"] = training.target
         database.collection("trainings").document(training.id).set(mappedTraining)
+            .addOnSuccessListener {
+                viewModel.lastViewedTrainingId = training.id
+                findNavController().navigate(
+                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(
+                        training.id
+                    )
+                )
+            }
+            .addOnFailureListener {
+                Toast.makeText(context,"Saving training to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
+            }
         exerciseList.forEach{
             val mappedExercise: MutableMap<String,Any> = HashMap()
             mappedExercise["reps"] = it.repetitions

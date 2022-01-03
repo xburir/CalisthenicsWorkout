@@ -126,30 +126,79 @@ class TrainingFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if(item.toString() == "Delete Training"){
-            var chosenTraining: Training
             viewModel.allTrainings.observe(viewLifecycleOwner,{
                 it.forEach { training ->
                     if (training.id == trainingOnScreenId){
-                        chosenTraining = training
-                        if(chosenTraining.owner == FirebaseAuth.getInstance().currentUser!!.uid){
-                            deleteOwnTraining()
-                        }else if (chosenTraining.owner == "admin"){
-                            Toast.makeText(context,"You can't delete this training",Toast.LENGTH_SHORT).show()
-                        }else{
-                            deleteFollowedTraining()
+                        when (training.owner) {
+                            FirebaseAuth.getInstance().currentUser!!.uid -> {
+                                deleteOwnTraining()
+                            }
+                            "admin" -> {
+                                Toast.makeText(context,"You can't delete this training",Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                deleteFollowedTraining()
+                            }
                         }
-
                     }
                 }
             })
         }else if(item.toString() == "Share Training"){
-            val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("text", trainingOnScreenId)
-            clipboardManager.setPrimaryClip(clipData)
-            Toast.makeText(context,"Training ID copied to clipboard",Toast.LENGTH_SHORT).show()
+            copyTraining()
+        }else if(item.toString() == "Upload Training"){
+            uploadTraining()
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun uploadTraining() {
+        viewModel.viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                val training = viewModel.database.getTraining(trainingOnScreenId)
+                if(training.owner == FirebaseAuth.getInstance().currentUser!!.uid){
+                    val database = FirebaseFirestore.getInstance()
+                    val mappedTraining: MutableMap<String,Any> = HashMap()
+                    mappedTraining["name"] = training.name
+                    mappedTraining["owner"] = training.owner
+                    mappedTraining["numberOfExercises"] = training.numberOfExercises
+                    mappedTraining["target"] = training.target
+                    database.collection("trainings").document(training.id).set(mappedTraining).addOnFailureListener {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context,"Saving training to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    val exerciseList = viewModel.database.getExercisesOfTrainingDirect(trainingOnScreenId)
+                    exerciseList.forEach{
+                        val mappedExercise: MutableMap<String,Any> = HashMap()
+                        mappedExercise["reps"] = it.repetitions
+                        mappedExercise["sets"] = it.sets
+                        mappedExercise["order"] = it.order
+                        mappedExercise["skillId"] = it.skillId
+                        mappedExercise["trainingId"] = it.trainingId
+                        database.collection("exercises").add(mappedExercise).addOnFailureListener{
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(context,"Saving exercise to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }else{
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context,"This is not your training to upload",Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    private fun copyTraining() {
+        val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("text", trainingOnScreenId)
+        clipboardManager.setPrimaryClip(clipData)
+        Toast.makeText(context,"Training ID copied to clipboard",Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteFollowedTraining() {
