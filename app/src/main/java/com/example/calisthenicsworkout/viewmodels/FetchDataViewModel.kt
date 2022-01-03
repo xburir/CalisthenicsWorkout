@@ -27,7 +27,7 @@ import kotlin.math.log
 
 class FetchDataViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
-     val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","")
+    val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","")
 
     val finished = MutableLiveData("nothing")
 
@@ -42,40 +42,48 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         finished.value = "Starting"
         val context = getApplication<Application>().applicationContext
         getUser()
-        getSkillsFromFireBase(context)
-        getSkillsAndSkillCrossRefFromFireBase()
-        //getUserAndSkillCrossRefFromFireBase(activity)
+        getSkillsFromFireBase(context,activity)
+
 
     }
 
 
 
 
-    private fun getSkillsFromFireBase(context: Context) {
-        var count = 0
+    private fun getSkillsFromFireBase(context: Context,activity: Activity) {
         db.collection("skills").get().addOnSuccessListener {
+            val skillsList = mutableListOf<Skill>()
             for(entry in it){
-                finished.value = "Downloading Skill" + ++count + "/" + it.size()
+                finished.value = "Downloading Skill" + (skillsList.size+1) + "/" + it.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val desc = entry.data.getValue("description").toString()
                 val type = entry.data.getValue("type").toString()
-                val pictureRef = fbStorage.reference.child("skillImages").child("$id.png")
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
                 val skill = Skill(id,name,desc,bitmap,type)
+                skillsList.add(skill)
+            }
+
+            skillsList.forEach {    skillInList ->
+                val pictureRef = fbStorage.reference.child("skillImages").child("${skillInList.skillId}.png")
                 pictureRef.downloadUrl.addOnCompleteListener {
                     viewModelScope.launch {
                         if(it.isSuccessful){
-                            skill.skillImage = getBitmap(it.result!!,context)
+                            skillInList.skillImage = getBitmap(it.result!!,context)
                         }
                         withContext(Dispatchers.IO){
-                            database.insert(skill)
+                            Log.i("Debug","pridavam skill")
+                            database.insert(skillInList)
+                            if(skillInList == skillsList.last()){
+                                getPredefinedTrainings(context)
+                                getUsersTrainings(context)
+                                getSkillsAndSkillCrossRefFromFireBase()
+                                getUserAndSkillCrossRefFromFireBase(activity)
+                            }
                         }
                     }
                 }
             }
-            getPredefinedTrainings(context)
-            getUsersTrainings(context)
         }
 
 
@@ -89,14 +97,13 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val trainingId = entry.data.getValue("trainingId").toString()
                 val reps = entry.data.getValue("reps").toString()
                 val sets = entry.data.getValue("sets").toString()
+
                 viewModelScope.launch {
                     withContext(Dispatchers.IO){
-                        database.getALlSkillsDirect().forEach { skillInAllSkills ->
-                            if(skillInAllSkills.skillId == skillId){
-                                val exercise = Exercise(trainingId,skillId,sets,reps,skillInAllSkills.skillImage,skillInAllSkills.skillName,order)
-                                database.insertExercise(exercise)
-                            }
-                        }
+                        val skill = database.getSkill(skillId)
+                        val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
+                        Log.i("Debug","pridavam cvicenie pre trening "+training)
+                        database.insertExercise(exercise)
                     }
                 }
             }
@@ -108,6 +115,12 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnSuccessListener{
             user.userEmail =  it.data?.getValue("userEmail").toString()
             user.userFullName = it.data?.getValue("userFullName").toString()
+            viewModelScope.launch {
+                withContext(Dispatchers.IO){
+                    database.insertUser(user)
+                }
+            }
+
         }
 
     }
@@ -131,7 +144,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 mappedThing["userId"] = userId
                 mappedThing["liked"] = liked
                 Log.i("Debug","crossref not found, adding ")
-                //db.collection("userAndSkillCrossRef").add(mappedThing)
+                db.collection("userSkill").add(mappedThing).addOnSuccessListener {
+                    Log.i("Debug_checkifnewskillsadded","added skill to firebase")
+                }
             }
 
         }
@@ -143,28 +158,33 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     }
 
     private fun getUsersTrainings(context: Context) {
-        var count = 0
         db.collection("trainings").whereEqualTo("owner",user.userId).get().addOnSuccessListener{
+            val trainingList = mutableListOf<Training>()
             for(entry in it){
-                finished.value = "Downloading custom training" + ++count + "/" + it.size()
+                finished.value = "Downloading custom training" + (trainingList.size+1) + "/" + it.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
                 val training = Training(name,target,id,user.userId,bitmap,numberOfExercises)
-                pictureRef.downloadUrl.addOnCompleteListener { task->
+                trainingList.add(training)
+            }
+
+            trainingList.forEach { trainingInList ->
+                val pictureRef = fbStorage.reference.child("trainingImages").child("${trainingInList.id}.png")
+                pictureRef.downloadUrl.addOnCompleteListener { task ->
                     viewModelScope.launch {
-                        if(task.isSuccessful){
-                            training.image = getBitmap(task.result!!,context)
+                        if (task.isSuccessful) {
+                            trainingInList.image = getBitmap(task.result!!, context)
                         }
-                        withContext(Dispatchers.IO){
-                            database.insertTraining(training)
+                        withContext(Dispatchers.IO) {
+                            Log.i("Debug","pridavam trening "+trainingInList.id)
+                            database.insertTraining(trainingInList)
+                            getExercisesForTraining(trainingInList.id)
                         }
                     }
                 }
-                getExercisesForTraining(id)
             }
 
         }
@@ -172,36 +192,42 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     }
 
     private fun getPredefinedTrainings(context: Context) {
-        var count = 0
         db.collection("trainings").whereEqualTo("owner","admin").get().addOnSuccessListener{
+            val trainingList = mutableListOf<Training>()
             for(entry in it){
-                finished.value = "Downloading training" + ++count + "/" + it.size()
+                finished.value = "Downloading training" + (trainingList.size+1) + "/" + it.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
                 val training = Training(name,target,id,"admin",bitmap,numberOfExercises)
-                val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
+                trainingList.add(training)
+            }
+
+            trainingList.forEach { trainingInList ->
+                val pictureRef = fbStorage.reference.child("trainingImages").child("${trainingInList.id}.png")
                 pictureRef.downloadUrl.addOnCompleteListener { task ->
                     viewModelScope.launch {
                         if (task.isSuccessful) {
-                            training.image = getBitmap(task.result!!, context)
+                            trainingInList.image = getBitmap(task.result!!, context)
                         }
                         withContext(Dispatchers.IO) {
-                            database.insertTraining(training)
+                            Log.i("Debug","pridavam trening "+trainingInList.id)
+                            database.insertTraining(trainingInList)
+                            getExercisesForTraining(trainingInList.id)
                         }
                     }
                 }
-                getExercisesForTraining(id)
             }
+
+
         }
     }
 
     private fun getUserAndSkillCrossRefFromFireBase(activity: Activity) {
         var count = 0
-        db.collection("userAndSkillCrossRef").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener{
-            //TODO: maaybe tuto vytvorit nejake pole , do neho nahadzat vsetky najdene crossrefs, potom ich naraz pridat cez coroutine do databazy a potom po pridani skontrolovat nove skills
+        db.collection("userSkill").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener{
             val list  = mutableListOf<UserAndSkillCrossRef>()
             for (entry in it){
                 finished.value = "Downloading userSkillCrossRef" + ++count + "/" + it.size()
@@ -214,6 +240,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             viewModelScope.launch {
                 withContext(Dispatchers.IO){
                     list.forEach {  crossRef ->
+                        Log.i("Debug","Adding userAndSkillCrossRef")
                         database.insertUserAndSkillCrossRef(crossRef)
                     }
                     checkIfNewSkillsWereAdded(activity)
@@ -233,6 +260,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 )
                 viewModelScope.launch {
                     withContext(Dispatchers.IO){
+                        Log.i("Debug","Adding crossref for skill"+crossRef.skillId)
                         database.insertSkillAndSkillCrossRef(crossRef)
                     }
                 }

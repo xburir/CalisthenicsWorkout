@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
@@ -58,10 +59,13 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
 
-    suspend fun insertSkillToDatabase(skill: Skill){
-        withContext(Dispatchers.IO){
-            database.insert(skill)
+    suspend fun addSkillToDatabase(skill: Skill){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                database.insert(skill)
+            }
         }
+
     }
 
     suspend fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
@@ -70,41 +74,20 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
-    suspend fun insertExercise(exercise: Exercise){
-        withContext(Dispatchers.IO){
-            database.insertExercise(exercise)
-        }
-    }
-
-    suspend fun insertUser(user: User){
-        withContext(Dispatchers.IO){
-            database.insertUser(user)
-        }
-    }
 
 
-    fun userAndSkillCrossRef(userId: String, skillId: String, mode : String) {
+
+
+
+    fun userAndSkillCrossRef(userId: String, skillId: String, liked: Boolean) {
         val db = FirebaseFirestore.getInstance()
-        db.collection("userAndSkillCrossRef").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get().addOnSuccessListener{
-            Log.i("Debug","I got "+it.documents.size+" entries")
-            //val id = it.documents[0].id
-            when (mode) {
-                "setLiked" -> {
-                    //TODO: check if this is not adding too much things to database
-                    //db.collection("userAndSkillCrossRef").document(id).update("liked",true)
-                    viewModelScope.launch {
-                        updateUserAndSkillCrossRef(userId,skillId,true)
-                    }
+        db.collection("userSkill").whereEqualTo("userId",userId).whereEqualTo("skillId",skillId).get()
+            .addOnSuccessListener{
+                val id = it.documents[0].id
+                db.collection("userSkill").document(id).update("liked",liked)
+                viewModelScope.launch {
+                    updateUserAndSkillCrossRef(userId,skillId,liked)
                 }
-                "setUnliked" -> {
-                    //TODO: check if this is not adding too much things to database
-                    //db.collection("userAndSkillCrossRef").document(id).update("liked",false)
-                    viewModelScope.launch {
-                        updateUserAndSkillCrossRef(userId,skillId,false)
-                    }
-
-                }
-            }
         }
 
     }
@@ -116,17 +99,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
-    private suspend fun deleteUserAndSkillCrossRef(userId: String, skillId: String) {
-        withContext(Dispatchers.IO){
-            database.deleteUserAndSkillCrossRef(database.getUserAndSkillCrossRef(userId,skillId))
-        }
-    }
 
-    private suspend fun insertUserAndSkillCrossRef(userId: String, skillId: String, liked: Boolean) {
-        withContext(Dispatchers.IO){
-            database.insertUserAndSkillCrossRef(UserAndSkillCrossRef(userId,skillId,liked))
-        }
-    }
 
 
 }

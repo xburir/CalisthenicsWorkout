@@ -47,11 +47,13 @@ class AddSkillFragment : Fragment() {
                 Toast.makeText(context, "Bad password", Toast.LENGTH_SHORT).show()
             } else {
                 if (checkInput(binding.nameInput.text.toString(),  binding.descriptionINput.text.toString(),  binding.radioGroup)) {
+                    val name = binding.nameInput.text.toString()
+                    val desc = binding.descriptionINput.text.toString()
                     if(binding.repsRadioButton.isChecked){
-                        saveFireStore(binding.nameInput.text.toString(),"reps",binding.descriptionINput.text.toString())
+                        saveFireStore(name,"reps",desc)
                     }
                     if (binding.timeRadioButton.isChecked)
-                        saveFireStore(binding.nameInput.text.toString(),"time",binding.descriptionINput.text.toString())
+                        saveFireStore(name,"time",desc)
                     findNavController().navigate(
                         AddSkillFragmentDirections.actionAddSkillFragmentToSkillFragment(viewModel.lastViewedSkillId)
                     )

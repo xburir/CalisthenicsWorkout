@@ -44,9 +44,7 @@ class ProfileFragment : Fragment() {
         binding.lifecycleOwner = this
 
         viewModel.database.getUser(FirebaseAuth.getInstance().currentUser!!.uid).observe(viewLifecycleOwner,{
-            Log.i("Debug","observing")
             it?.let { user ->
-                Log.i("Debug","found")
                 binding.fullUserName.text = user.userFullName
                 binding.userEmail.text = user.userEmail
                 binding.userId.text = user.userId

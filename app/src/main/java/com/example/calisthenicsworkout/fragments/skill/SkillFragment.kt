@@ -134,10 +134,7 @@ class SkillFragment : Fragment()  {
             it?.let{ list ->
                 list.forEach { userSkillCrossRef ->
                     if(userSkillCrossRef.skillId == viewModel.lastViewedSkillId){
-                        Log.i("Debug","skillsid"+viewModel.lastViewedSkillId)
-                        Log.i("Debug",userSkillCrossRef.liked.toString())
                         if(userSkillCrossRef.liked){
-                            Log.i("Debug","its is liked")
                             item.setIcon(android.R.drawable.btn_star_big_on)
                         }
                     }
@@ -178,11 +175,11 @@ class SkillFragment : Fragment()  {
             })
             val userId = FirebaseAuth.getInstance().currentUser!!.uid
             if(likeed){
-                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,"setUnliked")
+                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,false)
                 item.setIcon(android.R.drawable.btn_star_big_off)
                 Toast.makeText(context,"Unliked",Toast.LENGTH_SHORT).show()
             }else{
-                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,"setLiked")
+                viewModel.userAndSkillCrossRef(userId,viewModel.lastViewedSkillId,true)
                 item.setIcon(android.R.drawable.btn_star_big_on)
                 Toast.makeText(context,"Liked",Toast.LENGTH_SHORT).show()
 
