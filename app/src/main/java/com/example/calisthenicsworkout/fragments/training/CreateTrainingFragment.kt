@@ -1,9 +1,12 @@
 package com.example.calisthenicsworkout.fragments.training
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -70,9 +74,24 @@ class CreateTrainingFragment : Fragment() {
 
         val fb = FirebaseAuth.getInstance()
         val key =  getRandomString(20)
-        val emptyBitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.nothing)
         val exerciseList = mutableListOf<Exercise>()
-        val training = Training("undefined","undefined",key, fb.currentUser!!.uid  ,emptyBitmap,0)
+        val training = Training("undefined","undefined",key, fb.currentUser!!.uid ,
+            Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic"),0)
+
+        val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                data?.data?.let {
+                    binding.imageChooseInput.setText(it.toString())
+                }
+            }
+        }
+
+        binding.imageChooseInput.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            resultLauncher.launch(intent)
+        }
 
         binding.addSkillToTrainingButton.setOnClickListener{
             val nameOfSkill = binding.skillOptions.text.toString()
@@ -113,23 +132,18 @@ class CreateTrainingFragment : Fragment() {
         binding.saveTrainingButton.setOnClickListener{
             val name = binding.trainingNameInput.text.toString()
             val target = binding.targetInput.text.toString()
-            val imgUrl = binding.imageUrlInput.text.toString()
+            val imgUrl = binding.imageChooseInput.text.toString()
             if (name.isNotEmpty()){
                 if(exerciseList.isNotEmpty()){
-                    viewModel.viewModelScope.launch {
-                        training.name = name
-                        training.target = target
-                        try {
-                            training.image = getBitmap(imgUrl)
-                            saveTrainingImageToFireBaseStorage(training)
-                        }catch (e:Exception){   }
-                        viewModel.addTrainingToDatabase(training)
-                        exerciseList.forEach {
-                            viewModel.addExerciseToDatabase(it)
-                        }
-                        saveToFirestore(training,exerciseList)
+                    training.name = name
+                    training.target = target
+                    viewModel.saveTraining(training,requireContext(),imgUrl,exerciseList)
 
-                    }
+
+                    findNavController().navigate(
+                        CreateTrainingFragmentDirections.actionCreateTrainingFragmentToAllTrainingsFragment()
+                    )
+
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
             hideKeyBoard()
@@ -148,48 +162,14 @@ class CreateTrainingFragment : Fragment() {
         return binding.root
     }
 
-    private fun saveTrainingImageToFireBaseStorage(training: Training) {
 
-        val uri = BitmapUtil.getUri(training.image,100,requireContext())
-        FirebaseStorage.getInstance().reference.child("trainingImages").child(training.id+".png").putFile(uri)
-
-    }
 
     private fun hideKeyBoard() {
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
     }
 
-    private fun saveToFirestore(training: Training, exerciseList: MutableList<Exercise>) {
-        val database = FirebaseFirestore.getInstance()
-        val mappedTraining: MutableMap<String,Any> = HashMap()
-        mappedTraining["name"] = training.name
-        mappedTraining["owner"] = training.owner
-        mappedTraining["numberOfExercises"] = training.numberOfExercises
-        mappedTraining["target"] = training.target
-        database.collection("trainings").document(training.id).set(mappedTraining)
-            .addOnSuccessListener {
-                viewModel.lastViewedTrainingId = training.id
-                findNavController().navigate(
-                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToTrainingFragment(
-                        training.id
-                    )
-                )
-            }
-            .addOnFailureListener {
-                Toast.makeText(context,"Saving training to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
-            }
-        exerciseList.forEach{
-            val mappedExercise: MutableMap<String,Any> = HashMap()
-            mappedExercise["reps"] = it.repetitions
-            mappedExercise["sets"] = it.sets
-            mappedExercise["order"] = it.order
-            mappedExercise["skillId"] = it.skillId
-            mappedExercise["trainingId"] = it.trainingId
-            database.collection("exercises").add(mappedExercise)
-        }
 
-    }
 
 
 
@@ -217,11 +197,6 @@ class CreateTrainingFragment : Fragment() {
         }
     }
 
-    private suspend fun getBitmap(source: String): Bitmap {
-        val loading = ImageLoader(requireContext())
-        val request = ImageRequest.Builder(requireContext()).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
+
 
 }

@@ -178,9 +178,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
+                val defaultPic = Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic")
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
-                val training = Training(name,target,id,user.userId,bitmap,numberOfExercises)
+                val training = Training(name,target,id,user.userId,defaultPic,numberOfExercises)
                 trainingList.add(training)
             }
 
@@ -189,7 +189,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 pictureRef.downloadUrl.addOnCompleteListener { task ->
                     viewModelScope.launch {
                         if (task.isSuccessful) {
-                            trainingInList.image = getBitmap(task.result!!, context)
+                            val bitmap = getBitmap(task.result!!,context)
+                            val savedImageUri = BitmapUtil.saveToInternalStorage(bitmap,context,trainingInList.id)
+                            trainingInList.image = savedImageUri
                         }
                         withContext(Dispatchers.IO) {
                             Log.i("Debug","pridavam trening "+trainingInList.id)
@@ -213,8 +215,8 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
-                val training = Training(name,target,id,"admin",bitmap,numberOfExercises)
+                val defaultPic = Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic")
+                val training = Training(name,target,id,"admin",defaultPic,numberOfExercises)
                 trainingList.add(training)
             }
 
@@ -223,7 +225,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 pictureRef.downloadUrl.addOnCompleteListener { task ->
                     viewModelScope.launch {
                         if (task.isSuccessful) {
-                            trainingInList.image = getBitmap(task.result!!, context)
+                            val bitmap = getBitmap(task.result!!,context)
+                            val savedImageUri = BitmapUtil.saveToInternalStorage(bitmap,context,trainingInList.id)
+                            trainingInList.image = savedImageUri
                         }
                         withContext(Dispatchers.IO) {
                             Log.i("Debug","pridavam trening "+trainingInList.id)

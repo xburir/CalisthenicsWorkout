@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
                 it?.let { string ->
                     status.text = string
                     if (string == "All done"){
-                        dialog.hide()
+                        dialog.dismiss()
                         Toast.makeText(context,"Data downloaded",Toast.LENGTH_SHORT).show()
                     }else if( string == "Starting"){
                         dialog.show()

@@ -112,22 +112,23 @@
                 android:ems="10"
                 android:hint="Target"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toStartOf="@+id/image_url_input"
+                app:layout_constraintEnd_toStartOf="@+id/image_choose_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/training_name_input" />
 
-            <EditText
-                android:id="@+id/image_url_input"
+            <TextView
+                android:id="@+id/image_choose_input"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:ems="10"
-                android:hint="Url! for image"
-                android:inputType="textPersonName"
+                android:hint="Pick an image"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/target_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/target_input"
-                app:layout_constraintTop_toTopOf="@+id/target_input" />
+                app:layout_constraintTop_toTopOf="@+id/target_input"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

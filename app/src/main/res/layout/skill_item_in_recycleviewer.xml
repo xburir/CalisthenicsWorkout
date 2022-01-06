@@ -35,9 +35,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:skillImage="@{skill}"
-            app:srcCompat="@drawable/dip"
+            app:srcCompat="@drawable/nothing"
             tools:ignore="ImageContrastCheck"
-            tools:srcCompat="@drawable/dip" />
+            tools:srcCompat="@drawable/nothing" />
 
         <TextView
             android:id="@+id/skill_name"

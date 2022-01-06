@@ -1,13 +1,21 @@
 package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
+import androidx.navigation.fragment.findNavController
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
+import com.example.calisthenicsworkout.fragments.training.CreateTrainingFragmentDirections
+import com.example.calisthenicsworkout.util.BitmapUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 
 
@@ -100,6 +108,86 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
 
+
+    fun saveTraining(training: Training,context: Context,imgUrl: String,exerciseList: MutableList<Exercise>) {
+        viewModelScope.launch {
+            val bmp = BitmapUtil.getBitmap(Uri.parse(imgUrl), context)
+            val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,training.id)
+            training.image = savedImageUri
+            FirebaseStorage.getInstance().reference.child("trainingImages").child("${training.id}.png").putFile(Uri.parse(imgUrl))
+            addTrainingToDatabase(training)
+            exerciseList.forEach {
+                addExerciseToDatabase(it)
+            }
+            saveTrainingToFirestore(training,exerciseList,context)
+        }
+    }
+
+    private fun saveTrainingToFirestore(training: Training, exerciseList: MutableList<Exercise>, context: Context) {
+        val database = FirebaseFirestore.getInstance()
+        val mappedTraining: MutableMap<String,Any> = HashMap()
+        mappedTraining["name"] = training.name
+        mappedTraining["owner"] = training.owner
+        mappedTraining["numberOfExercises"] = training.numberOfExercises
+        mappedTraining["target"] = training.target
+        database.collection("trainings").document(training.id).set(mappedTraining)
+            .addOnSuccessListener {
+                lastViewedTrainingId = training.id
+            }
+            .addOnFailureListener {
+                Toast.makeText(context,"Saving training to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
+            }
+        exerciseList.forEach{
+            val mappedExercise: MutableMap<String,Any> = HashMap()
+            mappedExercise["reps"] = it.repetitions
+            mappedExercise["sets"] = it.sets
+            mappedExercise["order"] = it.order
+            mappedExercise["skillId"] = it.skillId
+            mappedExercise["trainingId"] = it.trainingId
+            database.collection("exercises").add(mappedExercise)
+        }
+
+    }
+
+    fun addSharedTraining(trainingId: String,context: Context){
+        val db = FirebaseFirestore.getInstance()
+        val fbStorage = FirebaseStorage.getInstance()
+        db.collection("trainings").get().addOnCompleteListener{
+            if(it.isSuccessful){
+                var found = false
+                for(entry in it.result!!){
+                    if(entry.id == trainingId){
+                        found = true
+                        val id = entry.id
+                        val name = entry.data.getValue("name").toString()
+                        val owner = entry.data.getValue("owner").toString()
+                        val target = entry.data.getValue("target").toString()
+                        val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
+                        val training = Training(name,target,id,owner,Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic")
+                            ,numberOfExercises)
+                        val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
+                        pictureRef.downloadUrl
+                            .addOnSuccessListener {
+                                viewModelScope.launch {
+                                    it?.let{
+                                        training.image = it
+                                    }
+                                    addTrainingToDatabase(training)
+                                }
+                            }
+                            .addOnFailureListener {
+                                viewModelScope.launch {
+                                    addTrainingToDatabase(training)
+                                }
+                            }
+                    }
+                }
+                if(!found){
+                    Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
 
 }

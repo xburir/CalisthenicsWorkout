@@ -59,32 +59,23 @@ class AuthViewModel(val database: SkillDatabaseDao, application: Application): A
 
     fun saveProfilePic(uri: Uri,context: Context) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
         viewModelScope.launch {
-
             val bmp =  getBitmap(uri,context)
             val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,userId)
-
-
             withContext(Dispatchers.IO){
                 val  changedUser = database.getUserDirect(userId)
                 changedUser.userImage = savedImageUri
                 database.insertUser(changedUser)
             }
-
             FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri).addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(context, "Profile image changed and saved", Toast.LENGTH_SHORT)
                         .show()
 
                 }
-
             }
             Toast.makeText(context,"Photo will be updated after app restart",Toast.LENGTH_SHORT).show()
         }
-
-
-
     }
 
 

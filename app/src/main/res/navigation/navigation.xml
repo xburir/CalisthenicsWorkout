@@ -82,9 +82,6 @@
         android:name="com.example.calisthenicsworkout.fragments.training.TrainingFragment"
         android:label="Training"
         tools:layout="@layout/fragment_training" >
-        <argument
-            android:name="trainingId"
-            app:argType="string" />
         <action
             android:id="@+id/action_trainingFragment_to_skillFragment"
             app:destination="@id/skillFragment" />
@@ -103,10 +100,8 @@
             android:id="@+id/action_createTrainingFragment_to_skillFragment"
             app:destination="@id/skillFragment" />
         <action
-            android:id="@+id/action_createTrainingFragment_to_trainingFragment"
-            app:destination="@id/trainingFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_createTrainingFragment_to_allTrainingsFragment"
+            app:destination="@id/allTrainingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

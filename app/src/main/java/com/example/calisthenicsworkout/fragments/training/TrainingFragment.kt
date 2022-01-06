@@ -68,6 +68,7 @@ class TrainingFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
 
+
         changeTrainingOnFragment(binding,viewModel.lastViewedTrainingId,adapter)
 
 

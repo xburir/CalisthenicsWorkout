@@ -48,9 +48,9 @@ fun TextView.setTrainingTarget(item: Training?){
 }
 
 @BindingAdapter("trainingImage")
-fun ImageView.setSkillImage(item: Training?){
+fun ImageView.setTrainingImage(item: Training?){
     item?.let {
-        setImageBitmap(it.image)
+        setImageURI(it.image)
     }
 }
 

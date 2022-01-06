@@ -67,9 +67,7 @@ class AllTrainingsFragment : Fragment() {
         viewModel.chosenTrainingId.observe(viewLifecycleOwner, { training ->
             training?.let {
                 this.findNavController().navigate(
-                    AllTrainingsFragmentDirections.actionAllTrainingsFragmentToTrainingFragment(
-                        training
-                    )
+                    AllTrainingsFragmentDirections.actionAllTrainingsFragmentToTrainingFragment()
                 )
             }
         })
@@ -95,7 +93,7 @@ class AllTrainingsFragment : Fragment() {
                 .setView(input)
                 .setPositiveButton("OK") {_,_->
                     val id = input.text.toString()
-                    addTraining(id)
+                    viewModel.addSharedTraining(id,requireContext())
                 }
                 .setNegativeButton("Cancel",null)
                 .show()
@@ -104,48 +102,7 @@ class AllTrainingsFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun addTraining(trainingId: String){
-        val db = FirebaseFirestore.getInstance()
-        val fbStorage = FirebaseStorage.getInstance()
-        db.collection("trainings").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                var found = false
-                for(entry in it.result!!){
-                    if(entry.id == trainingId){
-                        found = true
-                        val id = entry.id
-                        val name = entry.data.getValue("name").toString()
-                        val owner = entry.data.getValue("owner").toString()
-                        val target = entry.data.getValue("target").toString()
-                        val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                        val bitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.nothing)
-                        val training = Training(name,target,id,owner,bitmap,numberOfExercises)
-                        val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
-                        pictureRef.downloadUrl
-                            .addOnSuccessListener {
-                                viewModel.viewModelScope.launch {
-                                    training.image = getBitmap(it)
-                                    viewModel.addTrainingToDatabase(training)
-                                }
-                            }
-                            .addOnFailureListener {
-                                viewModel.viewModelScope.launch {
-                                    viewModel.addTrainingToDatabase(training)
-                                }
-                            }
-                    }
-                }
-                if(!found){
-                    Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
 
-    private suspend fun getBitmap(source: Uri): Bitmap {
-        val loading = ImageLoader(requireContext())
-        val request = ImageRequest.Builder(requireContext()).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
+
+
 }
