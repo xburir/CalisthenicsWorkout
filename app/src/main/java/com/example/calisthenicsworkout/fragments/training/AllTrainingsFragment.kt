@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import coil.request.SuccessResult
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.TrainingListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.databinding.FragmentAllTrainingsBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
@@ -71,6 +73,20 @@ class AllTrainingsFragment : Fragment() {
                 )
             }
         })
+
+        binding.searchBar2.addTextChangedListener {
+            val list = arrayListOf<Training>()
+            viewModel.allTrainings.observe(viewLifecycleOwner,{
+                it.forEach { training ->
+                    val name = training.name.uppercase()
+                    val searched = binding.searchBar2.text.toString().uppercase()
+                    if(name.contains(searched)){
+                        list.add(training)
+                    }
+                }
+                adapter.submitList(list)
+            })
+        }
 
         setHasOptionsMenu(true)
 
