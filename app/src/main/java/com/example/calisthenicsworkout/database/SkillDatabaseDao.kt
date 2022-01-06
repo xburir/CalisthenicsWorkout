@@ -55,6 +55,9 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM User WHERE userId = :userId")
     fun getUser(userId: String): LiveData<User>
 
+    @Query("SELECT * FROM User WHERE userId = :userId")
+    fun getUserDirect(userId: String): User
+
     @Update
     fun updateUser(user: User)
 

@@ -32,11 +32,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import android.util.Base64
-import androidx.core.net.toUri
+import com.example.calisthenicsworkout.util.BitmapUtil
 import com.google.firebase.storage.FirebaseStorage
-import java.io.ByteArrayOutputStream
-import java.io.File
 
 
 class CreateTrainingFragment : Fragment() {
@@ -152,19 +149,9 @@ class CreateTrainingFragment : Fragment() {
     }
 
     private fun saveTrainingImageToFireBaseStorage(training: Training) {
-        val file = File(requireContext().cacheDir,"CUSTOM NAME")
-        file.delete()
-        file.createNewFile()
-        val fileOutputStream = file.outputStream()
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        training.image.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream)
-        val bytearray = byteArrayOutputStream.toByteArray()
-        fileOutputStream.write(bytearray)
-        fileOutputStream.flush()
-        fileOutputStream.close()
-        byteArrayOutputStream.close()
-        val urlka = file.toUri()
-        FirebaseStorage.getInstance().reference.child("trainingImages").child(training.id+".png").putFile(urlka)
+
+        val uri = BitmapUtil.getUri(training.image,100,requireContext())
+        FirebaseStorage.getInstance().reference.child("trainingImages").child(training.id+".png").putFile(uri)
 
     }
 

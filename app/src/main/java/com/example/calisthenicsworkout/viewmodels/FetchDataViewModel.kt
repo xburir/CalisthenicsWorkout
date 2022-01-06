@@ -27,7 +27,8 @@ import kotlin.math.log
 
 class FetchDataViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
-    val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","")
+    val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","",
+        BitmapFactory.decodeResource(getApplication<Application>().applicationContext.resources, R.drawable.default_profile_pic))
 
     val finished = MutableLiveData("nothing")
 
@@ -41,10 +42,8 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     fun readFireStoreData(activity: Activity){
         finished.value = "Starting"
         val context = getApplication<Application>().applicationContext
-        getUser()
+        getUser(context)
         getSkillsFromFireBase(context,activity)
-
-
     }
 
 
@@ -110,18 +109,29 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         }
     }
 
-    private fun getUser() {
+    private fun getUser(context: Context) {
         finished.value = "Getting User Info"
         db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnSuccessListener{
             user.userEmail =  it.data?.getValue("userEmail").toString()
             user.userFullName = it.data?.getValue("userFullName").toString()
-            viewModelScope.launch {
-                withContext(Dispatchers.IO){
-                    database.insertUser(user)
+
+
+
+            val pictureRef = FirebaseStorage.getInstance().reference.child("userProfileImages").child("${user.userId}.png")
+            pictureRef.downloadUrl.addOnCompleteListener{ task ->
+                viewModelScope.launch {
+                    if(task.isSuccessful){
+                        user.userImage = getBitmap(task.result!!,context)
+
+                    }
+                    withContext(Dispatchers.IO){
+                        database.insertUser(user)
+                    }
                 }
             }
 
         }
+
 
     }
 
@@ -145,7 +155,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 mappedThing["liked"] = liked
                 Log.i("Debug","crossref not found, adding ")
                 db.collection("userSkill").add(mappedThing).addOnSuccessListener {
-                    Log.i("Debug_checkifnewskillsadded","added skill to firebase")
+                    Log.i("Debug","added skill to firebase")
                 }
             }
 
