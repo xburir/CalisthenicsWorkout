@@ -20,6 +20,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.AuthActivity
+import com.example.calisthenicsworkout.MainActivity
+import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
@@ -84,7 +86,10 @@ class ProfileFragment : Fragment() {
                     resultLauncher.launch(intent)
                 }
                 .setNeutralButton("Show image"){_,_->
-
+                    val intent = Intent(requireActivity(), PhotoActivity::class.java)
+                    intent.putExtra("folder","userProfileImages")
+                    intent.putExtra("id",FirebaseAuth.getInstance().currentUser!!.uid)
+                    startActivity(intent)
                 }
                 .setNegativeButton("Cancel",null)
                 .show()

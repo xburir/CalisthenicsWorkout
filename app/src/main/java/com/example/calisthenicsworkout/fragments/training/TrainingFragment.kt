@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.TimerActivity
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
@@ -87,9 +88,13 @@ class TrainingFragment : Fragment() {
             val intent = Intent(context, TimerActivity::class.java)
             PrefUtil.setTrainingId(trainingOnScreenId,requireContext())
             startActivity(intent)
+        }
 
-
-
+        binding.trainingImageInFragment.setOnClickListener{
+            val intent = Intent(requireActivity(), PhotoActivity::class.java)
+            intent.putExtra("folder","trainingImages")
+            intent.putExtra("id",trainingOnScreenId)
+            startActivity(intent)
         }
 
 

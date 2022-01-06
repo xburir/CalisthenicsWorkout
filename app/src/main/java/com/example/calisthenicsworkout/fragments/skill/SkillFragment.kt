@@ -24,6 +24,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.calisthenicsworkout.MainActivity
+import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.VideoActivity
 import com.google.firebase.auth.FirebaseAuth
 
@@ -69,6 +70,12 @@ class SkillFragment : Fragment()  {
         binding.afterSkills.adapter = adapterAfter
         binding.afterSkills.layoutManager = managerAfter
 
+        binding.skillImageViewed.setOnClickListener{
+            val intent = Intent(requireActivity(), PhotoActivity::class.java)
+            intent.putExtra("folder","skillImages")
+            intent.putExtra("id",viewModel.lastViewedSkillId)
+            startActivity(intent)
+        }
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {

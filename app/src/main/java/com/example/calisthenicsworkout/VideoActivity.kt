@@ -22,7 +22,6 @@ class VideoActivity : AppCompatActivity() {
 
         val fbStorage = FirebaseStorage.getInstance()
         val skillId = intent.getStringExtra("skillId")
-        val videoHolder = findViewById<VideoView>(R.id.videoView)
         val localFile = File.createTempFile("video", "mp4")
 
         fbStorage.reference.child("skillVideos").child("$skillId.mp4").getFile(localFile)
@@ -36,11 +35,11 @@ class VideoActivity : AppCompatActivity() {
                     binding.progressBar2.visibility = View.GONE
                     binding.videoView.visibility = View.VISIBLE
 
-                    videoHolder.setVideoPath(localFile.absolutePath)
+                    binding.videoView.setVideoPath(localFile.absolutePath)
                     val mediaController = MediaController(this)
-                    mediaController.setAnchorView(videoHolder)
-                    videoHolder.setMediaController(mediaController)
-                    videoHolder.start()
+                    mediaController.setAnchorView(binding.videoView)
+                    binding.videoView.setMediaController(mediaController)
+                    binding.videoView.start()
                 }
             }
             .addOnProgressListener {
