@@ -27,6 +27,7 @@ import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -239,6 +240,7 @@ class TrainingFragment : Fragment() {
                     }
                 }
                 db.collection("trainings").document(trainingOnScreenId).delete()
+                FirebaseStorage.getInstance().reference.child("trainingImages").child("${trainingOnScreenId}.png").delete()
 
                 findNavController().navigate(TrainingFragmentDirections.actionTrainingFragmentToHomeFragment())
             }
