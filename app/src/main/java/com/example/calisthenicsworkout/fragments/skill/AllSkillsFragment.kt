@@ -68,7 +68,9 @@ class AllSkillsFragment : Fragment() {
             val list = arrayListOf<Skill>()
             viewModel.allSkills.observe(viewLifecycleOwner,{
                 it.forEach { skill ->
-                    if(skill.skillName.contains(binding.searchBar.text.toString())){
+                    val skillName = skill.skillName.uppercase()
+                    val searched = binding.searchBar.text.toString().uppercase()
+                    if(skillName.contains(searched)){
                         list.add(skill)
                     }
                 }
