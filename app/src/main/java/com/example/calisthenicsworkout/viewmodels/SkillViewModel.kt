@@ -111,10 +111,12 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun saveTraining(training: Training,context: Context,imgUrl: String,exerciseList: MutableList<Exercise>) {
         viewModelScope.launch {
-            val bmp = BitmapUtil.getBitmap(Uri.parse(imgUrl), context)
-            val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,training.id)
-            training.image = savedImageUri
-            FirebaseStorage.getInstance().reference.child("trainingImages").child("${training.id}.png").putFile(Uri.parse(imgUrl))
+            if(imgUrl.isNotEmpty()){
+                val bmp = BitmapUtil.getBitmap(Uri.parse(imgUrl), context)
+                val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,training.id)
+                training.image = savedImageUri
+                FirebaseStorage.getInstance().reference.child("trainingImages").child("${training.id}.png").putFile(Uri.parse(imgUrl))
+            }
             addTrainingToDatabase(training)
             exerciseList.forEach {
                 addExerciseToDatabase(it)

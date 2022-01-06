@@ -143,10 +143,10 @@ class CreateTrainingFragment : Fragment() {
                     findNavController().navigate(
                         CreateTrainingFragmentDirections.actionCreateTrainingFragmentToAllTrainingsFragment()
                     )
-
+                    hideKeyBoard()
                 }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
-            hideKeyBoard()
+
         }
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill->
