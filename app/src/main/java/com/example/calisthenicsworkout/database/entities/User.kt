@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.database.entities
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -14,5 +15,5 @@ data class User(
 
     var userFullName: String,
 
-    var userImage: Bitmap
+    var userImage: Uri
 )

@@ -27,11 +27,18 @@ import java.io.File
 import java.lang.String
 import android.graphics.BitmapFactory
 import android.provider.MediaStore
+import androidx.lifecycle.MutableLiveData
+import com.example.calisthenicsworkout.database.entities.User
+import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
 import com.example.calisthenicsworkout.util.BitmapUtil
+import com.example.calisthenicsworkout.util.BitmapUtil.Companion.getBitmap
 import java.io.ByteArrayOutputStream
 
 
 class AuthViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
+
+    val currentUser =  database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
+
 
     fun logout(intent: Intent,activity: Activity) {
         viewModelScope.launch {
@@ -50,37 +57,30 @@ class AuthViewModel(val database: SkillDatabaseDao, application: Application): A
         }
     }
 
-    private suspend fun getBitmap(source: Uri, context: Context): Bitmap {
-        val loading = ImageLoader(context)
-        val request = ImageRequest.Builder(context).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
-
-
     fun saveProfilePic(uri: Uri,context: Context) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
         viewModelScope.launch {
 
             val bmp =  getBitmap(uri,context)
-
-
-            val uriToFirebase = BitmapUtil.getUri(bmp,100,context)
-
-            FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uriToFirebase)
-                .addOnSuccessListener {
-                    Toast.makeText(context,"Profile image changed and saved", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context,"Profile image couldn't be uploaded to server", Toast.LENGTH_SHORT).show()
-                }
+            val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,userId)
 
 
             withContext(Dispatchers.IO){
                 val  changedUser = database.getUserDirect(userId)
-                changedUser.userImage = bmp
-                database.updateUser(changedUser)
+                changedUser.userImage = savedImageUri
+                database.insertUser(changedUser)
             }
+
+            FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(context, "Profile image changed and saved", Toast.LENGTH_SHORT)
+                        .show()
+
+                }
+
+            }
+            Toast.makeText(context,"Photo will be updated after app restart",Toast.LENGTH_SHORT).show()
         }
 
 

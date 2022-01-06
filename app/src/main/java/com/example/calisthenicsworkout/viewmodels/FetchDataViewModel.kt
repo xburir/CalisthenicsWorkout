@@ -17,6 +17,8 @@ import coil.request.SuccessResult
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
+import com.example.calisthenicsworkout.util.BitmapUtil
+import com.example.calisthenicsworkout.util.BitmapUtil.Companion.getBitmap
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -27,8 +29,7 @@ import kotlin.math.log
 
 class FetchDataViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
-    val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","",
-        BitmapFactory.decodeResource(getApplication<Application>().applicationContext.resources, R.drawable.default_profile_pic))
+    val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","", Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_profile_pic") )
 
     val finished = MutableLiveData("nothing")
 
@@ -121,7 +122,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             pictureRef.downloadUrl.addOnCompleteListener{ task ->
                 viewModelScope.launch {
                     if(task.isSuccessful){
-                        user.userImage = getBitmap(task.result!!,context)
+                        val bitmap = getBitmap(task.result!!,context)
+                        val savedImageUri = BitmapUtil.saveToInternalStorage(bitmap,context,user.userId)
+                        user.userImage = savedImageUri
 
                     }
                     withContext(Dispatchers.IO){
@@ -280,12 +283,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
 
 
-    private suspend fun getBitmap(source: Uri, context: Context): Bitmap {
-        val loading = ImageLoader(context)
-        val request = ImageRequest.Builder(context).data(source).build()
-        val result = (loading.execute(request) as SuccessResult).drawable
-        return (result as BitmapDrawable).bitmap
-    }
+
 
 
     fun saveFireStore(crossRef: SkillAndSkillCrossRef){

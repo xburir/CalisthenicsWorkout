@@ -23,9 +23,11 @@ import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
+import com.example.calisthenicsworkout.util.BitmapUtil
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.example.calisthenicsworkout.viewmodels.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var viewModel: AuthViewModel
@@ -47,12 +49,13 @@ class ProfileFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(AuthViewModel::class.java)
         binding.lifecycleOwner = this
 
-        viewModel.database.getUser(FirebaseAuth.getInstance().currentUser!!.uid).observe(viewLifecycleOwner,{
+        viewModel.currentUser.observe(viewLifecycleOwner,{
             it?.let { user ->
+                Log.i("Debug","user observe image path "+user.userImage)
                 binding.fullUserName.text = "Full Name: " + user.userFullName
                 binding.userEmail.text = "UID: "+ user.userEmail
                 binding.userId.text = "Email: " + user.userId
-                binding.profileImageView.setImageBitmap(user.userImage)
+                binding.profileImageView.setImageURI(user.userImage)
             }
         })
 
@@ -81,16 +84,16 @@ class ProfileFragment : Fragment() {
                     resultLauncher.launch(intent)
                 }
                 .setNeutralButton("Show image"){_,_->
-                    Toast.makeText(context,"Showing image",Toast.LENGTH_SHORT).show()
+
                 }
-
                 .setNegativeButton("Cancel",null)
-
                 .show()
-
-
-
         }
+
+
+
+
+
 
 
 

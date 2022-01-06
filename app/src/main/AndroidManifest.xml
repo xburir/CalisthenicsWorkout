@@ -11,14 +11,18 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.CalisthenicsWorkout">
         <activity
+            android:name=".PhotoActivity"
+            android:exported="true" />
+        <activity
             android:name=".VideoActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.CalisthenicsWorkout.Video"/>
+            android:theme="@style/Theme.CalisthenicsWorkout.Video" />
 
         <receiver
             android:name=".TimerExpiredReceiver"
