@@ -108,13 +108,22 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     fun onTimerFinished(){
         timerState.value = State.Stopped
         setNewTimerLength()
-        playSound()
+        playSound("finish")
         secondsRemaining.value = timerSeconds.value
     }
 
-    private fun playSound() {
-        val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.bell)
-        mp.start()
+    private fun playSound(type: String) {
+
+        if(type == "finish"){
+            val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.bell)
+            mp.start()
+
+        }
+        if(type == "tick"){
+            val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.tick)
+            mp.start()
+        }
+
     }
 
     fun startTimer(){
@@ -124,6 +133,9 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             override fun onFinish() = onTimerFinished()
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining.value = millisUntilFinished / 1000
+                if(secondsRemaining.value!! < 5L){
+                    playSound("tick")
+                }
             }
         }.start()
     }
