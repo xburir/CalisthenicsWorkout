@@ -35,7 +35,7 @@ class TimerActivity : AppCompatActivity() {
 
         PrefUtil.getTrainingId(this)?.let {
             viewModel.trainingId.value = it
-            viewModel.loadExercises(it,this)
+            viewModel.loadExercises(it)
             viewModel.loadTraining(it,this)
             Log.i("Debug","Found "+ it)
         }

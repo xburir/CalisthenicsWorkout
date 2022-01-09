@@ -58,12 +58,8 @@ class CounterFragment : Fragment() {
 
 
 
-        viewModel.allExercisesFinished.observe(viewLifecycleOwner,{
-            if(it == true){
-                viewModel.timer.cancel()
-                requireActivity().finish()
-            }
-        })
+
+
 
         viewModel.training.observe(viewLifecycleOwner,{
             it?.let{
@@ -71,80 +67,74 @@ class CounterFragment : Fragment() {
             }
         })
 
-        viewModel.currentExercise.observe(viewLifecycleOwner,{ exercise->
-            binding.exerciseNumber.text = "Exercise number "+exercise.order.toString()+"/"+viewModel.exercises.size.toString()
-
-        })
-
-        viewModel.currentSet.observe(viewLifecycleOwner,{ currentSet ->
-            binding.setNumber.text = "Set number "+currentSet.toString()+"/" + viewModel.exercises[viewModel.exercisesDone].sets
-        })
-
         viewModel.secondsRemaining.observe(viewLifecycleOwner,{ it?.let { secondsRemaining ->
-            if(viewModel.currentSet.value == 0){
-                binding.countDownTime.text = "Prepare yourself"
-                binding.progressBar.progress = binding.progressBar.max
-            }else if(viewModel.timerState.value == TimerViewModel.State.Running){
+            if(viewModel.timerState.value == TimerViewModel.State.Running){
                 val secondsStr = (secondsRemaining+1).toString()
                 binding.countDownTime.text = secondsStr
                 binding.progressBar.progress = (secondsRemaining+1).toInt()
-            }else{
-                vibratePhone(500)
-                if(viewModel.allExercisesFinished.value == false){
-                    val exercise = viewModel.exercises[viewModel.exercisesDone]
-                    val reps = exercise.repetitions.split(" ")
-
-                    if(reps[1] == "repetitions" || reps[1] == "repetition"){
-                        binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"x"
-                    }
-                    if(reps[1] == "seconds" || reps[1] == "second" ){
-                        binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"s"
-                    }
-
-
-
-
-                    binding.progressBar.max = viewModel.timerSeconds.value!!.toInt()
-                    binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
-
-
-                }
             }
-
-
         }})
 
 
         viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
-            val exercise = viewModel.exercises[viewModel.exercisesDone]
-            val reps = exercise.repetitions.split(" ")
+            if(!viewModel.allExercisesFinished){
+                binding.exerciseNumber.text = "Exercise number "+(viewModel.exerciseNumber+1) +"/"+viewModel.exercises.size
+                binding.setNumber.text = "Set number "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
+                val exercise = viewModel.exercises[viewModel.exerciseNumber]
+                val reps = exercise.repetitions.split(" ")
 
-            when(timerState){
-                TimerViewModel.State.Running -> {
-                    binding.playPauseButton.text = "Pause"
-                    binding.stopTrainingButton.isEnabled = true
-                    binding.skipCountDownButton.isEnabled = true
-                }
-                TimerViewModel.State.Stopped -> {
-                    binding.stopTrainingButton.isEnabled = true
-                    binding.skipCountDownButton.isEnabled = false
-                    if(viewModel.currentSet.value == 0){
-                        binding.playPauseButton.text = "Start"
-                    }else if(reps[1] == "seconds" || reps[1] == "second"){
-                        binding.playPauseButton.text = "Start timer"
+                when(timerState){
+                    TimerViewModel.State.Running -> {
+                        binding.playPauseButton.text = "Pause"
+                        if(!viewModel.exerciseTimer){
+                            binding.skipCountDownButton.isEnabled = true
+                        }
                     }
-                    else{
-                        binding.playPauseButton.text = "Finished set"
+                    TimerViewModel.State.Stopped -> {
+
+
+                        binding.skipCountDownButton.isEnabled = false
+                        if(viewModel.prepareTimer){
+
+                            binding.countDownTime.text = "Prepare yourself"
+                            binding.progressBar.progress = 0
+                            binding.playPauseButton.text = "Start"
+
+                        }else {
+
+                            if(viewModel.exerciseTimer){
+                                binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.RED)
+                            }else{
+                                binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.GREEN)
+                            }
+
+                            if(reps[1] == "seconds" || reps[1] == "second"){
+                                binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"s"
+                                binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
+                                binding.playPauseButton.text = "Start timer"
+                                vibratePhone(500)
+                            }
+                            if(reps[1] == "repetitions" || reps[1] == "repetition"){
+                                binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"x"
+                                binding.progressBar.progress =  0
+                                binding.playPauseButton.text = "Finished set"
+                                vibratePhone(500)
+                            }
+
+                        }
+                    }
+
+
+                    TimerViewModel.State.Paused -> {
+                        binding.playPauseButton.text = "Resume"
+                        binding.skipCountDownButton.isEnabled = false
                     }
                 }
-                TimerViewModel.State.Paused -> {
-                    binding.playPauseButton.text = "Resume"
-                    binding.skipCountDownButton.isEnabled = true
-                    binding.stopTrainingButton.isEnabled = true
-                }
+            }else{
+                viewModel.timer.cancel()
+                requireActivity().finish()
             }
-        }
-        })
+        } })
 
         viewModel.timerSeconds.observe(viewLifecycleOwner, { it?.let{ timerSeconds ->
             binding.progressBar.max = timerSeconds.toInt()
