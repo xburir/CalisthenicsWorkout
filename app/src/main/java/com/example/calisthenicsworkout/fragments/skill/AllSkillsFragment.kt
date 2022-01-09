@@ -47,12 +47,16 @@ class AllSkillsFragment : Fragment() {
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
 
-        viewModel.allSkills.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.submitList(it)
+        viewModel.allSkills.observe(viewLifecycleOwner, { skillList->
+            val list = mutableListOf<Skill>()
+            skillList.forEach {
+                list.add(it)
             }
+            list.sortBy{item->item.skillName}
+            adapter.submitList(list)
+
         })
-        viewModel.chosenSkillId.observe(viewLifecycleOwner, Observer { skill ->
+        viewModel.chosenSkillId.observe(viewLifecycleOwner,{ skill ->
             skill?.let {
                 this.findNavController().navigate(
                     AllSkillsFragmentDirections.actionTitleFragmentToSkillFragment(
@@ -74,6 +78,7 @@ class AllSkillsFragment : Fragment() {
                         list.add(skill)
                     }
                 }
+                list.sortBy { item -> item.skillName }
                 adapter.submitList(list)
             })
         }

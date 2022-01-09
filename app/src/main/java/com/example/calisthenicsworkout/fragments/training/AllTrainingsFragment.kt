@@ -61,9 +61,12 @@ class AllTrainingsFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
         viewModel.allTrainings.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
+            val listToShow = mutableListOf<Training>()
+            it.forEach { training ->
+                listToShow.add(training)
             }
+            listToShow.sortBy { item -> item.name }
+            adapter.submitList(listToShow)
         })
 
         viewModel.chosenTrainingId.observe(viewLifecycleOwner, { training ->
@@ -84,6 +87,7 @@ class AllTrainingsFragment : Fragment() {
                         list.add(training)
                     }
                 }
+                list.sortBy { item->item.name }
                 adapter.submitList(list)
             })
         }
