@@ -86,7 +86,9 @@ class CounterFragment : Fragment() {
             }else{
                 vibratePhone(500)
                 if(viewModel.allExercisesFinished.value == false){
-                    binding.countDownTime.text = viewModel.exercises[viewModel.exercisesDone].skillName
+                    val exercise = viewModel.exercises[viewModel.exercisesDone]
+                    val reps = exercise.repetitions.split(" ")
+                    binding.countDownTime.text = exercise.skillName+"\nx"+reps[0]
                     binding.progressBar.max = viewModel.timerSeconds.value!!.toInt()
                     binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
                 }
