@@ -6,6 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
@@ -88,9 +93,21 @@ class CounterFragment : Fragment() {
                 if(viewModel.allExercisesFinished.value == false){
                     val exercise = viewModel.exercises[viewModel.exercisesDone]
                     val reps = exercise.repetitions.split(" ")
-                    binding.countDownTime.text = exercise.skillName+"\nx"+reps[0]
+
+                    if(reps[1] == "repetitions" || reps[1] == "repetition"){
+                        binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"x"
+                    }
+                    if(reps[1] == "seconds" || reps[1] == "second" ){
+                        binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"s"
+                    }
+
+
+
+
                     binding.progressBar.max = viewModel.timerSeconds.value!!.toInt()
                     binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
+
+
                 }
             }
 
@@ -99,6 +116,9 @@ class CounterFragment : Fragment() {
 
 
         viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
+            val exercise = viewModel.exercises[viewModel.exercisesDone]
+            val reps = exercise.repetitions.split(" ")
+
             when(timerState){
                 TimerViewModel.State.Running -> {
                     binding.playPauseButton.text = "Pause"
@@ -110,7 +130,10 @@ class CounterFragment : Fragment() {
                     binding.skipCountDownButton.isEnabled = false
                     if(viewModel.currentSet.value == 0){
                         binding.playPauseButton.text = "Start"
-                    }else{
+                    }else if(reps[1] == "seconds" || reps[1] == "second"){
+                        binding.playPauseButton.text = "Start timer"
+                    }
+                    else{
                         binding.playPauseButton.text = "Finished set"
                     }
                 }
