@@ -110,7 +110,7 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/addSkillFragment"
-        android:name="com.example.calisthenicsworkout.AddSkillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.skill.AddSkillFragment"
         android:label="Add Skill"
         tools:layout="@layout/fragment_add_skill">
         <action

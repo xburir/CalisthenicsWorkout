@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout
+package com.example.calisthenicsworkout.fragments.skill
 
 import android.os.Bundle
 import android.util.Log
@@ -8,21 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.SkillAndSkillCrossRef
-import com.example.calisthenicsworkout.databinding.FragmentAddBeforeSkillBinding
 import com.example.calisthenicsworkout.databinding.FragmentAddSkillBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class AddSkillFragment : Fragment() {
     private lateinit var viewModel: SkillViewModel
@@ -55,7 +49,9 @@ class AddSkillFragment : Fragment() {
                     if (binding.timeRadioButton.isChecked)
                         saveFireStore(name,"time",desc)
                     findNavController().navigate(
-                        AddSkillFragmentDirections.actionAddSkillFragmentToSkillFragment(viewModel.lastViewedSkillId)
+                        AddSkillFragmentDirections.actionAddSkillFragmentToSkillFragment(
+                            viewModel.lastViewedSkillId
+                        )
                     )
 
                 }

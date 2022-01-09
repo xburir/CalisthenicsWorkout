@@ -19,5 +19,6 @@ class PrefUtil {
             editor.putString(CHOSEN_TRAINING_ID,trainingId)
             editor.apply()
         }
+
     }
 }

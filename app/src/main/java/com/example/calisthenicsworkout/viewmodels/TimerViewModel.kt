@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.viewmodels
 import android.app.Application
 import android.media.MediaPlayer
 import android.os.*
+import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
@@ -88,8 +89,8 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
             }
             State.Stopped -> {
-                nextSet()
                 startTimer()
+                nextSet()
                 timerState.value = State.Running
             }
             State.Paused -> {

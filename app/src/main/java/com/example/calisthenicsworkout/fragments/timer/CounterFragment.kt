@@ -140,7 +140,9 @@ class CounterFragment : Fragment() {
                 .setMessage("Are you sure you want to cancel this training?")
                 .setCancelable(true)
                 .setPositiveButton("Yes") {_,_->
-                    viewModel.timer.cancel()
+                    if (viewModel.timerState.value == TimerViewModel.State.Running){
+                        viewModel.timer.cancel()
+                    }
                     requireActivity().finish()
                 }
                 .setNegativeButton("No") {_,_->
