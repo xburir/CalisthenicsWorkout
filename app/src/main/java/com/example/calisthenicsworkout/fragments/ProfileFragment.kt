@@ -2,34 +2,23 @@ package com.example.calisthenicsworkout.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.AuthActivity
-import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
-import com.example.calisthenicsworkout.util.BitmapUtil
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.example.calisthenicsworkout.viewmodels.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var viewModel: AuthViewModel
@@ -53,7 +42,6 @@ class ProfileFragment : Fragment() {
 
         viewModel.currentUser.observe(viewLifecycleOwner,{
             it?.let { user ->
-                Log.i("Debug","user observe image path "+user.userImage)
                 binding.fullUserName.text = "Full Name: " + user.userFullName
                 binding.userEmail.text = "UID: "+ user.userEmail
                 binding.userId.text = "Email: " + user.userId

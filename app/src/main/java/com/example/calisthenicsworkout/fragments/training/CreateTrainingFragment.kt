@@ -3,9 +3,6 @@ package com.example.calisthenicsworkout.fragments.training
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,12 +15,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
@@ -33,11 +26,7 @@ import com.example.calisthenicsworkout.databinding.FragmentCreateTrainingBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 import java.lang.Exception
-import com.example.calisthenicsworkout.util.BitmapUtil
-import com.google.firebase.storage.FirebaseStorage
 
 
 class CreateTrainingFragment : Fragment() {

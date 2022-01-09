@@ -2,17 +2,12 @@ package com.example.calisthenicsworkout.viewmodels
 
 import android.app.Application
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
-import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
-import com.example.calisthenicsworkout.fragments.training.CreateTrainingFragmentDirections
-import com.example.calisthenicsworkout.util.BitmapUtil
+import com.example.calisthenicsworkout.util.PictureUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -112,8 +107,8 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     fun saveTraining(training: Training,context: Context,imgUrl: String,exerciseList: MutableList<Exercise>) {
         viewModelScope.launch {
             if(imgUrl.isNotEmpty()){
-                val bmp = BitmapUtil.getBitmap(Uri.parse(imgUrl), context)
-                val savedImageUri = BitmapUtil.saveToInternalStorage(bmp,context,training.id)
+                val bmp = PictureUtil.getBitmapFromUri(Uri.parse(imgUrl), context)
+                val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bmp,context,training.id)
                 training.image = savedImageUri
                 FirebaseStorage.getInstance().reference.child("trainingImages").child("${training.id}.png").putFile(Uri.parse(imgUrl))
             }
@@ -165,8 +160,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
                         val owner = entry.data.getValue("owner").toString()
                         val target = entry.data.getValue("target").toString()
                         val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                        val training = Training(name,target,id,owner,Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic")
-                            ,numberOfExercises)
+                        val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises)
                         val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
                         pictureRef.downloadUrl
                             .addOnSuccessListener {

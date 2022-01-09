@@ -15,12 +15,12 @@ import java.io.*
 import java.util.*
 import kotlin.math.roundToInt
 
-class BitmapUtil: Application(){
+class PictureUtil: Application(){
 
 
     companion object{
 
-        fun getUri(bmp : Bitmap, quality: Int, context: Context): Uri {
+        fun getUriFromBitmap(bmp : Bitmap, quality: Int, context: Context): Uri {
             val file = File(context.cacheDir,"CUSTOM NAME")
             file.delete()
             file.createNewFile()
@@ -35,7 +35,7 @@ class BitmapUtil: Application(){
             return file.toUri()
         }
 
-        suspend fun getBitmap(source: Uri, context: Context): Bitmap {
+        suspend fun getBitmapFromUri(source: Uri, context: Context): Bitmap {
             val loading = ImageLoader(context)
             val request = ImageRequest.Builder(context).data(source).build()
             val result = (loading.execute(request) as SuccessResult).drawable
@@ -50,12 +50,12 @@ class BitmapUtil: Application(){
         }
 
 
-        fun resize(bmp: Bitmap, multiplier: Double): Bitmap{
+        fun resizeBitmap(bmp: Bitmap, multiplier: Double): Bitmap{
             return Bitmap.createScaledBitmap(bmp, (bmp.width*multiplier).roundToInt(),(bmp.height*multiplier).roundToInt(), false)
         }
 
 
-        fun saveToInternalStorage(bitmap: Bitmap, context: Context,imageId: String):Uri{
+        fun saveBitmapToInternalStorage(bitmap: Bitmap, context: Context, imageId: String):Uri{
             val wrapper = ContextWrapper(context)
             var file = wrapper.getDir("images", Context.MODE_PRIVATE)
             file = File(file, "$imageId.png")
@@ -68,6 +68,14 @@ class BitmapUtil: Application(){
                 e.printStackTrace()
             }
             return Uri.parse(file.path)
+        }
+
+        fun getDefaultProfilePic(): Uri{
+            return Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_profile_pic")
+        }
+
+        fun getDefaultTrainingPic(): Uri{
+            return Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic")
         }
 
 
