@@ -28,8 +28,11 @@
     <item android:title="Trainings">
         <menu>
             <item
+                android:id="@+id/myTrainingsFragment"
+                android:title="My Trainings" />
+            <item
                 android:id="@+id/allTrainingsFragment"
-                android:title="Trainings" />
+                android:title="All Trainings" />
             <item
                 android:id="@+id/createTrainingFragment"
                 android:title="Create Training" />
