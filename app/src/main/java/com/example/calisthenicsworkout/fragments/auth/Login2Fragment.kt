@@ -63,9 +63,9 @@ class Login2Fragment : Fragment() {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful){
-                            //Toast.makeText(context,"Logged in successfully", Toast.LENGTH_SHORT).show()
                             val intent = Intent(context, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.putExtra("fetchData","yes")
                             startActivity(intent)
                             requireActivity().finish()
                         }else{

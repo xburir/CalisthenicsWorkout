@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/addBeforeSkillFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AddBeforeSkillFragment"
+        android:name="com.example.calisthenicsworkout.fragments.skill.AddBeforeSkillFragment"
         android:label="Add Before Skill">
         <action
             android:id="@+id/action_aboutFragment_to_skillFragment"

@@ -52,6 +52,7 @@ class RegisterFragment : Fragment() {
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
                                 val intent = Intent(context, WelcomeActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.putExtra("fetchData","yes")
                                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
                                 addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),userId)
                                 pairSkillToUser(userId)

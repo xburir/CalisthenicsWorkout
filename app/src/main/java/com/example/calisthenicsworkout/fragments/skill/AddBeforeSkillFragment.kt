@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout.fragments
+package com.example.calisthenicsworkout.fragments.skill
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -39,7 +39,8 @@ class AddBeforeSkillFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val args = AddBeforeSkillFragmentArgs.fromBundle(
-            requireArguments())
+            requireArguments()
+        )
 
 
         viewModel.allSkills.observe(viewLifecycleOwner,{
@@ -52,9 +53,6 @@ class AddBeforeSkillFragment : Fragment() {
             }
             binding.beforeInput.setAdapter(ArrayAdapter(requireActivity(),android.R.layout.simple_dropdown_item_1line,list))
         })
-
-        //TODO skontrolovat ci tam nie je cross ref este taka
-        //TODO pridat crossre do databazy a na internet
 
 
         binding.button.setOnClickListener {

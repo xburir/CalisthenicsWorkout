@@ -61,6 +61,12 @@ class HomeFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
+        requireActivity().intent.getStringExtra("fetchData")?.let {
+            if(it == "yes"){
+                readOnlineData()
+                requireActivity().intent.putExtra("fetchData","no")
+            }
+        }
 
         return binding.root
     }
@@ -73,36 +79,34 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.toString() == "Read Online Data"){
 
-            val status = TextView(context)
-            val dialog = AlertDialog.Builder(context)
-                .setTitle("Progress")
-                .setView(status)
-                .setCancelable(false)
-                .show()
-
-            viewModel.finished.observe(viewLifecycleOwner,{
-                it?.let { string ->
-                    status.text = string
-                    if (string == "All done"){
-                        dialog.dismiss()
-                        Toast.makeText(context,"Data downloaded",Toast.LENGTH_SHORT).show()
-                    }else if( string == "Starting"){
-                        dialog.show()
-                    }
-                }
-            })
-
-
-            viewModel.readFireStoreData(requireActivity())
+            readOnlineData()
 
 
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun readOnlineData() {
+        val status = TextView(context)
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Progress")
+            .setView(status)
+            .setCancelable(false)
+            .show()
 
-
-
+        viewModel.finished.observe(viewLifecycleOwner,{
+            it?.let { string ->
+                status.text = string
+                if (string == "All done"){
+                    dialog.dismiss()
+                    Toast.makeText(context,"Data downloaded",Toast.LENGTH_SHORT).show()
+                }else if( string == "Starting"){
+                    dialog.show()
+                }
+            }
+        })
+        viewModel.readFireStoreData(requireActivity())
+    }
 
 
 }
