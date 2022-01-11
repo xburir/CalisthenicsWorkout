@@ -17,7 +17,9 @@
         android:theme="@style/Theme.CalisthenicsWorkout">
         <activity
             android:name=".PhotoActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar"/>
         <activity
             android:name=".VideoActivity"
             android:exported="true"

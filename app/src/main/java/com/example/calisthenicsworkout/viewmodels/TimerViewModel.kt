@@ -84,7 +84,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                 Log.i("Debug","Finishing")
             }
         }
-
     }
 
     fun playPauseClick() {
@@ -100,7 +99,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                     startTimer()
                     nextSet()
                 }
-                timerState.value = State.Running
             }
             State.Paused -> {
                 startTimer()
@@ -115,6 +113,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
     fun onTimerFinished(){
+        var startNew = false
 
 
         val reps = exercises[exerciseNumber].repetitions.split(' ')
@@ -126,14 +125,17 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             setNewTimerLength("")
             secondsRemaining.value = timerSeconds.value
             if(exerciseTimer){
-                startTimer()
+                startNew = true
                 nextSet()
             }
             exerciseTimer = false
         }
-
         playSound("finish")
         timerState.value = State.Stopped
+
+        if(startNew){
+            startTimer()
+        }
     }
 
     private fun playSound(type: String) {
@@ -157,6 +159,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             override fun onFinish() = onTimerFinished()
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining.value = millisUntilFinished / 1000
+                Log.i("Debug",secondsRemaining.value.toString()+" exercise timer "+exerciseTimer.toString())
                 if(secondsRemaining.value!! < 5L){
                     playSound("tick")
                 }

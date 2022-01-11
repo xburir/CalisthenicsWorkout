@@ -50,8 +50,12 @@ class PictureUtil: Application(){
         }
 
 
-        fun resizeBitmap(bmp: Bitmap, multiplier: Double): Bitmap{
+        fun resizeBitmapWithMultiplier(bmp: Bitmap, multiplier: Double): Bitmap{
             return Bitmap.createScaledBitmap(bmp, (bmp.width*multiplier).roundToInt(),(bmp.height*multiplier).roundToInt(), false)
+        }
+
+        fun resizeBitmapToSize(bmp: Bitmap, width: Int, height: Int): Bitmap{
+            return Bitmap.createScaledBitmap(bmp, width,height, false)
         }
 
 

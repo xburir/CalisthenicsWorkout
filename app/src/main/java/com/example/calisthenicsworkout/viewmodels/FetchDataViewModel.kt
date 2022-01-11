@@ -13,6 +13,7 @@ import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.util.PictureUtil
 import com.example.calisthenicsworkout.util.PictureUtil.Companion.getBitmapFromUri
+import com.example.calisthenicsworkout.util.PictureUtil.Companion.resizeBitmapToSize
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -44,10 +45,10 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
 
     private fun getSkillsFromFireBase(context: Context,activity: Activity) {
-        db.collection("skills").get().addOnSuccessListener {
+        db.collection("skills").get().addOnSuccessListener { query ->
             val skillsList = mutableListOf<Skill>()
-            for(entry in it){
-                finished.value = "Downloading Skill" + (skillsList.size+1) + "/" + it.size()
+            for(entry in query){
+                finished.value = "Downloading Skill" + (skillsList.size+1) + "/" + query.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val desc = entry.data.getValue("description").toString()
@@ -62,12 +63,13 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 pictureRef.downloadUrl.addOnCompleteListener {
                     viewModelScope.launch {
                         if(it.isSuccessful){
-                            skillInList.skillImage = getBitmapFromUri(it.result!!,context)
+                            val bmp = getBitmapFromUri(it.result!!,context)
+                            skillInList.skillImage = resizeBitmapToSize(bmp,120,120)
                         }
                         withContext(Dispatchers.IO){
                             Log.i("Debug","pridavam skill")
                             database.insert(skillInList)
-                            if(skillInList == skillsList.last()){
+                            if(database.getALlSkillsDirect().size == query.size() ){
                                 getPredefinedTrainings(context)
                                 getUsersTrainings(context)
                                 getSkillsAndSkillCrossRefFromFireBase()
