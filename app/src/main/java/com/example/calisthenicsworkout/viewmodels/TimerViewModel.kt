@@ -1,11 +1,9 @@
 package com.example.calisthenicsworkout.viewmodels
 
-import android.app.Activity
 import android.app.Application
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,9 +12,11 @@ import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
+import com.example.calisthenicsworkout.database.entities.TrainingItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class TimerViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
@@ -25,7 +25,11 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     var timeBetweenSets = 0L
     var trainingId =  MutableLiveData("")
     val training = MutableLiveData<Training>()
+    val trainingItems = mutableListOf<TrainingItem>()
 
+    lateinit var item : ListIterator<TrainingItem>
+    lateinit var nextItem: TrainingItem
+    lateinit var currentItem: TrainingItem
 
     val exercises = arrayListOf<Exercise>()
     var setNumber = 0
@@ -42,7 +46,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     var timerState = MutableLiveData(State.Stopped)
     var secondsRemaining = MutableLiveData(5L)
     var exerciseTimer = false
-    var prepareTimer = true
 
 
     fun loadExercises(trainingId: String) {
@@ -52,6 +55,16 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                     exercises.add(exercise)
                 }
                 exercises.sortBy { exercise -> exercise.order }
+                trainingItems.add(TrainingItem("Prepare yourself","seconds",5))
+                exercises.forEach { exer ->
+                    val reps = exer.repetitions.split(' ')
+                    for (i in 1..exer.sets.toInt()){
+                        trainingItems.add(TrainingItem(exer.skillName,reps[1],reps[0].toInt()))
+                    }
+                }
+                item = trainingItems.listIterator()
+                nextItem = item.next()
+                currentItem = nextItem
             }
         }
     }
@@ -70,21 +83,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
-    private fun nextSet() {
-        if(prepareTimer){
-           prepareTimer = false
-        }else{
-            setNumber++
-        }
-        if(setNumber == exercises[exerciseNumber].sets.toInt()){
-            setNumber = 0
-            exerciseNumber++
-            if(exerciseNumber == exercises.size) {
-                allExercisesFinished = true
-                Log.i("Debug","Finishing")
-            }
-        }
-    }
 
     fun playPauseClick() {
         when (timerState.value){
@@ -93,12 +91,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                 timerState.value = State.Paused
             }
             State.Stopped -> {
-                if(exerciseTimer){
-                    startTimer()
-                }else{
-                    startTimer()
-                    nextSet()
-                }
+                startTimer()
             }
             State.Paused -> {
                 startTimer()
@@ -114,28 +107,40 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
     fun onTimerFinished(){
         var startNew = false
-
-
-        val reps = exercises[exerciseNumber].repetitions.split(' ')
-        if((reps[1] == "seconds" || reps[1] == "second") && !exerciseTimer){
-            setNewTimerLength(reps[0])
-            secondsRemaining.value = timerSeconds.value
-            exerciseTimer = true
-        }else{
-            setNewTimerLength("")
-            secondsRemaining.value = timerSeconds.value
-            if(exerciseTimer){
+        if(item.hasNext()){
+            if (exerciseTimer) {
                 startNew = true
-                nextSet()
+            } else {
+                nextItem = item.next()
+                setNumber++
+                if(  currentItem.name != nextItem.name && currentItem.name != "Prepare yourself"){
+                    exerciseNumber++
+                    setNumber = 0
+                }
+                if((nextItem.type == "seconds" || nextItem.type == "second")){
+                    setNewTimerLength(nextItem.reps.toString())
+                    exerciseTimer = true
+                }else{
+                    setNewTimerLength("")
+                }
+                secondsRemaining.value = timerSeconds.value
             }
-            exerciseTimer = false
+        }else{
+            allExercisesFinished = true
         }
         playSound("finish")
         timerState.value = State.Stopped
 
         if(startNew){
+            exerciseTimer = false
+            setNewTimerLength("")
+            secondsRemaining.value = timerSeconds.value
             startTimer()
         }
+
+        currentItem = nextItem
+
+
     }
 
     private fun playSound(type: String) {
@@ -159,7 +164,6 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             override fun onFinish() = onTimerFinished()
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining.value = millisUntilFinished / 1000
-                Log.i("Debug",secondsRemaining.value.toString()+" exercise timer "+exerciseTimer.toString())
                 if(secondsRemaining.value!! < 5L){
                     playSound("tick")
                 }

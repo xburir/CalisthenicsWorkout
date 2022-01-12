@@ -1,17 +1,10 @@
 package com.example.calisthenicsworkout.fragments.timer
 
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
-import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,13 +14,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.TimerExpiredReceiver
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentCounterBinding
-import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
-import java.util.*
 
 
 class CounterFragment : Fragment() {
@@ -78,7 +68,7 @@ class CounterFragment : Fragment() {
 
         viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
             if(!viewModel.allExercisesFinished){
-                Log.i("Debug","state observing "+timerState)
+
                 binding.exerciseNumber.text = "Exercise number "+(viewModel.exerciseNumber+1) +"/"+viewModel.exercises.size
                 binding.setNumber.text = "Set number "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
 
@@ -95,34 +85,25 @@ class CounterFragment : Fragment() {
                     }
                     TimerViewModel.State.Stopped -> {
                         binding.skipCountDownButton.isEnabled = false
-                        if(viewModel.prepareTimer){
-                            binding.countDownTime.text = "Prepare yourself"
-                            binding.progressBar.progress = 0
+
+                        if(viewModel.nextItem == viewModel.trainingItems.first()){
                             binding.playPauseButton.text = "Start"
-                        }else {
-
-
-                            val exercise = viewModel.exercises[viewModel.exerciseNumber]
-                            val reps = exercise.repetitions.split(" ")
-
-                            if(viewModel.exerciseTimer){
-                                binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.RED)
-                                binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"s"
-                                binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
-                                binding.playPauseButton.text = "Start timer"
-                                vibratePhone(500)
-                            }
-                            if(!viewModel.exerciseTimer){
-                                binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.GREEN)
-                                binding.countDownTime.text = exercise.skillName+"\n"+reps[0]+"x"
-                                binding.progressBar.progress =  0
-                                binding.playPauseButton.text = "Finished set"
-                                vibratePhone(500)
-                            }
-
-
-
+                        }else if(viewModel.exerciseTimer){
+                            binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.RED)
+                            binding.progressBar.progress =  viewModel.timerSeconds.value!!.toInt()
+                            binding.playPauseButton.text = "Start timer"
+                            vibratePhone(500)
+                        }else if(!viewModel.exerciseTimer){
+                            binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.GREEN)
+                            binding.progressBar.progress =  0
+                            binding.playPauseButton.text = "Finished set"
+                            vibratePhone(500)
                         }
+
+                        binding.countDownTime.text = viewModel.nextItem.name+"\n"+viewModel.nextItem.reps.toString()+" "+viewModel.nextItem.type
+
+
+
                     }
 
 
