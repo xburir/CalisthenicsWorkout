@@ -112,10 +112,12 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                 startNew = true
             } else {
                 nextItem = item.next()
-                setNumber++
-                if(  currentItem.name != nextItem.name && currentItem.name != "Prepare yourself"){
-                    exerciseNumber++
-                    setNumber = 0
+                if(currentItem.name != "Prepare yourself"){
+                    setNumber++
+                    if(  currentItem.name != nextItem.name ){
+                        exerciseNumber++
+                        setNumber = 0
+                    }
                 }
                 if((nextItem.type == "seconds" || nextItem.type == "second")){
                     setNewTimerLength(nextItem.reps.toString())
