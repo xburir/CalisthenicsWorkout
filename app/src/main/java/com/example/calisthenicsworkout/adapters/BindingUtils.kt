@@ -6,6 +6,7 @@ import androidx.databinding.BindingAdapter
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.Training
+import com.example.calisthenicsworkout.database.entities.TrainingItem
 
 
 @BindingAdapter("skillNameFormatted")
@@ -74,5 +75,19 @@ fun TextView.setExerciseAmount(item: Exercise?){
 fun ImageView.setSkillImage(item: Exercise?){
     item?.let {
         setImageBitmap(it.skillImage)
+    }
+}
+
+@BindingAdapter("remainingExerciseName")
+fun TextView.setRemainingExerciseName(item: TrainingItem?){
+    item?.let {
+        text = (it.name)
+    }
+}
+
+@BindingAdapter("remainingExerciseReps")
+fun TextView.setRemainingExerciseReps(item: TrainingItem?){
+    item?.let {
+        text = (it.reps.toString()+" "+it.type)
     }
 }

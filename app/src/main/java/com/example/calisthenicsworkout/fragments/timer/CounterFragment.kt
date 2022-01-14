@@ -13,8 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
+import com.example.calisthenicsworkout.adapters.SkillListAdapter
+import com.example.calisthenicsworkout.adapters.TrainingItemListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
+import com.example.calisthenicsworkout.database.entities.TrainingItem
 import com.example.calisthenicsworkout.databinding.FragmentCounterBinding
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
@@ -41,6 +46,11 @@ class CounterFragment : Fragment() {
         viewModelFactory = TimerViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(TimerViewModel::class.java)
         binding.lifecycleOwner = this
+
+        val adapter = TrainingItemListAdapter()
+        val manager = LinearLayoutManager(activity)
+        binding.remainingItemsRecyclerView.layoutManager = manager
+        binding.remainingItemsRecyclerView.adapter = adapter
 
 
 
@@ -69,8 +79,8 @@ class CounterFragment : Fragment() {
         viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
             if(!viewModel.allExercisesFinished){
 
-                binding.exerciseNumber.text = "Exercise number "+(viewModel.exerciseNumber+1) +"/"+viewModel.exercises.size
-                binding.setNumber.text = "Set number "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
+                binding.exerciseNumber.text = "Exercise "+(viewModel.exerciseNumber+1) +"/"+viewModel.exercises.size
+                binding.setNumber.text = "Set "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
 
                 when(timerState){
                     TimerViewModel.State.Running -> {
@@ -101,6 +111,10 @@ class CounterFragment : Fragment() {
                         }
 
                         binding.countDownTime.text = viewModel.nextItem.name+"\n"+viewModel.nextItem.reps.toString()+" "+viewModel.nextItem.type
+
+                        viewUpcomingExercises(adapter)
+
+
 
 
 
@@ -152,6 +166,14 @@ class CounterFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun viewUpcomingExercises(adapter: TrainingItemListAdapter) {
+        val list = mutableListOf<TrainingItem>()
+        for(i in viewModel.item.nextIndex() until viewModel.trainingItems.size){
+            list.add(viewModel.trainingItems[i])
+        }
+        adapter.submitList(list)
     }
 
     fun vibratePhone(time: Long) {

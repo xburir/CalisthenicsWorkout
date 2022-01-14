@@ -67,7 +67,7 @@ class ProfileFragment : Fragment() {
 
         binding.profileImageView.setOnClickListener{
 
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                 .setPositiveButton("Select new image") {_,_->
                     val intent = Intent(Intent.ACTION_PICK)
                     intent.type = "image/*"
@@ -81,6 +81,7 @@ class ProfileFragment : Fragment() {
                 }
                 .setNegativeButton("Cancel",null)
                 .show()
+
         }
 
 
