@@ -59,28 +59,31 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             }
 
             skillsList.forEach {    skillInList ->
-                val pictureRef = fbStorage.reference.child("skillImages").child("${skillInList.skillId}.png")
-                pictureRef.downloadUrl.addOnCompleteListener {
-                    viewModelScope.launch {
-                        if(it.isSuccessful){
-                            val bmp = getBitmapFromUri(it.result!!,context)
-                            skillInList.skillImage = resizeBitmapToSize(bmp,120,120)
-                        }
-                        withContext(Dispatchers.IO){
-                            Log.i("Debug","pridavam skill")
-                            database.insert(skillInList)
-                            if(database.getALlSkillsDirect().size == query.size() ){
-                                getPredefinedTrainings(context)
-                                getUsersTrainings(context)
-                                getSkillsAndSkillCrossRefFromFireBase()
-                                getUserAndSkillCrossRefFromFireBase(activity)
+                val pictureRef = fbStorage.reference.child("skillImagesMini").child("${skillInList.skillId}.jpg")
+                pictureRef.downloadUrl
+                    .addOnCompleteListener {
+                        viewModelScope.launch{
+                            if(it.isSuccessful){
+                                skillInList.skillImage = getBitmapFromUri(it.result!!,context)
+                            }
+                            withContext(Dispatchers.IO){
+                                Log.i("Debug","pridavam skill "+ skillInList.skillName)
+                                database.insert(skillInList)
+                                if(skillInList == skillsList.last()){
+                                    finishedSkillsDownloading(context,activity)
+                                }
                             }
                         }
-                    }
                 }
             }
         }
+    }
 
+    private fun finishedSkillsDownloading(context: Context, activity: Activity) {
+        getPredefinedTrainings(context)
+        getUsersTrainings(context)
+        getSkillsAndSkillCrossRefFromFireBase()
+        getUserAndSkillCrossRefFromFireBase(activity)
 
     }
 
