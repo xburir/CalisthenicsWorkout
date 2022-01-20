@@ -12,7 +12,6 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import java.io.*
-import java.util.*
 import kotlin.math.roundToInt
 
 class PictureUtil: Application(){

@@ -1,6 +1,5 @@
 package com.example.calisthenicsworkout.viewmodels
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -13,7 +12,6 @@ import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.util.PictureUtil
 import com.example.calisthenicsworkout.util.PictureUtil.Companion.getBitmapFromUri
-import com.example.calisthenicsworkout.util.PictureUtil.Companion.resizeBitmapToSize
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -31,24 +29,34 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     private val fbStorage = FirebaseStorage.getInstance()
     private val fbAuth = FirebaseAuth.getInstance()
 
+    val skillsInDb = MutableLiveData(0)
+    val trainingsInDb = MutableLiveData(0)
+
+    val trainings = database.getALlTrainings()
+    val skills = database.getALlSkills()
+
+    val userInfo = MutableLiveData(false)
 
 
 
-    fun readFireStoreData(activity: Activity){
-        finished.value = "Starting"
+
+    fun readFireStoreData(){
         val context = getApplication<Application>().applicationContext
         getUser(context)
-        getSkillsFromFireBase(context,activity)
+        getSkillsFromFireBase(context)
+        skillsInDb.value = 0
+        trainingsInDb.value = 0
+        userInfo.value = false
     }
 
 
 
 
-    private fun getSkillsFromFireBase(context: Context,activity: Activity) {
+    private fun getSkillsFromFireBase(context: Context) {
         db.collection("skills").get().addOnSuccessListener { query ->
+            skillsInDb.value = query.size()
             val skillsList = mutableListOf<Skill>()
             for(entry in query){
-                finished.value = "Downloading Skill" + (skillsList.size+1) + "/" + query.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val desc = entry.data.getValue("description").toString()
@@ -70,7 +78,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                                 Log.i("Debug","pridavam skill "+ skillInList.skillName)
                                 database.insert(skillInList)
                                 if(skillInList == skillsList.last()){
-                                    finishedSkillsDownloading(context,activity)
+                                    finishedSkillsDownloading(context)
                                 }
                             }
                         }
@@ -79,11 +87,11 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         }
     }
 
-    private fun finishedSkillsDownloading(context: Context, activity: Activity) {
+    private fun finishedSkillsDownloading(context: Context) {
         getPredefinedTrainings(context)
         getUsersTrainings(context)
         getSkillsAndSkillCrossRefFromFireBase()
-        getUserAndSkillCrossRefFromFireBase(activity)
+        getUserAndSkillCrossRefFromFireBase()
 
     }
 
@@ -109,8 +117,8 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     }
 
     private fun getUser(context: Context) {
-        finished.value = "Getting User Info"
         db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnSuccessListener{
+            userInfo.value = true
             user.userEmail =  it.data?.getValue("userEmail").toString()
             user.userFullName = it.data?.getValue("userFullName").toString()
 
@@ -136,7 +144,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
     }
 
-    private fun checkIfNewSkillsWereAdded(activity: Activity) {
+    private fun checkIfNewSkillsWereAdded() {
         database.getALlSkillsDirect().forEach { skillInAllSkills ->
             var crossRefFound = false
             database.getUserSkillCrossRefsDirect(user.userId).forEach { userSkillCrossRef ->
@@ -159,10 +167,6 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                     Log.i("Debug","added skill to firebase")
                 }
             }
-
-        }
-        activity.runOnUiThread {
-            finished.value = "All done"
         }
 
 
@@ -171,8 +175,8 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     private fun getUsersTrainings(context: Context) {
         db.collection("trainings").whereEqualTo("owner",user.userId).get().addOnSuccessListener{
             val trainingList = mutableListOf<Training>()
+            trainingsInDb.value = trainingsInDb.value!! +  it.size()
             for(entry in it){
-                finished.value = "Downloading custom training" + (trainingList.size+1) + "/" + it.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
@@ -206,9 +210,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
     private fun getPredefinedTrainings(context: Context) {
         db.collection("trainings").whereEqualTo("owner","admin").get().addOnSuccessListener{
+            trainingsInDb.value = trainingsInDb.value!! +  it.size()
             val trainingList = mutableListOf<Training>()
             for(entry in it){
-                finished.value = "Downloading training" + (trainingList.size+1) + "/" + it.size()
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
@@ -240,12 +244,10 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         }
     }
 
-    private fun getUserAndSkillCrossRefFromFireBase(activity: Activity) {
-        var count = 0
+    private fun getUserAndSkillCrossRefFromFireBase() {
         db.collection("userSkill").whereEqualTo("userId", FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener{
             val list  = mutableListOf<UserAndSkillCrossRef>()
             for (entry in it){
-                finished.value = "Downloading userSkillCrossRef" + ++count + "/" + it.size()
                 val userId = entry.data.getValue("userId").toString()
                 val skillId = entry.data.getValue("skillId").toString()
                 val liked = entry.data.getValue("liked").toString().toBoolean()
@@ -258,7 +260,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                         Log.i("Debug","Adding userAndSkillCrossRef")
                         database.insertUserAndSkillCrossRef(crossRef)
                     }
-                    checkIfNewSkillsWereAdded(activity)
+                    checkIfNewSkillsWereAdded()
                 }
             }
 

@@ -1,51 +1,23 @@
 package com.example.calisthenicsworkout.fragments
 
-import android.app.AlertDialog
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
+import android.app.Dialog
 import android.os.Bundle
-import android.text.InputType
-import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
-import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.VideoActivity
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.database.SkillDatabaseDao
-import com.example.calisthenicsworkout.database.entities.*
+import com.example.calisthenicsworkout.databinding.FetchDataDialogBinding
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
-import com.example.calisthenicsworkout.fragments.skill.SkillFragmentDirections
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
-import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
     private lateinit var viewModel: FetchDataViewModel
     private lateinit var viewModelFactory: FetchDataViewModelFactory
+    private lateinit var dialogg: Dialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,25 +60,52 @@ class HomeFragment : Fragment() {
     }
 
     private fun readOnlineData() {
-        val status = TextView(context)
-        val dialog = AlertDialog.Builder(context)
-            .setTitle("Progress")
-            .setView(status)
-            .setCancelable(false)
-            .show()
+        dialogg = Dialog(requireContext())
+        val dialogBinding = FetchDataDialogBinding.inflate(LayoutInflater.from(requireContext()))
+        dialogg.setContentView(dialogBinding.root)
+        dialogg.setCancelable(false)
 
-        viewModel.finished.observe(viewLifecycleOwner,{
-            it?.let { string ->
-                status.text = string
-                if (string == "All done"){
-                    dialog.dismiss()
-                    Toast.makeText(context,"Data downloaded",Toast.LENGTH_SHORT).show()
-                }else if( string == "Starting"){
-                    dialog.show()
-                }
-            }
+        viewModel.userInfo.observe(viewLifecycleOwner,{
+           if(it){
+               dialogBinding.userInfoTextView.text = "Done"
+           }else{
+               dialogBinding.userInfoTextView.text = "..."
+           }
         })
-        viewModel.readFireStoreData(requireActivity())
+
+        viewModel.skillsInDb.observe(viewLifecycleOwner,{
+            dialogBinding.downloadedSkillsTextView.text = "/"+it.toString()
+            checkFinishedDownload(dialogBinding)
+        })
+        viewModel.trainingsInDb.observe(viewLifecycleOwner,{
+            dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
+            checkFinishedDownload(dialogBinding)
+        })
+
+        viewModel.skills.observe(viewLifecycleOwner,{
+            dialogBinding.addedSkillsTextView.text = it.size.toString()
+            checkFinishedDownload(dialogBinding)
+        })
+        viewModel.trainings.observe(viewLifecycleOwner,{
+            dialogBinding.addedTrainingsTextView.text = it.size.toString()
+            checkFinishedDownload(dialogBinding)
+        })
+
+
+        viewModel.readFireStoreData()
+
+        dialogg.show()
+
+    }
+
+    private fun checkFinishedDownload(dialogBinding: FetchDataDialogBinding) {
+       if(dialogBinding.addedTrainingsTextView.text.toString() == viewModel.trainingsInDb.value.toString()){
+           if(dialogBinding.addedSkillsTextView.text.toString() == viewModel.skillsInDb.value.toString()){
+               if(dialogBinding.userInfoTextView.text.toString() == "Done"){
+                   dialogg.dismiss()
+               }
+           }
+       }
     }
 
 
