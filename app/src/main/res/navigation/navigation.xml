@@ -98,7 +98,8 @@
         tools:layout="@layout/fragment_create_training" >
         <action
             android:id="@+id/action_createTrainingFragment_to_myTrainingsFragment"
-            app:destination="@id/myTrainingsFragment" />
+            app:destination="@id/myTrainingsFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -132,7 +133,8 @@
         tools:layout="@layout/fragment_choose_training_type" >
         <action
             android:id="@+id/action_chooseTrainingTypeFragment_to_chooseExercisesFragment"
-            app:destination="@id/chooseExercisesFragment" />
+            app:destination="@id/chooseExercisesFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/chooseExercisesFragment"
@@ -141,6 +143,7 @@
         tools:layout="@layout/fragment_choose_exercises">
         <action
             android:id="@+id/action_chooseExercisesFragment_to_createTrainingFragment"
-            app:destination="@id/createTrainingFragment" />
+            app:destination="@id/createTrainingFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
 </navigation>
