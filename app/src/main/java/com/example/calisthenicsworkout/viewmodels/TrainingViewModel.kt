@@ -42,21 +42,9 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
             .joinToString("")
     }
 
-    fun saveTraining(name: String, target: String, imgUrl: String,context: Context) {
-        if (name.isNotEmpty()){
-            if(exerciseList.isNotEmpty()){
-                training.name = name
-                training.target = target
-                saveTraining(training,context,imgUrl,exerciseList)
 
 
-
-
-            }else{ Toast.makeText(context,"Your exercises list is empty", Toast.LENGTH_SHORT).show()  }
-        }else{ Toast.makeText(context,"Set the name of your training", Toast.LENGTH_SHORT).show() }
-    }
-
-    fun saveTraining(training: Training, context: Context, imgUrl: String, exerciseList: MutableList<Exercise>) {
+    fun saveTraining(context: Context, imgUrl: String) {
         viewModelScope.launch {
             if(imgUrl.isNotEmpty()){
                 val bmp = PictureUtil.getBitmapFromUri(Uri.parse(imgUrl), context)
@@ -112,7 +100,7 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
     }
 
     fun addExerciseToTraining(nameOfSkill: String, numberOfSets: String, numberOfReps: String, context: Context,adapter: ExerciseListAdapter,activity: Activity) {
-        if(checkRepsAndSets(numberOfReps,numberOfSets,context)){
+
             viewModelScope.launch {
                 withContext(Dispatchers.IO){
                     var found = false
@@ -133,7 +121,6 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                         }
                     if(!found){
                         Toast.makeText(context,"Skill not found", Toast.LENGTH_SHORT).show()
-
                     }else{
                        activity.runOnUiThread {
                            adapter.submitList(exerciseList)
@@ -141,24 +128,10 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                     }
                 }
             }
-        }
+
     }
 
 
 
-    private fun checkRepsAndSets(reps:String, sets:String,context: Context):Boolean{
-        return try {
-            val repss = reps.toInt()
-            val setss = sets.toInt()
-            if(repss>0 && setss>0){
-                true
-            }else{
-                Toast.makeText(context,"Numbers of reps and sets must be more than 0",Toast.LENGTH_SHORT).show()
-                false
-            }
-        }catch (e: Exception){
-            Toast.makeText(context,"Invalid number format",Toast.LENGTH_SHORT).show()
-            false
-        }
-    }
+
 }

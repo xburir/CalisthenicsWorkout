@@ -19,6 +19,7 @@ import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.databinding.FragmentChooseExercisesBinding
 import com.example.calisthenicsworkout.viewmodels.TrainingViewModel
 import com.example.calisthenicsworkout.viewmodels.TrainingViewModelFactory
+import java.lang.Exception
 
 class ChooseExercisesFragment : Fragment() {
 
@@ -53,20 +54,30 @@ class ChooseExercisesFragment : Fragment() {
 
 
 
+
         binding.addSkillToTrainingButton.setOnClickListener{
             val nameOfSkill = binding.skillOptions.text.toString()
             val numberOfSets = binding.setsInput.text.toString()
             val numberOfReps = binding.repsInput.text.toString()
-            viewModel.addExerciseToTraining(nameOfSkill,numberOfSets,numberOfReps,requireContext(),adapter,requireActivity())
+
+            if(checkRepsAndSets(numberOfReps,numberOfSets)){
+                viewModel.addExerciseToTraining(nameOfSkill,numberOfSets,numberOfReps,requireContext(),adapter,requireActivity())
+            }
+
             binding.skillOptions.setText("")
             binding.repsInput.setText("")
             binding.setsInput.setText("")
         }
 
         binding.nexttButton.setOnClickListener {
-            findNavController().navigate(
-                ChooseExercisesFragmentDirections.actionChooseExercisesFragmentToCreateTrainingFragment()
-            )
+            if (viewModel.exerciseList.isNotEmpty()){
+                findNavController().navigate(
+                    ChooseExercisesFragmentDirections.actionChooseExercisesFragmentToCreateTrainingFragment()
+                )
+            }else{
+                Toast.makeText(context,"No exercises added",Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         return binding.root
@@ -75,6 +86,22 @@ class ChooseExercisesFragment : Fragment() {
     private fun hideKeyBoard() {
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+    }
+
+    private fun checkRepsAndSets(reps:String, sets:String):Boolean{
+        return try {
+            val repss = reps.toInt()
+            val setss = sets.toInt()
+            if(repss>0 && setss>0){
+                true
+            }else{
+                Toast.makeText(context,"Numbers of reps and sets must be more than 0",Toast.LENGTH_SHORT).show()
+                false
+            }
+        }catch (e: Exception){
+            Toast.makeText(context,"Invalid number format",Toast.LENGTH_SHORT).show()
+            false
+        }
     }
 
 }
