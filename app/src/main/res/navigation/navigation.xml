@@ -97,10 +97,7 @@
         android:label="Create Training"
         tools:layout="@layout/fragment_create_training" >
         <action
-            android:id="@+id/action_createTrainingFragment_to_skillFragment"
-            app:destination="@id/skillFragment" />
-        <action
-            android:id="@+id/action_createTrainingFragment_to_allTrainingsFragment"
+            android:id="@+id/action_createTrainingFragment_to_myTrainingsFragment"
             app:destination="@id/myTrainingsFragment" />
     </fragment>
     <fragment
@@ -127,5 +124,23 @@
             android:id="@+id/action_myTrainingsFragment_to_trainingFragment"
             app:destination="@id/trainingFragment"
             app:popUpTo="@id/myTrainingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseTrainingTypeFragment"
+        android:name="com.example.calisthenicsworkout.ChooseTrainingTypeFragment"
+        android:label="Choose Training Type"
+        tools:layout="@layout/fragment_choose_training_type" >
+        <action
+            android:id="@+id/action_chooseTrainingTypeFragment_to_chooseExercisesFragment"
+            app:destination="@id/chooseExercisesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseExercisesFragment"
+        android:name="com.example.calisthenicsworkout.ChooseExercisesFragment"
+        android:label="Select Exercises"
+        tools:layout="@layout/fragment_choose_exercises">
+        <action
+            android:id="@+id/action_chooseExercisesFragment_to_createTrainingFragment"
+            app:destination="@id/createTrainingFragment" />
     </fragment>
 </navigation>

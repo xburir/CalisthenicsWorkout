@@ -24,7 +24,9 @@
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_add_skill.xml" value="0.40468583599574015" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_all_skills.xml" value="0.33" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_all_trainings.xml" value="0.33" />
+        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_choose_exercises.xml" value="0.5" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_choose_rest.xml" value="0.33" />
+        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_choose_training_type.xml" value="0.33" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_chosen_skill.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_counter.xml" value="0.35208333333333336" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_create_training.xml" value="0.2717219589257504" />

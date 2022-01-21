@@ -25,13 +25,15 @@ import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.databinding.FragmentCreateTrainingBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
+import com.example.calisthenicsworkout.viewmodels.TrainingViewModel
+import com.example.calisthenicsworkout.viewmodels.TrainingViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import java.lang.Exception
 
 
 class CreateTrainingFragment : Fragment() {
 
-    private lateinit var viewModel: SkillViewModel;
+    private lateinit var viewModel: TrainingViewModel;
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,29 +45,19 @@ class CreateTrainingFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application;
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModel = ViewModelProvider(requireActivity(),SkillViewModelFactory(dataSource,application)).get(SkillViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(),
+            TrainingViewModelFactory(dataSource,application)
+        ).get(TrainingViewModel::class.java)
         binding.lifecycleOwner = this;
 
-        val adapter = ExerciseListAdapter(ExerciseListAdapter.ExerciseListener {
-                skillId -> viewModel.onSkillClicked(skillId)
-        })
-        val manager = LinearLayoutManager(activity)
-        binding.addedSkills.layoutManager = manager
-        binding.addedSkills.adapter = adapter
-
-        viewModel.allSkills.observe(viewLifecycleOwner,{
-            val list = mutableListOf<String>()
-            it.forEach { skill ->
-                list.add(skill.skillName) }
-            binding.skillOptions.setAdapter(ArrayAdapter(requireActivity(),android.R.layout.simple_dropdown_item_1line,list))
-        })
 
 
-        val fb = FirebaseAuth.getInstance()
-        val key =  getRandomString(20)
-        val exerciseList = mutableListOf<Exercise>()
-        val training = Training("undefined","undefined",key, fb.currentUser!!.uid ,
-            Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic"),0)
+
+
+
+
+
+
 
         val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -82,71 +74,26 @@ class CreateTrainingFragment : Fragment() {
             resultLauncher.launch(intent)
         }
 
-        binding.addSkillToTrainingButton.setOnClickListener{
-            val nameOfSkill = binding.skillOptions.text.toString()
-            val numberOfSets = binding.setsInput.text.toString()
-            val numberOfReps = binding.repsInput.text.toString()
-            if(checkRepsAndSets(numberOfReps,numberOfSets)){
-                viewModel.allSkills.observe(viewLifecycleOwner,{
-                    var found = false
-                    var exercise: Exercise
-                    it.forEach { skill->
-                        if(skill.skillName == nameOfSkill){
-                            found = true
-                            training.numberOfExercises++
-                            exercise = if(skill.skillType == "reps"){
-                                if(numberOfReps == "1"){ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps repetition", skill.skillImage,skill.skillName,training.numberOfExercises) }
-                                else{ Exercise(key,skill.skillId ,numberOfSets,"$numberOfReps repetitions", skill.skillImage,skill.skillName,training.numberOfExercises)  }
-                            }else{
-                                if (numberOfReps == "1"){  Exercise(key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName,training.numberOfExercises)  }
-                                else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
-                            }
-                            exerciseList.add(exercise)
-                        }
-                    }
-                    binding.skillOptions.setText("")
-                    binding.repsInput.setText("")
-                    binding.setsInput.setText("")
-                    if(!found){
-                        Toast.makeText(context,"Skill not found",Toast.LENGTH_SHORT).show()
 
-                    }else{
-                        adapter.submitList(exerciseList)
-                    }
-                    hideKeyBoard()
-                })
-            }
-        }
 
         binding.saveTrainingButton.setOnClickListener{
             val name = binding.trainingNameInput.text.toString()
             val target = binding.targetInput.text.toString()
             val imgUrl = binding.imageChooseInput.text.toString()
-            if (name.isNotEmpty()){
-                if(exerciseList.isNotEmpty()){
-                    training.name = name
-                    training.target = target
-                    viewModel.saveTraining(training,requireContext(),imgUrl,exerciseList)
-
-
-                    findNavController().navigate(
-                        CreateTrainingFragmentDirections.actionCreateTrainingFragmentToAllTrainingsFragment()
-                    )
-                    hideKeyBoard()
-                }else{ Toast.makeText(context,"Your exercises list is empty",Toast.LENGTH_SHORT).show()  }
-            }else{ Toast.makeText(context,"Set the name of your training",Toast.LENGTH_SHORT).show() }
-
+            viewModel.saveTraining(name,target,imgUrl,requireContext())
+            hideKeyBoard()
         }
 
-        viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill->
-            skill?.let {
+        viewModel.finished.observe(viewLifecycleOwner,{
+            if(it){
                 this.findNavController().navigate(
-                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToSkillFragment(
-                        skill
-                    )
+                    CreateTrainingFragmentDirections.actionCreateTrainingFragmentToMyTrainingsFragment()
                 )
             }
+
         })
+
+
 
         return binding.root
     }
@@ -163,28 +110,9 @@ class CreateTrainingFragment : Fragment() {
 
 
 
-    private fun getRandomString(length: Int) : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
-    }
 
-    private fun checkRepsAndSets(reps:String, sets:String):Boolean{
-        return try {
-            val repss = reps.toInt()
-            val setss = sets.toInt()
-            if(repss>0 && setss>0){
-                true
-            }else{
-                Toast.makeText(context,"Numbers of reps and sets must be more than 0",Toast.LENGTH_SHORT).show()
-                false
-            }
-        }catch (e:Exception){
-            Toast.makeText(context,"Invalid number format",Toast.LENGTH_SHORT).show()
-            false
-        }
-    }
+
+
 
 
 

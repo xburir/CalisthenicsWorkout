@@ -31,17 +31,9 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
-    suspend fun addTrainingToDatabase(training: Training) {
-        withContext(Dispatchers.IO){
-            database.insertTraining(training)
-        }
-    }
 
-    suspend fun addExerciseToDatabase(exercise: Exercise){
-        withContext(Dispatchers.IO){
-            database.insertExercise(exercise)
-        }
-    }
+
+
 
     fun onSkillClicked(skillId: String) {
         chosenSkillId.value = skillId
@@ -104,46 +96,12 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
 
-    fun saveTraining(training: Training,context: Context,imgUrl: String,exerciseList: MutableList<Exercise>) {
-        viewModelScope.launch {
-            if(imgUrl.isNotEmpty()){
-                val bmp = PictureUtil.getBitmapFromUri(Uri.parse(imgUrl), context)
-                val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bmp,context,training.id)
-                training.image = savedImageUri
-                FirebaseStorage.getInstance().reference.child("trainingImages").child("${training.id}.png").putFile(Uri.parse(imgUrl))
-            }
-            addTrainingToDatabase(training)
-            exerciseList.forEach {
-                addExerciseToDatabase(it)
-            }
-            saveTrainingToFirestore(training,exerciseList,context)
-        }
-    }
 
-    private fun saveTrainingToFirestore(training: Training, exerciseList: MutableList<Exercise>, context: Context) {
-        val database = FirebaseFirestore.getInstance()
-        val mappedTraining: MutableMap<String,Any> = HashMap()
-        mappedTraining["name"] = training.name
-        mappedTraining["owner"] = training.owner
-        mappedTraining["numberOfExercises"] = training.numberOfExercises
-        mappedTraining["target"] = training.target
-        database.collection("trainings").document(training.id).set(mappedTraining)
-            .addOnSuccessListener {
-                lastViewedTrainingId = training.id
-            }
-            .addOnFailureListener {
-                Toast.makeText(context,"Saving training to online database failed, upload it later with good internet connection",Toast.LENGTH_SHORT).show()
-            }
-        exerciseList.forEach{
-            val mappedExercise: MutableMap<String,Any> = HashMap()
-            mappedExercise["reps"] = it.repetitions
-            mappedExercise["sets"] = it.sets
-            mappedExercise["order"] = it.order
-            mappedExercise["skillId"] = it.skillId
-            mappedExercise["trainingId"] = it.trainingId
-            database.collection("exercises").add(mappedExercise)
-        }
 
+    suspend fun addTrainingToDatabase(training: Training) {
+        withContext(Dispatchers.IO){
+            database.insertTraining(training)
+        }
     }
 
     fun addSharedTraining(trainingId: String,context: Context){
