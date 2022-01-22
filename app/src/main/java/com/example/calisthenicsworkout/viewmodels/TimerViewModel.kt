@@ -13,6 +13,8 @@ import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.database.entities.TrainingItem
+import com.example.calisthenicsworkout.util.PictureUtil
+import com.example.calisthenicsworkout.util.PrefUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,6 +27,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     var timeBetweenSets = 0L
     var trainingId =  MutableLiveData("")
     val training = MutableLiveData<Training>()
+    var _training = Training("","","","",PictureUtil.getDefaultTrainingPic(),0,"0","")
     val trainingItems = mutableListOf<TrainingItem>()
 
     lateinit var item : ListIterator<TrainingItem>
@@ -56,23 +59,39 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                 }
                 exercises.sortBy { exercise -> exercise.order }
                 trainingItems.add(TrainingItem("Prepare yourself","seconds",5))
-                exercises.forEach { exer ->
-                    val reps = exer.repetitions.split(' ')
-                    for (i in 1..exer.sets.toInt()){
-                        trainingItems.add(TrainingItem(exer.skillName,reps[1],reps[0].toInt()))
-                    }
-                }
-                item = trainingItems.listIterator()
-                nextItem = item.next()
-                currentItem = nextItem
+
+
+
             }
         }
+    }
+
+    fun prepareExercises() {
+        if(_training.type == "circular"){
+
+            for(i in 1.._training.numberOfSets.toInt()){
+                exercises.forEach {
+                    val reps = it.repetitions.split(' ')
+                    trainingItems.add(TrainingItem(it.skillName,reps[1],reps[0].toInt()))
+                }
+            }
+        }else{
+            exercises.forEach { exer ->
+                val reps = exer.repetitions.split(' ')
+                for (i in 1..exer.sets.toInt()){
+                    trainingItems.add(TrainingItem(exer.skillName,reps[1],reps[0].toInt()))
+                }
+            }
+        }
+        item = trainingItems.listIterator()
+        nextItem = item.next()
+        currentItem = nextItem
     }
 
     fun loadTraining(id: String,requireActivity: FragmentActivity) {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                val _training = database.getTraining(id)
+                _training = database.getTraining(id)
                 requireActivity.runOnUiThread {
                     training.value = _training
                 }
@@ -113,11 +132,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             } else {
                 nextItem = item.next()
                 if(currentItem.name != "Prepare yourself"){
-                    setNumber++
-                    if(  currentItem.name != nextItem.name ){
-                        exerciseNumber++
-                        setNumber = 0
-                    }
+                    nextSet()
                 }
                 if((nextItem.type == "seconds" || nextItem.type == "second")){
                     setNewTimerLength(nextItem.reps.toString())
@@ -142,6 +157,23 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
         currentItem = nextItem
 
+
+    }
+
+    private fun nextSet() {
+        if(_training.type == "circular"){
+            exerciseNumber++
+            if(exerciseNumber >= _training.numberOfExercises){
+                exerciseNumber = 0
+                setNumber++
+            }
+        }else{
+            setNumber++
+            if(  currentItem.name != nextItem.name ){
+                exerciseNumber++
+                setNumber = 0
+            }
+        }
 
     }
 
@@ -177,11 +209,21 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
         if(reps.isNotEmpty()){
             timerSeconds.value = reps.toLong()
         }else{
-            timerSeconds.value = if(setNumber == exercises[exerciseNumber].sets.toInt()){
-                timeBetweenExercises
-            }   else{
-                timeBetweenSets
+            if(_training.type == "circular"){
+
+                if(exerciseNumber == _training.numberOfExercises-1){
+                    timerSeconds.value = timeBetweenSets
+                }else{
+                    timerSeconds.value = timeBetweenExercises
+                }
+            }else{
+                timerSeconds.value = if(setNumber == exercises[exerciseNumber].sets.toInt()){
+                    timeBetweenExercises
+                }   else{
+                    timeBetweenSets
+                }
             }
+
 
         }
 

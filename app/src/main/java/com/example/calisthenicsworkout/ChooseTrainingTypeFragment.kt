@@ -36,9 +36,11 @@ class ChooseTrainingTypeFragment : Fragment() {
         binding.nextButton.setOnClickListener {
             if(binding.circularTrainingButton.isChecked){
                 viewModel.type = "circular"
+                viewModel.training.type = "circular"
                 navigate()
             }else if( binding.normalTrainingButton.isChecked){
                 viewModel.type = "normal"
+                viewModel.training.type = "resistance"
                 navigate()
             }else{
                 Toast.makeText(context,"Select a type",Toast.LENGTH_SHORT).show()
@@ -51,6 +53,7 @@ class ChooseTrainingTypeFragment : Fragment() {
     }
 
     private fun navigate() {
+        viewModel.exerciseList.clear()
         findNavController().navigate(
             ChooseTrainingTypeFragmentDirections.actionChooseTrainingTypeFragmentToChooseExercisesFragment()
         )

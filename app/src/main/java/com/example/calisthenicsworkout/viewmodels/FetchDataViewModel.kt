@@ -180,9 +180,13 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
+                val type = entry.data.getValue("type").toString()
                 val defaultPic = PictureUtil.getDefaultTrainingPic()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                val training = Training(name,target,id,user.userId,defaultPic,numberOfExercises)
+                val training = Training(name,target,id,user.userId,defaultPic,numberOfExercises,"0",type)
+
+
+
                 trainingList.add(training)
             }
 
@@ -216,9 +220,10 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
                 val target = entry.data.getValue("target").toString()
+                val type = entry.data.getValue("type").toString()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
                 val defaultPic = PictureUtil.getDefaultTrainingPic()
-                val training = Training(name,target,id,"admin",defaultPic,numberOfExercises)
+                val training = Training(name,target,id,"admin",defaultPic,numberOfExercises,"0",type)
                 trainingList.add(training)
             }
 

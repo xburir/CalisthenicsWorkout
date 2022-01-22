@@ -30,8 +30,9 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
     val key = getRandomString(20)
 
     val training = Training("undefined","undefined",key, FirebaseAuth.getInstance().currentUser!!.uid ,
-        Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic"),0)
+        Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic"),0,"","")
     val exerciseList = mutableListOf<Exercise>()
+    val listToDisplay = MutableLiveData(exerciseList)
 
     val finished = MutableLiveData(false)
 
@@ -80,6 +81,7 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
         mappedTraining["owner"] = training.owner
         mappedTraining["numberOfExercises"] = training.numberOfExercises
         mappedTraining["target"] = training.target
+        mappedTraining["type"] = training.type
         database.collection("trainings").document(training.id).set(mappedTraining)
             .addOnCompleteListener {
                 finished.value = true
@@ -117,14 +119,13 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                                 else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
                             }
                             exerciseList.add(exercise)
+                            activity.runOnUiThread {
+                                listToDisplay.value = exerciseList
+                            }
                         }
                         }
                     if(!found){
                         Toast.makeText(context,"Skill not found", Toast.LENGTH_SHORT).show()
-                    }else{
-                       activity.runOnUiThread {
-                           adapter.submitList(exerciseList)
-                       }
                     }
                 }
             }

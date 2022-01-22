@@ -80,7 +80,12 @@ class CounterFragment : Fragment() {
             if(!viewModel.allExercisesFinished){
 
                 binding.exerciseNumber.text = "Exercise "+(viewModel.exerciseNumber+1) +"/"+viewModel.exercises.size
-                binding.setNumber.text = "Set "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
+                if(viewModel._training.type == "circular"){
+                    binding.setNumber.text = "Set "+(viewModel.setNumber+1)+"/" + viewModel._training.numberOfSets
+                }else{
+                    binding.setNumber.text = "Set "+(viewModel.setNumber+1)+"/" + viewModel.exercises[viewModel.exerciseNumber].sets
+                }
+
 
                 when(timerState){
                     TimerViewModel.State.Running -> {

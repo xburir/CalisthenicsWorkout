@@ -52,6 +52,19 @@ class ChooseExercisesFragment : Fragment() {
             binding.skillOptions.setAdapter(ArrayAdapter(requireActivity(),android.R.layout.simple_dropdown_item_1line,list))
         })
 
+        viewModel.listToDisplay.observe(viewLifecycleOwner,{
+            adapter.submitList(it)
+            if(it.isNotEmpty()){
+                hideKeyBoard()
+            }
+
+
+        })
+
+
+        if(viewModel.type == "circular"){
+            binding.setsInput.visibility = View.GONE
+        }
 
 
 
@@ -60,9 +73,17 @@ class ChooseExercisesFragment : Fragment() {
             val numberOfSets = binding.setsInput.text.toString()
             val numberOfReps = binding.repsInput.text.toString()
 
-            if(checkRepsAndSets(numberOfReps,numberOfSets)){
-                viewModel.addExerciseToTraining(nameOfSkill,numberOfSets,numberOfReps,requireContext(),adapter,requireActivity())
+            if(viewModel.type == "circular"){
+                if(checkReps(numberOfReps)){
+                    viewModel.addExerciseToTraining(nameOfSkill,"0",numberOfReps,requireContext(),adapter,requireActivity())
+                }
+            }else{
+                if(checkRepsAndSets(numberOfReps,numberOfSets)){
+                    viewModel.addExerciseToTraining(nameOfSkill,numberOfSets,numberOfReps,requireContext(),adapter,requireActivity())
+                }
             }
+
+
 
             binding.skillOptions.setText("")
             binding.repsInput.setText("")
@@ -83,10 +104,21 @@ class ChooseExercisesFragment : Fragment() {
         return binding.root
     }
 
-    private fun hideKeyBoard() {
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+    private fun checkReps(numberOfReps: String): Boolean {
+        return try {
+            val repss = numberOfReps.toInt()
+            if(repss > 0){
+                true
+            } else{
+                Toast.makeText(context,"Numbers of reps must be more than 0",Toast.LENGTH_SHORT).show()
+                false
+            }
+        }catch (e:Exception){
+            Toast.makeText(context,"Invalid number format",Toast.LENGTH_SHORT).show()
+            false
+        }
     }
+
 
     private fun checkRepsAndSets(reps:String, sets:String):Boolean{
         return try {
@@ -104,4 +136,8 @@ class ChooseExercisesFragment : Fragment() {
         }
     }
 
+    private fun hideKeyBoard() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireActivity().currentFocus!!.windowToken, 0)
+    }
 }

@@ -14,5 +14,7 @@ data class Training(
     val id: String,
     var owner: String,
     var image: Uri,
-    var numberOfExercises: Int
+    var numberOfExercises: Int,
+    var numberOfSets: String,
+    var type: String
 )

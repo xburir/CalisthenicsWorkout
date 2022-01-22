@@ -42,11 +42,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:autoSizeMaxTextSize="30sp"
             android:autoSizeTextType="uniform"
             android:text="TextView"
             android:textSize="30sp"
-            android:autoSizeMaxTextSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView7"
+            app:layout_constraintBottom_toTopOf="@+id/textView13"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
             app:layout_constraintTop_toTopOf="@+id/training_image_in_recycleview"
@@ -57,7 +57,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="@+id/training_image_in_recycleview"
@@ -73,12 +72,32 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="5dp"
             android:text="Targeted muscles:"
             app:layout_constraintBottom_toTopOf="@+id/training_target_in_recycleview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Type"
+            app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
             app:layout_constraintTop_toBottomOf="@+id/training_name_in_recycleview" />
+
+        <TextView
+            android:id="@+id/training_type_in_recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            app:trainingType="@{training}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView13"
+            app:layout_constraintStart_toEndOf="@+id/textView13"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

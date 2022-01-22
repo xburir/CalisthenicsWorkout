@@ -118,7 +118,8 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
                         val owner = entry.data.getValue("owner").toString()
                         val target = entry.data.getValue("target").toString()
                         val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                        val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises)
+                        val type = entry.data.getValue("type").toString()
+                        val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises,"0",type)
                         val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
                         pictureRef.downloadUrl
                             .addOnSuccessListener {

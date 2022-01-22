@@ -48,6 +48,13 @@ fun TextView.setTrainingTarget(item: Training?){
     }
 }
 
+@BindingAdapter("trainingType")
+fun TextView.setTrainingType(item: Training?){
+    item?.let{
+        text = item.type
+    }
+}
+
 @BindingAdapter("trainingImage")
 fun ImageView.setTrainingImage(item: Training?){
     item?.let {
@@ -66,7 +73,12 @@ fun TextView.setExerciseName(item: Exercise?){
 @BindingAdapter("exerciseAmount")
 fun TextView.setExerciseAmount(item: Exercise?){
     item?.let{
-        text = item.sets+"x "+item.repetitions
+        if(item.sets == "0"){
+            text = item.repetitions
+        }else{
+            text = item.sets+"x "+item.repetitions
+        }
+
 
     }
 }

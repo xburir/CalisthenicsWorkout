@@ -34,22 +34,52 @@ class ChooseRestFragment : Fragment() {
         viewModelFactory = TimerViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(TimerViewModel::class.java)
 
+
+        viewModel.training.observe(viewLifecycleOwner,{
+           if( it.type == "circular"){
+               binding.circularSetsInput.visibility = View.VISIBLE
+               binding.betweenExercisesInput.visibility = View.GONE
+           }else{
+               binding.circularSetsInput.visibility = View.GONE
+               binding.betweenExercisesInput.visibility = View.VISIBLE
+           }
+        })
+
+
+
+
         binding.setButton.setOnClickListener {
-            if(checkInputs(binding.betweenExercisesInput.text.toString(),binding.betweenSetsInput.text.toString())){
-                viewModel.timeBetweenExercises = binding.betweenExercisesInput.text.toString().toLong()
-                viewModel.timeBetweenSets = binding.betweenSetsInput.text.toString().toLong()
-                findNavController().navigate(
-                    ChooseRestFragmentDirections.actionChooseRestFragmentToCounterFragment()
-                )
+            val betweenSets = binding.betweenSetsInput.text.toString()
+            val sets = binding.circularSetsInput.text.toString()
+            val betweenExercises = binding.betweenExercisesInput.text.toString()
+
+            if(viewModel._training.type == "circular"){
+                if(checkInputs(betweenSets,sets)){
+                    viewModel.timeBetweenExercises = 0L
+                    viewModel._training.numberOfSets = sets
+                    inputsOk(betweenSets)
+                }
+            }else{
+                if(checkInputs(betweenExercises,betweenSets)){
+                    viewModel.timeBetweenExercises =betweenExercises.toLong()
+                    inputsOk(betweenSets)
+                }
             }
             binding.betweenSetsInput.setText("")
             binding.betweenExercisesInput.setText("")
+            binding.circularSetsInput.setText("")
 
         }
 
-
-
        return binding.root
+    }
+
+    private fun inputsOk(betweenSets: String) {
+        viewModel.timeBetweenSets = betweenSets.toLong()
+        findNavController().navigate(
+            ChooseRestFragmentDirections.actionChooseRestFragmentToCounterFragment()
+        )
+        viewModel.prepareExercises()
     }
 
     private fun checkInputs(text: String, text1: String): Boolean{
