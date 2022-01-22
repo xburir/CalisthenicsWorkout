@@ -128,7 +128,7 @@
     </fragment>
     <fragment
         android:id="@+id/chooseTrainingTypeFragment"
-        android:name="com.example.calisthenicsworkout.ChooseTrainingTypeFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.ChooseTrainingTypeFragment"
         android:label="Choose Training Type"
         tools:layout="@layout/fragment_choose_training_type" >
         <action
@@ -138,7 +138,7 @@
     </fragment>
     <fragment
         android:id="@+id/chooseExercisesFragment"
-        android:name="com.example.calisthenicsworkout.ChooseExercisesFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.ChooseExercisesFragment"
         android:label="Select Exercises"
         tools:layout="@layout/fragment_choose_exercises">
         <action

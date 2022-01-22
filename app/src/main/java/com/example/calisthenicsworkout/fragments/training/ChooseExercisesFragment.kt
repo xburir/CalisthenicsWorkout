@@ -1,4 +1,4 @@
-package com.example.calisthenicsworkout
+package com.example.calisthenicsworkout.fragments.training
 
 import android.content.Context
 import android.os.Bundle
@@ -13,9 +13,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.databinding.FragmentChooseExercisesBinding
 import com.example.calisthenicsworkout.viewmodels.TrainingViewModel
 import com.example.calisthenicsworkout.viewmodels.TrainingViewModelFactory
@@ -31,7 +31,8 @@ class ChooseExercisesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_choose_exercises,container,false)
+        binding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_choose_exercises,container,false)
 
         val application = requireNotNull(this.activity).application;
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
