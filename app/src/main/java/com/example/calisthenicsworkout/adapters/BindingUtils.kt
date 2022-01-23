@@ -3,10 +3,7 @@ package com.example.calisthenicsworkout.adapters
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.example.calisthenicsworkout.database.entities.Exercise
-import com.example.calisthenicsworkout.database.entities.Skill
-import com.example.calisthenicsworkout.database.entities.Training
-import com.example.calisthenicsworkout.database.entities.TrainingItem
+import com.example.calisthenicsworkout.database.entities.*
 
 
 @BindingAdapter("skillNameFormatted")
@@ -101,5 +98,19 @@ fun TextView.setRemainingExerciseName(item: TrainingItem?){
 fun TextView.setRemainingExerciseReps(item: TrainingItem?){
     item?.let {
         text = (it.reps.toString()+" "+it.type)
+    }
+}
+
+@BindingAdapter("userImage")
+fun ImageView.setUserImage(item: User?){
+    item?.let {
+        setImageURI(item.userImage)
+    }
+}
+
+@BindingAdapter("userName")
+fun TextView.setUserName(item: User?){
+    item?.let {
+        text = item.userFullName
     }
 }

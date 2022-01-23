@@ -146,4 +146,14 @@
             app:destination="@id/createTrainingFragment"
             app:popUpTo="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/allUsersFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AllUsersFragment"
+        android:label="All Users"
+        tools:layout="@layout/fragment_all_users">
+        <action
+            android:id="@+id/action_allUsersFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/homeFragment" />
+    </fragment>
 </navigation>

@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
@@ -26,6 +27,13 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     val allTrainings = database.getALlTrainings()
     val chosenTrainingId = MutableLiveData<String>()
     var lastViewedTrainingId = ""
+
+    val db = FirebaseFirestore.getInstance()
+    val fbStorage = FirebaseStorage.getInstance()
+
+    val users = mutableListOf<User>()
+    val allUsers = MutableLiveData(users)
+
 
 
 
@@ -105,8 +113,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
     fun addSharedTraining(trainingId: String,context: Context){
-        val db = FirebaseFirestore.getInstance()
-        val fbStorage = FirebaseStorage.getInstance()
+
         db.collection("trainings").get().addOnCompleteListener{
             if(it.isSuccessful){
                 var found = false
@@ -139,6 +146,38 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
                 }
                 if(!found){
                     Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun getAllUsers(context: Context){
+        users.clear()
+        db.collection("users").get().addOnSuccessListener { query ->
+            for (entry in query){
+                val id = entry.id
+                val fullName = entry.data.getValue("userFullName").toString()
+                val email = entry.data.getValue("userEmail").toString()
+                val pictureRef = fbStorage.reference.child("userProfileImages").child("${id}.png")
+                pictureRef.downloadUrl
+                    .addOnFailureListener {
+                        val user = User(id,email,fullName,PictureUtil.getDefaultProfilePic())
+                        users.add(user)
+                        allUsers.value = users
+                }
+                    .addOnSuccessListener {
+                        viewModelScope.launch {
+                            val bmp = PictureUtil.getBitmapFromUri(it,context)
+                            val url = PictureUtil.saveBitmapToInternalStorage(bmp,context,id)
+                            val user = User(id,email,fullName,url)
+                            users.add(user)
+                            allUsers.value = users
+                        }
+
+
+
+
+
                 }
             }
         }
