@@ -91,16 +91,7 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
-    <fragment
-        android:id="@+id/createTrainingFragment"
-        android:name="com.example.calisthenicsworkout.fragments.training.CreateTrainingFragment"
-        android:label="Create Training"
-        tools:layout="@layout/fragment_create_training" >
-        <action
-            android:id="@+id/action_createTrainingFragment_to_myTrainingsFragment"
-            app:destination="@id/myTrainingsFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.calisthenicsworkout.fragments.ProfileFragment"
@@ -127,26 +118,6 @@
             app:popUpTo="@id/myTrainingsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/chooseTrainingTypeFragment"
-        android:name="com.example.calisthenicsworkout.fragments.training.ChooseTrainingTypeFragment"
-        android:label="Choose Training Type"
-        tools:layout="@layout/fragment_choose_training_type" >
-        <action
-            android:id="@+id/action_chooseTrainingTypeFragment_to_chooseExercisesFragment"
-            app:destination="@id/chooseExercisesFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/chooseExercisesFragment"
-        android:name="com.example.calisthenicsworkout.fragments.training.ChooseExercisesFragment"
-        android:label="Select Exercises"
-        tools:layout="@layout/fragment_choose_exercises">
-        <action
-            android:id="@+id/action_chooseExercisesFragment_to_createTrainingFragment"
-            app:destination="@id/createTrainingFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/allUsersFragment"
         android:name="com.example.calisthenicsworkout.fragments.AllUsersFragment"
         android:label="All Users"
@@ -156,4 +127,9 @@
             app:destination="@id/profileFragment"
             app:popUpTo="@id/homeFragment" />
     </fragment>
+    <activity
+        android:id="@+id/createTrainingActivity"
+        android:name="com.example.calisthenicsworkout.CreateTrainingActivity"
+        android:label="Create Training"
+        tools:layout="@layout/activity_create_training" />
 </navigation>

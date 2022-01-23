@@ -38,7 +38,7 @@
                 android:id="@+id/allTrainingsFragment"
                 android:title="All Trainings" />
             <item
-                android:id="@+id/chooseTrainingTypeFragment"
+                android:id="@+id/createTrainingActivity"
                 android:title="Create Training" />
         </menu>
     </item>

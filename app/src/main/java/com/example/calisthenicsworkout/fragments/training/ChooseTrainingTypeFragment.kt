@@ -55,7 +55,7 @@ class ChooseTrainingTypeFragment : Fragment() {
     private fun navigate() {
         viewModel.exerciseList.clear()
         findNavController().navigate(
-            ChooseTrainingTypeFragmentDirections.actionChooseTrainingTypeFragmentToChooseExercisesFragment()
+            ChooseTrainingTypeFragmentDirections.actionChooseTrainingTypeFragment2ToChooseExercisesFragment()
         )
     }
 

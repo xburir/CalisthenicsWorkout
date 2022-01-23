@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +14,6 @@ import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
-import com.example.calisthenicsworkout.fragments.training.CreateTrainingFragmentDirections
 import com.example.calisthenicsworkout.util.PictureUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -131,8 +131,6 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
             }
 
     }
-
-
 
 
 }

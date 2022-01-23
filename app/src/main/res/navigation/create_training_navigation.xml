@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_training_navigation"
+    app:startDestination="@id/chooseTrainingTypeFragment2">
+
+    <fragment
+        android:id="@+id/chooseExercisesFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.ChooseExercisesFragment"
+        android:label="Choose Exercises"
+        tools:layout="@layout/fragment_choose_exercises" >
+        <action
+            android:id="@+id/action_chooseExercisesFragment_to_createTrainingFragment"
+            app:destination="@id/createTrainingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseTrainingTypeFragment2"
+        android:name="com.example.calisthenicsworkout.fragments.training.ChooseTrainingTypeFragment"
+        android:label="Choose Training Type"
+        tools:layout="@layout/fragment_choose_training_type" >
+        <action
+            android:id="@+id/action_chooseTrainingTypeFragment2_to_chooseExercisesFragment"
+            app:destination="@id/chooseExercisesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createTrainingFragment"
+        android:name="com.example.calisthenicsworkout.fragments.training.CreateTrainingFragment"
+        android:label="Finish Creating"
+        tools:layout="@layout/fragment_create_training" />
+</navigation>
