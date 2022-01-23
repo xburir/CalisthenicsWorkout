@@ -7,13 +7,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.*
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -34,46 +35,41 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
         super.onCreate(savedInstanceState)
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        drawerLayout = binding.drawerLayout
+        val toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
 
-
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-        //find navigation controller in activity
+        val drawerLayout = binding.drawerLayout
+        val navView = binding.navView
         val navController = this.findNavController(R.id.myNavHostFragment)
-        //link navigation controller to action bar
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
-        NavigationUI.setupWithNavController(binding.navView, navController)
 
-        Timber.i("onCreate");
 
+        appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.homeFragment,R.id.profileFragment,R.id.allUsersFragment,R.id.allSkillsFragment,R.id.favSkillsFragment,
+            R.id.myTrainingsFragment,R.id.allTrainingsFragment),drawerLayout)
+        setupActionBarWithNavController(navController,appBarConfiguration)
+        navView.setupWithNavController(navController)
 
 
     }
-    //find navcontroller and then call navController.navigateUp
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.myNavHostFragment)
-        return NavigationUI.navigateUp(navController,drawerLayout)
+        val navController = findNavController(R.id.myNavHostFragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-
-
-
-
-
-
-
-
-
-//    turn off keyboard
+    //    turn off keyboard
 //    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
 //        if (currentFocus != null) {
 //            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

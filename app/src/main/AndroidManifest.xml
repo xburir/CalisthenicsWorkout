@@ -59,7 +59,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.CalisthenicsWorkout" />
+            android:theme="@style/Theme.CalisthenicsWorkoutNoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
