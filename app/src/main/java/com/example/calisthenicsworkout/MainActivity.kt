@@ -23,10 +23,7 @@ import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
 import com.example.calisthenicsworkout.databinding.NavDrawerHeaderBinding
-import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
-import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
-import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
+import com.example.calisthenicsworkout.viewmodels.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -39,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var viewModel: FetchDataViewModel
-    private lateinit var viewModelFactory: FetchDataViewModelFactory
+    private lateinit var viewModel: AuthViewModel
+    private lateinit var viewModelFactory: AuthViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -54,8 +51,8 @@ class MainActivity : AppCompatActivity() {
 
         val application = requireNotNull(this).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = FetchDataViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(this,viewModelFactory).get(FetchDataViewModel::class.java)
+        viewModelFactory = AuthViewModelFactory(dataSource,application);
+        viewModel = ViewModelProvider(this,viewModelFactory).get(AuthViewModel::class.java)
 
 
         val drawerLayout = binding.drawerLayout

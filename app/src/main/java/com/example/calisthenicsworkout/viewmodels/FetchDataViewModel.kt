@@ -22,7 +22,6 @@ import kotlinx.coroutines.withContext
 class FetchDataViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
     val user = User(FirebaseAuth.getInstance().currentUser!!.uid,"","", PictureUtil.getDefaultProfilePic())
-    val currentUser =  database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
     val finished = MutableLiveData("nothing")
 

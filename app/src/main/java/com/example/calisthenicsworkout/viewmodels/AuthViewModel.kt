@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,7 @@ import com.example.calisthenicsworkout.util.PictureUtil.Companion.getBitmapFromU
 class AuthViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
     val currentUser =  database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
-
+    val uploadProgress = MutableLiveData(0L)
 
     fun logout(intent: Intent,activity: Activity) {
         viewModelScope.launch {
@@ -50,14 +51,11 @@ class AuthViewModel(val database: SkillDatabaseDao, application: Application): A
                 changedUser.userImage = savedImageUri
                 database.insertUser(changedUser)
             }
-            FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(context, "Profile image changed and saved", Toast.LENGTH_SHORT)
-                        .show()
-
+            FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri)
+                .addOnProgressListener {
+                    uploadProgress.value = (100*it.bytesTransferred/it.totalByteCount)
                 }
-            }
-            Toast.makeText(context,"Photo will be updated after app restart",Toast.LENGTH_SHORT).show()
+
         }
     }
 

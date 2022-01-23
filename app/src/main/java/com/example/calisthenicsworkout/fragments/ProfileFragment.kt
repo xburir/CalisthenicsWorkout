@@ -2,12 +2,14 @@ package com.example.calisthenicsworkout.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
+import com.example.calisthenicsworkout.databinding.ProgressDialogBinding
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.example.calisthenicsworkout.viewmodels.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -60,6 +63,23 @@ class ProfileFragment : Fragment() {
                 val data: Intent? = result.data
                 data?.data?.let {
                     viewModel.saveProfilePic(it,requireContext())
+
+                    val dialog = Dialog(requireContext())
+                    val dialogBinding = ProgressDialogBinding.inflate(LayoutInflater.from(requireContext()))
+                    dialog.setContentView(dialogBinding.root)
+                    dialog.setCancelable(false)
+                    dialog.show()
+                    viewModel.uploadProgress.observe(viewLifecycleOwner,{ progress ->
+                        dialogBinding.progressBar5.progress = progress.toInt()
+                        dialogBinding.progressDialogPercent.text = "$progress%"
+                        dialogBinding.progressDialogTitle.text = "Uploading picture"
+                        if(progress == 100L){
+                            Toast.makeText(context, "Profile image changed and saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,"Photo will be updated after app restart",Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                            viewModel.uploadProgress.value = 0L
+                        }
+                    })
                 }
 
             }
