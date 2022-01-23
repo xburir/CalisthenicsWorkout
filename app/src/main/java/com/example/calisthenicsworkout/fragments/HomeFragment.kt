@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = FetchDataViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(this,viewModelFactory).get(FetchDataViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(FetchDataViewModel::class.java)
 
         setHasOptionsMenu(true)
 

@@ -22,6 +22,9 @@ import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.*
 import com.example.calisthenicsworkout.databinding.ActivityMainBinding
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
+import com.example.calisthenicsworkout.databinding.NavDrawerHeaderBinding
+import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
+import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var viewModel: FetchDataViewModel
+    private lateinit var viewModelFactory: FetchDataViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -46,8 +51,25 @@ class MainActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
+
+        val application = requireNotNull(this).application
+        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
+        viewModelFactory = FetchDataViewModelFactory(dataSource,application);
+        viewModel = ViewModelProvider(this,viewModelFactory).get(FetchDataViewModel::class.java)
+
+
         val drawerLayout = binding.drawerLayout
         val navView = binding.navView
+        val header  = navView.getHeaderView(0)
+        val headerBinding = NavDrawerHeaderBinding.bind(header)
+        
+        viewModel.currentUser.observe(this,{
+            headerBinding.userNameInHeader.text = it.userFullName
+            headerBinding.imageView3.setImageURI(it.userImage)
+            headerBinding.emailInHeader.text = it.userEmail
+        })
+
+
         val navController = this.findNavController(R.id.myNavHostFragment)
 
 
