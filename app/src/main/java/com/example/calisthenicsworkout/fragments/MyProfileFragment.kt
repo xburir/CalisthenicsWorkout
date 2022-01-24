@@ -17,16 +17,16 @@ import com.example.calisthenicsworkout.AuthActivity
 import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
-import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
+import com.example.calisthenicsworkout.databinding.FragmentMyProfileBinding
 import com.example.calisthenicsworkout.databinding.ProgressDialogBinding
 import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.example.calisthenicsworkout.viewmodels.AuthViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
-class ProfileFragment : Fragment() {
+class MyProfileFragment : Fragment() {
     private lateinit var viewModel: AuthViewModel
     private lateinit var viewModelFactory: AuthViewModelFactory
-    private lateinit var binding: FragmentProfileBinding
+    private lateinit var binding: FragmentMyProfileBinding
 
 
     override fun onCreateView(
@@ -34,7 +34,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_profile,container,false)
+            R.layout.fragment_my_profile,container,false)
 
 
         val application = requireNotNull(this.activity).application
@@ -46,8 +46,8 @@ class ProfileFragment : Fragment() {
         viewModel.currentUser.observe(viewLifecycleOwner,{
             it?.let { user ->
                 binding.fullUserName.text = "Full Name: " + user.userFullName
-                binding.userEmail.text = "UID: "+ user.userEmail
-                binding.userId.text = "Email: " + user.userId
+                binding.userEmail.text = "Email: "+ user.userEmail
+                binding.userId.text = "UID: " + user.userId
                 binding.profileImageView.setImageURI(user.userImage)
             }
         })
