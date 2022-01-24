@@ -53,7 +53,15 @@ class CounterFragment : Fragment() {
         binding.remainingItemsRecyclerView.adapter = adapter
 
 
+        binding.soundSwitch.isChecked = viewModel.sound
+        binding.soundSwitch.setOnCheckedChangeListener{ buttonView, isChecked ->
+            viewModel.sound = isChecked
+        }
 
+        binding.vibrationSwitch.isChecked = viewModel.vibrate
+        binding.vibrationSwitch.setOnCheckedChangeListener{buttonview, isChecked ->
+            viewModel.vibrate = isChecked
+        }
 
 
 
@@ -112,7 +120,10 @@ class CounterFragment : Fragment() {
                             binding.progressBar.supportProgressTintList = ColorStateList.valueOf(Color.GREEN)
                             binding.progressBar.progress =  0
                             binding.playPauseButton.text = "Finished set"
-                            vibratePhone(500)
+                            if(viewModel.vibrate){
+                                vibratePhone(500)
+                            }
+
                         }
 
                         binding.countDownTime.text = viewModel.nextItem.name+"\n"+viewModel.nextItem.reps.toString()+" "+viewModel.nextItem.type

@@ -40,6 +40,9 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
 
     var allExercisesFinished = false
 
+    var vibrate = true
+    var sound = true
+
 
     enum class State{
         Stopped,Paused,Running
@@ -145,7 +148,9 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
         }else{
             allExercisesFinished = true
         }
+
         playSound("finish")
+
         timerState.value = State.Stopped
 
         if(startNew){
@@ -178,16 +183,19 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
     private fun playSound(type: String) {
+        if(sound){
+            if(type == "finish"){
+                val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.bell)
+                mp.start()
 
-        if(type == "finish"){
-            val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.bell)
-            mp.start()
+            }
+            if(type == "tick"){
+                val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.tick)
+                mp.start()
+            }
+        }
 
-        }
-        if(type == "tick"){
-            val mp = MediaPlayer.create(getApplication<Application>().applicationContext, R.raw.tick)
-            mp.start()
-        }
+
 
     }
 
