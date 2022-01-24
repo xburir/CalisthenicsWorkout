@@ -8,11 +8,11 @@
     android:title="Home" />
 
     <item
-        android:id="@+id/profileFragment"
+        android:id="@+id/myProfileFragment"
         android:title="Profile" />
 
     <item
-        android:id="@+id/allUsersFragment"
+        android:id="@+id/profileActivity"
         android:title="All Users" />
 
 

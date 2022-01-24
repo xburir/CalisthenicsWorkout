@@ -93,7 +93,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/profileFragment"
+        android:id="@+id/myProfileFragment"
         android:name="com.example.calisthenicsworkout.fragments.MyProfileFragment"
         android:label="My profile"
         tools:layout="@layout/fragment_my_profile" />
@@ -117,19 +117,14 @@
             app:destination="@id/trainingFragment"
             app:popUpTo="@id/myTrainingsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/allUsersFragment"
-        android:name="com.example.calisthenicsworkout.fragments.AllUsersFragment"
-        android:label="All Users"
-        tools:layout="@layout/fragment_all_users">
-        <action
-            android:id="@+id/action_allUsersFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
     <activity
         android:id="@+id/createTrainingActivity"
         android:name="com.example.calisthenicsworkout.CreateTrainingActivity"
         android:label="Create Training"
         tools:layout="@layout/activity_create_training" />
+    <activity
+        android:id="@+id/profileActivity"
+        android:name="com.example.calisthenicsworkout.ProfileActivity"
+        android:label="activity_profile"
+        tools:layout="@layout/activity_profile" />
 </navigation>

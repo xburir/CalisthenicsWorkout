@@ -151,37 +151,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
-    fun getAllUsers(context: Context){
-        users.clear()
-        db.collection("users").get().addOnSuccessListener { query ->
-            for (entry in query){
-                val id = entry.id
-                val fullName = entry.data.getValue("userFullName").toString()
-                val email = entry.data.getValue("userEmail").toString()
-                val pictureRef = fbStorage.reference.child("userProfileImages").child("${id}.png")
-                pictureRef.downloadUrl
-                    .addOnFailureListener {
-                        val user = User(id,email,fullName,PictureUtil.getDefaultProfilePic())
-                        users.add(user)
-                        allUsers.value = users
-                }
-                    .addOnSuccessListener {
-                        viewModelScope.launch {
-                            val bmp = PictureUtil.getBitmapFromUri(it,context)
-                            val url = PictureUtil.saveBitmapToInternalStorage(bmp,context,id)
-                            val user = User(id,email,fullName,url)
-                            users.add(user)
-                            allUsers.value = users
-                        }
 
-
-
-
-
-                }
-            }
-        }
-    }
 
 
 }
