@@ -55,7 +55,21 @@ class MyProfileFragment : Fragment() {
 
 
         binding.logoutButton.setOnClickListener {
-            viewModel.logout(Intent(context, AuthActivity::class.java),requireActivity())
+            if(binding.unregisterSwitch.isChecked){
+                AlertDialog.Builder(context)
+                    .setTitle("Are you sure you want to unregister?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        AlertDialog.Builder(context).setTitle("Deleting...").setCancelable(false).show()
+                        viewModel.unregister(Intent(context, AuthActivity::class.java),requireActivity())
+
+                    }
+                    .setNegativeButton("No",null)
+                    .show()
+            }else{
+                viewModel.logout(Intent(context, AuthActivity::class.java),requireActivity())
+            }
+
+
         }
 
         val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

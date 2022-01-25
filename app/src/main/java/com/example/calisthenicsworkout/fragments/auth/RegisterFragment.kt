@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentRegisterBinding
+import com.example.calisthenicsworkout.util.PrefUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,7 +51,7 @@ class RegisterFragment : Fragment() {
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
                                 val intent = Intent(context, WelcomeActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                intent.putExtra("fetchData","yes")
+                                PrefUtil.setLoadSettings(true,requireContext())
                                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
                                 addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),userId)
                                 startActivity(intent)

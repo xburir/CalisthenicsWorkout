@@ -19,26 +19,12 @@ class WelcomeActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome)
 
 
-        intent.getStringExtra("fetchData")?.let {
-            if(it == "yes"){
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("fetchData","yes")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(intent)
-                    finish()
-                }, 300)
-
-            }else{
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("fetchData","no")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startActivity(intent)
-                    finish()
-                }, 300)
-            }
-        }
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        Handler(Looper.getMainLooper()).postDelayed({
+            startActivity(intent)
+            finish()
+        }, 300)
 
 
 

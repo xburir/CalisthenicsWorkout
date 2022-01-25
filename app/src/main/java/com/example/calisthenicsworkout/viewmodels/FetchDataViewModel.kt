@@ -34,6 +34,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     val trainings = database.getALlTrainings()
     val skills = database.getALlSkills()
 
+
     val userInfo = MutableLiveData(true)
 
 

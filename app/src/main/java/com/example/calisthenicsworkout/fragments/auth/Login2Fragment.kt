@@ -15,6 +15,7 @@ import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentLogin2Binding
+import com.example.calisthenicsworkout.util.PrefUtil
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -64,7 +65,7 @@ class Login2Fragment : Fragment() {
                         if (task.isSuccessful){
                             val intent = Intent(context, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            intent.putExtra("fetchData","yes")
+                            PrefUtil.setLoadSettings(true,requireContext())
                             startActivity(intent)
                             requireActivity().finish()
                         }else{

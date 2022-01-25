@@ -11,6 +11,7 @@ import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FetchDataDialogBinding
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
+import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,12 +36,15 @@ class HomeFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        requireActivity().intent.getStringExtra("fetchData")?.let {
-            if(it == "yes"){
-                readOnlineData()
-                requireActivity().intent.putExtra("fetchData","no")
-            }
+        PrefUtil.getLoadSetting(requireContext())?.let {
+             if(it){
+                 readOnlineData()
+                 PrefUtil.setLoadSettings(false,requireContext())
+             }
         }
+
+
+
 
 
 
@@ -68,6 +72,7 @@ class HomeFragment : Fragment() {
         val dialogBinding = FetchDataDialogBinding.inflate(LayoutInflater.from(requireContext()))
         dialogg.setContentView(dialogBinding.root)
         dialogg.setCancelable(false)
+        dialogg.show()
 
         viewModel.userInfo.observe(viewLifecycleOwner,{
            if(it){
@@ -79,38 +84,33 @@ class HomeFragment : Fragment() {
 
         viewModel.skillsInDb.observe(viewLifecycleOwner,{
             dialogBinding.downloadedSkillsTextView.text = "/"+it.toString()
-            checkFinishedDownload(dialogBinding)
         })
         viewModel.trainingsInDb.observe(viewLifecycleOwner,{
             dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
-            checkFinishedDownload(dialogBinding)
         })
 
         viewModel.skills.observe(viewLifecycleOwner,{
             dialogBinding.addedSkillsTextView.text = it.size.toString()
-            checkFinishedDownload(dialogBinding)
         })
+
         viewModel.trainings.observe(viewLifecycleOwner,{
             dialogBinding.addedTrainingsTextView.text = it.size.toString()
-            checkFinishedDownload(dialogBinding)
+            if(it.size == viewModel.trainingsInDb.value){
+                if(it.isNotEmpty()){
+                    dialogg.dismiss()
+                }
+
+            }
         })
 
 
         viewModel.readFireStoreData()
 
-        dialogg.show()
+
 
     }
 
-    private fun checkFinishedDownload(dialogBinding: FetchDataDialogBinding) {
-       if(dialogBinding.addedTrainingsTextView.text.toString() == viewModel.trainingsInDb.value.toString()){
-           if(dialogBinding.addedSkillsTextView.text.toString() == viewModel.skillsInDb.value.toString()){
-               if(dialogBinding.userInfoTextView.text.toString() == "Done"){
-                   dialogg.dismiss()
-               }
-           }
-       }
-    }
+
 
 
 }

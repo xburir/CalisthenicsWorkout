@@ -5,6 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -131,6 +133,81 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
                     uploadProgress.value = (100*it.bytesTransferred/it.totalByteCount)
                 }
 
+        }
+    }
+
+    fun unregister(intent: Intent,activity: Activity) {
+        val auth = FirebaseAuth.getInstance()
+        val currUserId = auth.currentUser!!.uid
+
+        deleteUserImage(currUserId,intent, activity)
+
+
+
+
+
+
+    }
+
+    private fun deleteUserSkillCrossRefs(currUserId: String, intent: Intent,activity: Activity) {
+        db.collection("userSkill").whereEqualTo("userId",currUserId).get().addOnSuccessListener {   userSkillQuery->
+            for(entry in userSkillQuery){
+                db.collection("userSkill").document(entry.id).delete().addOnCompleteListener {
+                    Log.i("Debug","Deleting User Skill Cross Ref")
+                    if(entry == userSkillQuery.last()){
+                        deleteTrainings(currUserId,intent, activity)
+                    }
+                }
+            }
+            if(userSkillQuery.isEmpty){
+                deleteTrainings(currUserId,intent, activity)
+            }
+        }
+    }
+
+    private fun deleteTrainings(currUserId: String, intent: Intent,activity: Activity) {
+        db.collection("trainings").whereEqualTo("owner",currUserId).get().addOnSuccessListener { trainingQuery ->
+            for (trainingEntry in trainingQuery){
+                val trainingId = trainingEntry.id
+                fbStorage.reference.child("trainingImages").child("$trainingId.png").delete().addOnCompleteListener {
+                    db.collection("exercises").whereEqualTo("trainingId",trainingId).get().addOnSuccessListener { exerciseQuery ->
+                        for (exerciseEntry in exerciseQuery){
+                            db.collection("exercises").document(exerciseEntry.id).delete().addOnCompleteListener {
+                                Log.i("Debug","Deleting exercise")
+                                if(exerciseEntry == exerciseQuery.last()){
+                                    db.collection("trainings").document(trainingId).delete().addOnCompleteListener {
+                                        Log.i("Debug","Deleting training")
+                                        FirebaseAuth.getInstance().currentUser!!.delete().addOnCompleteListener {
+                                            Log.i("Debug","Deleting user")
+                                            logout(intent,activity)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(trainingQuery.isEmpty){
+                FirebaseAuth.getInstance().currentUser!!.delete().addOnCompleteListener {
+                    Log.i("Debug","Deleting user")
+                    logout(intent,activity)
+                }
+            }
+        }
+    }
+
+    private fun deleteUserImage(currUserId: String,intent: Intent,activity: Activity) {
+        fbStorage.reference.child("userProfileImages").child("$currUserId.png").delete().addOnCompleteListener {
+            Log.i("Debug","Deleting User image")
+            deleteUserInfo(currUserId,intent, activity)
+        }
+    }
+
+    private fun deleteUserInfo(currUserId: String,intent: Intent,activity: Activity) {
+        db.collection("users").document(currUserId).delete().addOnCompleteListener {
+            Log.i("Debug","Deleting User info")
+            deleteUserSkillCrossRefs(currUserId,intent, activity)
         }
     }
 

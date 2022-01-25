@@ -20,5 +20,17 @@ class PrefUtil {
             editor.apply()
         }
 
+        private const val LOAD_ONLINE_DATABASE = "com.example.calisthenicsworkout.load_online_database"
+
+        fun getLoadSetting(context: Context): Boolean?{
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            return preferences.getBoolean(LOAD_ONLINE_DATABASE,false)
+        }
+
+        fun setLoadSettings(boolean: Boolean, context: Context){
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putBoolean(LOAD_ONLINE_DATABASE,boolean)
+            editor.apply()
+        }
     }
 }
