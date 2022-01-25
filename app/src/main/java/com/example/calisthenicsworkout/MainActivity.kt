@@ -42,9 +42,12 @@ class MainActivity : AppCompatActivity() {
         val headerBinding = NavDrawerHeaderBinding.bind(header)
         
         viewModel.currentUser.observe(this,{
-            headerBinding.userNameInHeader.text = it.userFullName
-            headerBinding.imageView3.setImageURI(it.userImage)
-            headerBinding.emailInHeader.text = it.userEmail
+            it?.let{
+                headerBinding.userNameInHeader.text = it.userFullName
+                headerBinding.imageView3.setImageURI(it.userImage)
+                headerBinding.emailInHeader.text = it.userEmail
+            }
+
         })
 
 
