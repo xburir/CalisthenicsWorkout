@@ -14,8 +14,6 @@ import androidx.navigation.findNavController
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentRegisterBinding
-import com.example.calisthenicsworkout.viewmodels.AuthViewModel
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore

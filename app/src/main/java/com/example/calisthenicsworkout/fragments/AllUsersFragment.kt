@@ -2,18 +2,15 @@ package com.example.calisthenicsworkout.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.adapters.TrainingListAdapter
 import com.example.calisthenicsworkout.adapters.UsersListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.User
@@ -21,8 +18,6 @@ import com.example.calisthenicsworkout.databinding.FragmentAllUsersBinding
 import com.example.calisthenicsworkout.databinding.ProgressDialogBinding
 import com.example.calisthenicsworkout.viewmodels.ProfileViewModel
 import com.example.calisthenicsworkout.viewmodels.ProfileViewModelFactory
-import com.example.calisthenicsworkout.viewmodels.SkillViewModel
-import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 class AllUsersFragment : Fragment() {
@@ -51,7 +46,7 @@ class AllUsersFragment : Fragment() {
 
 
 
-       downloadingProgressShow()
+        downloadingProgressShow()
 
 
         viewModel.allUsers.observe(viewLifecycleOwner,{
@@ -65,7 +60,7 @@ class AllUsersFragment : Fragment() {
             adapter.submitList(list)
         })
 
-        viewModel.currentUser.observe(viewLifecycleOwner,{
+        viewModel.chosenUser.observe(viewLifecycleOwner,{
             it?.let{
                 findNavController().navigate(
                     AllUsersFragmentDirections.actionAllUsersFragmentToProfileFragment()
@@ -78,6 +73,9 @@ class AllUsersFragment : Fragment() {
     }
 
     private fun downloadingProgressShow() {
+        if(viewModel.downloadProgress.value != 100L){
+            viewModel.getAllUsers()
+        }
         val dialog = Dialog(requireContext())
         val dialogBinding = ProgressDialogBinding.inflate(LayoutInflater.from(requireContext()))
         dialog.setContentView(dialogBinding.root)

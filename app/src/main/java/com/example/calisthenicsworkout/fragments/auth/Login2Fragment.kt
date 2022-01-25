@@ -15,7 +15,6 @@ import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentLogin2Binding
-import com.example.calisthenicsworkout.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 

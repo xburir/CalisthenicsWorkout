@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var viewModel: AuthViewModel
-    private lateinit var viewModelFactory: AuthViewModelFactory
+    private lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModelFactory: ProfileViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
 
         val application = requireNotNull(this).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = AuthViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(this,viewModelFactory).get(AuthViewModel::class.java)
+        viewModelFactory = ProfileViewModelFactory(dataSource,application);
+        viewModel = ViewModelProvider(this,viewModelFactory).get(ProfileViewModel::class.java)
 
 
         val drawerLayout = binding.drawerLayout
@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+
 
 
         val navController = this.findNavController(R.id.myNavHostFragment)

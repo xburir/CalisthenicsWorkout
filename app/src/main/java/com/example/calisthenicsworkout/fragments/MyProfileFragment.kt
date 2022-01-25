@@ -19,13 +19,13 @@ import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentMyProfileBinding
 import com.example.calisthenicsworkout.databinding.ProgressDialogBinding
-import com.example.calisthenicsworkout.viewmodels.AuthViewModel
-import com.example.calisthenicsworkout.viewmodels.AuthViewModelFactory
+import com.example.calisthenicsworkout.viewmodels.ProfileViewModel
+import com.example.calisthenicsworkout.viewmodels.ProfileViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 class MyProfileFragment : Fragment() {
-    private lateinit var viewModel: AuthViewModel
-    private lateinit var viewModelFactory: AuthViewModelFactory
+    private lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModelFactory: ProfileViewModelFactory
     private lateinit var binding: FragmentMyProfileBinding
 
 
@@ -39,8 +39,8 @@ class MyProfileFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = AuthViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(AuthViewModel::class.java)
+        viewModelFactory = ProfileViewModelFactory(dataSource,application);
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(ProfileViewModel::class.java)
         binding.lifecycleOwner = this
 
         viewModel.currentUser.observe(viewLifecycleOwner,{
