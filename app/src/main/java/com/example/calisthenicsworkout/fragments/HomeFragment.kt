@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout.fragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -12,6 +13,7 @@ import com.example.calisthenicsworkout.databinding.FetchDataDialogBinding
 import com.example.calisthenicsworkout.databinding.FragmentHomeBinding
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
 
@@ -39,6 +41,8 @@ class HomeFragment : Fragment() {
                 requireActivity().intent.putExtra("fetchData","no")
             }
         }
+
+
 
 
         return binding.root

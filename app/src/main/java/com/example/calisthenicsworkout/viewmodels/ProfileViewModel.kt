@@ -33,11 +33,34 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
     val chosenUser = MutableLiveData<User>()
     var chosenUserId = ""
 
-    val currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
+    var currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
     val uploadProgress = MutableLiveData(0L)
 
+    init {
+        val context = application.applicationContext
+        db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
+            val name = it.data?.getValue("userFullName").toString()
+            val email = it.data?.getValue("userEmail").toString()
+            val id = it.id
+            val user =  User(id,email,name,PictureUtil.getDefaultProfilePic())
+            fbStorage.reference.child("userProfileImages").child("$id.png").downloadUrl.addOnCompleteListener {
+                viewModelScope.launch {
+                    if(it.isSuccessful){
+                        val bitmap = PictureUtil.getBitmapFromUri(it.result!!, context)
+                        val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,id)
+                        user.userImage = savedImageUri
 
+                    }
+                    withContext(Dispatchers.IO){
+                        database.insertUser(user)
+                        currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
+                    }
+                }
+            }
+
+        }
+    }
 
     fun getAllUsers() {
         val context = getApplication<Application>().applicationContext

@@ -53,7 +53,6 @@ class RegisterFragment : Fragment() {
                                 intent.putExtra("fetchData","yes")
                                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
                                 addUserToFirebase(binding.inputEmail.text.toString(),binding.inputName.text.toString(),userId)
-                                pairSkillToUser(userId)
                                 startActivity(intent)
                                 requireActivity().finish()
                             }else{
@@ -73,21 +72,6 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
-    private fun pairSkillToUser(userId: String) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("skills").get().addOnCompleteListener() {
-            if(it.isSuccessful){
-                for(skill in it.result!!){
-                    val skillId = skill.id
-                    val mappedThing: MutableMap<String,Any> = HashMap()
-                    mappedThing["skillId"] = skillId
-                    mappedThing["userId"] = userId
-                    mappedThing["liked"] = false
-                    db.collection("userAndSkillCrossRef").add(mappedThing)
-                }
-            }
-        }
-    }
 
     private fun addUserToFirebase(email: String, name: String,id: String) {
             val db = FirebaseFirestore.getInstance()

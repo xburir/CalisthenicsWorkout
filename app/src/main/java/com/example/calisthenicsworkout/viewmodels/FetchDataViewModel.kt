@@ -27,7 +27,6 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
     private val db = FirebaseFirestore.getInstance()
     private val fbStorage = FirebaseStorage.getInstance()
-    private val fbAuth = FirebaseAuth.getInstance()
 
     val skillsInDb = MutableLiveData(0)
     val trainingsInDb = MutableLiveData(0)
@@ -35,18 +34,16 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     val trainings = database.getALlTrainings()
     val skills = database.getALlSkills()
 
-    val userInfo = MutableLiveData(false)
+    val userInfo = MutableLiveData(true)
 
 
 
 
     fun readFireStoreData(){
         val context = getApplication<Application>().applicationContext
-        getUser(context)
         getSkillsFromFireBase(context)
         skillsInDb.value = 0
         trainingsInDb.value = 0
-        userInfo.value = false
     }
 
 
@@ -114,34 +111,6 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 }
             }
         }
-    }
-
-    private fun getUser(context: Context) {
-        db.collection("users").document(fbAuth.currentUser!!.uid).get().addOnSuccessListener{
-            userInfo.value = true
-            user.userEmail =  it.data?.getValue("userEmail").toString()
-            user.userFullName = it.data?.getValue("userFullName").toString()
-
-
-
-            val pictureRef = FirebaseStorage.getInstance().reference.child("userProfileImages").child("${user.userId}.png")
-            pictureRef.downloadUrl.addOnCompleteListener{ task ->
-                viewModelScope.launch {
-                    if(task.isSuccessful){
-                        val bitmap = getBitmapFromUri(task.result!!,context)
-                        val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,user.userId)
-                        user.userImage = savedImageUri
-
-                    }
-                    withContext(Dispatchers.IO){
-                        database.insertUser(user)
-                    }
-                }
-            }
-
-        }
-
-
     }
 
     private fun checkIfNewSkillsWereAdded() {
