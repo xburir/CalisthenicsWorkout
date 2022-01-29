@@ -18,7 +18,6 @@ class PictureUtil: Application(){
 
 
     companion object{
-
         fun getUriFromBitmap(bmp : Bitmap, quality: Int, context: Context): Uri {
             val file = File(context.cacheDir,"CUSTOM NAME")
             file.delete()

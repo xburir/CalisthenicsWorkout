@@ -41,7 +41,6 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     val skills = database.getALlSkills()
 
 
-    val userInfo = MutableLiveData(true)
 
 
 
@@ -72,16 +71,21 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
                 val skill = Skill(id,name,desc,bitmap,type)
 
-                try {
-                   val pictureUri =  fbStorage.reference.child("skillImagesMini").child("${skill.skillId}.jpg").downloadUrl.await()
-                    skill.skillImage = getBitmapFromUri(pictureUri,context)
-                }catch (e: Exception) {
-                }finally {
-                        database.insert(skill)
+                fbStorage.reference.child("skillImagesMini").child("${skill.skillId}.jpg").downloadUrl.addOnCompleteListener {
+                    viewModelScope.launch {
+                        if(it.isSuccessful){
+                                skill.skillImage = getBitmapFromUri(it.result!!,context)
+                        }
+                        CoroutineScope(IO).launch {
+                            database.insert(skill)
+                            if(entry == query.last()){
+                                finishedSkillsDownloading(context)
+                            }
+                        }
+                    }
                 }
-
             }
-            finishedSkillsDownloading(context)
+
         }
     }
 
