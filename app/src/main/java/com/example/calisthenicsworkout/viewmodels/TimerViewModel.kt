@@ -225,10 +225,10 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
                     timerSeconds.value = timeBetweenExercises
                 }
             }else{
-                timerSeconds.value = if(setNumber == exercises[exerciseNumber].sets.toInt()){
-                    timeBetweenExercises
+                if(setNumber == exercises[exerciseNumber].sets.toInt()-1){
+                     timerSeconds.value = timeBetweenExercises
                 }   else{
-                    timeBetweenSets
+                     timerSeconds.value = timeBetweenSets
                 }
             }
 
