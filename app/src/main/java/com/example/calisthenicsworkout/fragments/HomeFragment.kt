@@ -71,14 +71,12 @@ class HomeFragment : Fragment() {
         dialogg = Dialog(requireContext())
         val dialogBinding = FetchDataDialogBinding.inflate(LayoutInflater.from(requireContext()))
         dialogg.setContentView(dialogBinding.root)
-        dialogg.setCancelable(false)
+        dialogg.setCancelable(true)
         dialogg.show()
 
         viewModel.userInfo.observe(viewLifecycleOwner,{
            if(it){
                dialogBinding.userInfoTextView.text = "Done"
-           }else{
-               dialogBinding.userInfoTextView.text = "..."
            }
         })
 
@@ -95,10 +93,14 @@ class HomeFragment : Fragment() {
 
         viewModel.trainings.observe(viewLifecycleOwner,{
             dialogBinding.addedTrainingsTextView.text = it.size.toString()
-            if(it.size == viewModel.trainingsInDb.value){
-                if(it.isNotEmpty()){
+            if(it.isNotEmpty()) {
+                dialogBinding.addedTrainingsTextView.visibility = View.VISIBLE
+                dialogBinding.textView11.visibility = View.VISIBLE
+                dialogBinding.downloadedTrainingsTextView.visibility = View.VISIBLE
+                if(it.size == viewModel.trainingsInDb.value){
                     dialogg.dismiss()
                 }
+            }else{
 
             }
         })
