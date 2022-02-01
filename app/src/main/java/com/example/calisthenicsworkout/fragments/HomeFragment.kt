@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -88,48 +89,54 @@ class HomeFragment : Fragment() {
         dialogg.setCancelable(true)
         dialogg.show()
 
-        CoroutineScope(IO).launch {
-            if(InternetUtil.checkSpeed()){
-                CoroutineScope(Main).launch {
+        viewModel.skillsInDb.observe(viewLifecycleOwner,{
+            dialogBinding.downloadedSkillsTextView.text = "/"+it.toString()
+        })
+        viewModel.trainingsInDb.observe(viewLifecycleOwner,{
+            dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
+        })
 
-                    viewModel.skillsInDb.observe(viewLifecycleOwner,{
-                        dialogBinding.downloadedSkillsTextView.text = "/"+it.toString()
-                    })
-                    viewModel.trainingsInDb.observe(viewLifecycleOwner,{
-                        dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
-                    })
-
-                    viewModel.skills.observe(viewLifecycleOwner,{
-                        if(it.isNotEmpty()){
-                            dialogBinding.addedSkillsTextView.text = it.size.toString()
-                            dialogBinding.addedSkillsTextView.visibility = View.VISIBLE
-                            dialogBinding.textView10.visibility = View.VISIBLE
-                            dialogBinding.downloadedSkillsTextView.visibility = View.VISIBLE
-                        }
-                    })
-
-                    viewModel.trainings.observe(viewLifecycleOwner,{
-                        dialogBinding.addedTrainingsTextView.text = it.size.toString()
-                        if(it.isNotEmpty()) {
-                            dialogBinding.addedTrainingsTextView.visibility = View.VISIBLE
-                            dialogBinding.textView11.visibility = View.VISIBLE
-                            dialogBinding.downloadedTrainingsTextView.visibility = View.VISIBLE
-                            if(it.size == viewModel.trainingsInDb.value){
-                                dialogg.dismiss()
-                            }
-                        }
-                    })
-
-
-                    viewModel.readFireStoreData()
-                }
-            }else{
-                CoroutineScope(Main).launch {
-                    Toast.makeText(context,"Internet is too slow to download data, sorry.",Toast.LENGTH_SHORT).show()
-                    dialogg.dismiss()
-                }
+        viewModel.skills.observe(viewLifecycleOwner,{
+            if(it.isNotEmpty()){
+                dialogBinding.addedSkillsTextView.text = it.size.toString()
+                dialogBinding.addedSkillsTextView.visibility = View.VISIBLE
+                dialogBinding.textView10.visibility = View.VISIBLE
+                dialogBinding.downloadedSkillsTextView.visibility = View.VISIBLE
             }
+        })
+
+        viewModel.trainings.observe(viewLifecycleOwner,{
+            dialogBinding.addedTrainingsTextView.text = it.size.toString()
+            if(it.isNotEmpty()) {
+                dialogBinding.addedTrainingsTextView.visibility = View.VISIBLE
+                dialogBinding.textView11.visibility = View.VISIBLE
+                dialogBinding.downloadedTrainingsTextView.visibility = View.VISIBLE
+
+            }
+        })
+
+        viewModel.timeLeft.observe(viewLifecycleOwner,{
+            dialogBinding.timeOutTextView.text = "Cancelling in ${it.toString()}s."
+        })
+
+        viewModel.finished.observe(viewLifecycleOwner,{
+            if(it == "true"){
+                dialogg.dismiss()
+                Toast.makeText(context,"Data downloaded succesfully",Toast.LENGTH_SHORT).show()
+            }
+            if(it == "under"){
+                dialogg.dismiss()
+                Toast.makeText(context,"The download request didn't finish under ${viewModel.TIMEOUT/1000}s, " +
+                        "please consider downloading the data with better connection",Toast.LENGTH_LONG).show()
+            }
+        })
+
+        CoroutineScope(IO).launch {
+            viewModel.readFireStoreData()
         }
+
+
+
 
 
 
