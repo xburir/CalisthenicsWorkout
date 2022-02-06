@@ -1,6 +1,7 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.example.calisthenicsworkout.FetchDataActivity
+import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FetchDataDialogBinding
@@ -19,6 +22,7 @@ import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModel
 import com.example.calisthenicsworkout.viewmodels.FetchDataViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -27,9 +31,7 @@ import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
-    private lateinit var viewModel: FetchDataViewModel
-    private lateinit var viewModelFactory: FetchDataViewModelFactory
-    private lateinit var dialogg: Dialog
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,15 +39,6 @@ class HomeFragment : Fragment() {
     ): View? {
         val binding: FragmentHomeBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_home, container, false)
-
-        val application = requireNotNull(this.activity).application
-        val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = FetchDataViewModelFactory(dataSource,application);
-        viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(FetchDataViewModel::class.java)
-
-
-
-
 
         setHasOptionsMenu(true)
 
@@ -57,13 +50,14 @@ class HomeFragment : Fragment() {
         }
 
 
-
-
-
-
-
         return binding.root
     }
+
+    private fun readOnlineData() {
+        val intent = Intent(requireActivity(), FetchDataActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_home,menu)
@@ -72,78 +66,12 @@ class HomeFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.toString() == "Read Online Data"){
-
             readOnlineData()
-
-
-
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun readOnlineData() {
 
-        dialogg = Dialog(requireContext())
-        val dialogBinding = FetchDataDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        dialogg.setContentView(dialogBinding.root)
-        dialogg.setCancelable(true)
-        dialogg.show()
-
-        viewModel.skillsInDb.observe(viewLifecycleOwner,{
-            dialogBinding.downloadedSkillsTextView.text = "/"+it.toString()
-        })
-        viewModel.trainingsInDb.observe(viewLifecycleOwner,{
-            dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
-        })
-
-        viewModel.skills.observe(viewLifecycleOwner,{
-            if(it.isNotEmpty()){
-                dialogBinding.addedSkillsTextView.text = it.size.toString()
-                dialogBinding.addedSkillsTextView.visibility = View.VISIBLE
-                dialogBinding.textView10.visibility = View.VISIBLE
-                dialogBinding.downloadedSkillsTextView.visibility = View.VISIBLE
-            }
-        })
-
-        viewModel.trainings.observe(viewLifecycleOwner,{
-            dialogBinding.addedTrainingsTextView.text = it.size.toString()
-            if(it.isNotEmpty()) {
-                dialogBinding.addedTrainingsTextView.visibility = View.VISIBLE
-                dialogBinding.textView11.visibility = View.VISIBLE
-                dialogBinding.downloadedTrainingsTextView.visibility = View.VISIBLE
-
-            }
-        })
-
-        viewModel.timeLeft.observe(viewLifecycleOwner,{
-            dialogBinding.timeOutTextView.text = "Cancelling in ${it.toString()}s."
-        })
-
-        viewModel.finished.observe(viewLifecycleOwner,{
-            if(it == "true"){
-                dialogg.dismiss()
-                Toast.makeText(context,"Data downloaded succesfully",Toast.LENGTH_SHORT).show()
-            }
-            if(it == "under"){
-                dialogg.dismiss()
-                Toast.makeText(context,"The download request didn't finish under ${viewModel.TIMEOUT/1000}s, " +
-                        "please consider downloading the data with better connection",Toast.LENGTH_LONG).show()
-            }
-        })
-
-        CoroutineScope(IO).launch {
-            viewModel.readFireStoreData()
-        }
-
-
-
-
-
-
-
-
-
-    }
 
 
 

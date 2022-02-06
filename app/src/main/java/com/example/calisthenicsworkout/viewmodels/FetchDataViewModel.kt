@@ -25,6 +25,10 @@ import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.lang.Exception
 import java.net.URI
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+
+
+
 
 class FetchDataViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application){
 
@@ -32,7 +36,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
     val finished = MutableLiveData("false")
     val TIMEOUT = 20000L
-    private lateinit var timer: CountDownTimer
+    lateinit var timer: CountDownTimer
     val timeLeft = MutableLiveData(0L)
 
     private val db = FirebaseFirestore.getInstance()
@@ -51,19 +55,15 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
 
     suspend fun readFireStoreData(){
+
+
+
+
         val context = getApplication<Application>().applicationContext
 
-
-
-
         withContext(Main){
-            finished.value = "false"
-            skillsInDb.value = 0
-            trainingsInDb.value = 0
-
             timer = object : CountDownTimer(TIMEOUT,1000){
                 override fun onFinish() {
-                    timer.cancel()
                 }
                 override fun onTick(millisUnitlFinished: Long) {
                     timeLeft.value = millisUnitlFinished/1000
@@ -80,11 +80,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             getUserAndSkillCrossRefFromFireBase()
             withContext(Main){
                 finished.value = "true"
-                timer.cancel()
             }
 
         }
-
         if(job == null){
             withContext(Main){
                 finished.value = "under"

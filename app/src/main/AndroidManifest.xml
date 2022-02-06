@@ -17,15 +17,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalisthenicsWorkout">
         <activity
+            android:name=".FetchDataActivity"
+            android:exported="true" />
+        <activity
             android:name=".ProfileActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".CreateTrainingActivity"
             android:exported="true" />
         <activity
             android:name=".PhotoActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".VideoActivity"
             android:exported="true"
