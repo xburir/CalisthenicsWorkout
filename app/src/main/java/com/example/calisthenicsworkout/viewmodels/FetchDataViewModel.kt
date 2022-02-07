@@ -109,9 +109,10 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val name = entry.data.getValue("name").toString()
                 val desc = entry.data.getValue("description").toString()
                 val type = entry.data.getValue("type").toString()
+                val difficulty = entry.data.getValue("difficulty").toString().toInt()
                 val target = entry.data.getValue("target") as ArrayList<String>
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
-                val skill = Skill(id,name,desc,bitmap,type,target)
+                val skill = Skill(id,name,desc,bitmap,type,target,difficulty)
 
                 try {
                     val url = fbStorage.reference.child("skillImagesMini").child("${skill.skillId}.jpg").downloadUrl.await()

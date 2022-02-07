@@ -1,9 +1,14 @@
 package com.example.calisthenicsworkout.adapters
 
+import android.graphics.Color
+import android.graphics.ColorSpace
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.entities.*
 
 
@@ -11,6 +16,30 @@ import com.example.calisthenicsworkout.database.entities.*
 fun TextView.setSkillNameFormatted(item: Skill?){
     item?.let{
         text = item.skillName
+    }
+}
+
+
+@BindingAdapter("skillDifficultyImage")
+fun ImageView.skillDifficultyImage(item: Skill?){
+    item?.let {
+        when (item.difficulty){
+            1 -> {
+                setImageResource(R.drawable.one_star)
+            }
+            2 -> {
+                setImageResource(R.drawable.two_stars)
+            }
+            3 -> {
+                setImageResource(R.drawable.three_stars)
+            }
+            4 -> {
+                setImageResource(R.drawable.four_stars)
+            }
+            5 -> {
+                setImageResource(R.drawable.five_stars)
+            }
+        }
     }
 }
 
@@ -27,6 +56,8 @@ fun TextView.setSkillDescriptionFormatted(item: Skill?){
 fun ImageView.setSkillImage(item: Skill?){
     item?.let {
         setImageBitmap(it.skillImage)
+        clipToOutline = true
+        setBackgroundResource(R.drawable.round_edges)
     }
 }
 

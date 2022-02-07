@@ -16,10 +16,10 @@
         android:id="@+id/Like"
         android:icon="@android:drawable/btn_star_big_off"
         android:title="Like"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/VideoButton"
         android:icon="@android:drawable/ic_media_play"
         android:title="Video"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

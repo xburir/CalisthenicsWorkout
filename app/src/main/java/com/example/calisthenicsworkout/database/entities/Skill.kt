@@ -19,7 +19,9 @@ data class Skill(
 
     val skillType: String,
 
-    var target: ArrayList<String>
+    var target: ArrayList<String>,
+
+    var difficulty: Int
 
 )
 

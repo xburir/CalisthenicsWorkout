@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,36 @@ class AddSkillFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
         binding.lifecycleOwner = this
 
+        binding.difficultySeekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                when (p1){
+                    1 -> {
+                        binding.difficultyShowerInAddSkill.text = "very easy"
+                    }
+                    2 -> {
+                        binding.difficultyShowerInAddSkill.text = "easy"
+                    }
+                    3 -> {
+                        binding.difficultyShowerInAddSkill.text = "medium"
+                    }
+                    4 -> {
+                        binding.difficultyShowerInAddSkill.text = "difficult"
+                    }
+                    5 -> {
+                        binding.difficultyShowerInAddSkill.text = "very difficult"
+                    }
+                }
+
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+
+        })
+
         binding.saveSkillButton.setOnClickListener {
             if (binding.passwordInput.text.toString() != "secretpass") {
                 Toast.makeText(context, "Bad password", Toast.LENGTH_SHORT).show()
@@ -44,6 +75,7 @@ class AddSkillFragment : Fragment() {
                     val name = binding.nameInput.text.toString()
                     val desc = binding.descriptionINput.text.toString()
                     val target = ArrayList<String>()
+                    val difficulty = binding.difficultySeekBar.progress
 
                     if(binding.absCheckBox.isChecked){
                         target.add("abs")
@@ -65,10 +97,10 @@ class AddSkillFragment : Fragment() {
                     }
 
                     if(binding.repsRadioButton.isChecked){
-                        saveFireStore(name,"reps",desc,target)
+                        saveFireStore(name,"reps",desc,target,difficulty)
                     }
                     if (binding.timeRadioButton.isChecked)
-                        saveFireStore(name,"time",desc,target)
+                        saveFireStore(name,"time",desc,target,difficulty)
                     findNavController().navigate(
                         AddSkillFragmentDirections.actionAddSkillFragmentToSkillFragment(
                             viewModel.lastViewedSkillId
@@ -82,13 +114,14 @@ class AddSkillFragment : Fragment() {
         return binding.root
     }
 
-    fun saveFireStore(name: String, type: String, desc: String, target: List<String>){
+    fun saveFireStore(name: String, type: String, desc: String, target: List<String>, difficulty: Int){
         val db = FirebaseFirestore.getInstance()
         val mappedThing: MutableMap<String,Any> = HashMap()
         mappedThing["name"] = name
         mappedThing["type"] = type
         mappedThing["description"] = desc
         mappedThing["target"] = target
+        mappedThing["difficulty"] = difficulty
         db.collection("skills").add(mappedThing)
             .addOnSuccessListener {
                 Log.i("Debug","added succesfully")

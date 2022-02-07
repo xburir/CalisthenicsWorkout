@@ -1,8 +1,11 @@
 package com.example.calisthenicsworkout.fragments.skill
 
+import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -17,6 +20,7 @@ import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.VideoActivity
 import com.example.calisthenicsworkout.adapters.TargetInSkillListAdapter
@@ -25,8 +29,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SkillFragment : Fragment()  {
 
-    private lateinit var viewModel: SkillViewModel;
-    private lateinit var viewModelFactory: SkillViewModelFactory;
+    private lateinit var viewModel: SkillViewModel
+    private lateinit var viewModelFactory: SkillViewModelFactory
 
 
     override fun onCreateView(
@@ -40,7 +44,7 @@ class SkillFragment : Fragment()  {
 
         val application = requireNotNull(this.activity).application
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
-        viewModelFactory = SkillViewModelFactory(dataSource,application);
+        viewModelFactory = SkillViewModelFactory(dataSource,application)
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
 
 
@@ -64,10 +68,7 @@ class SkillFragment : Fragment()  {
         binding.afterSkills.layoutManager = managerAfter
 
 
-        val managerTargets = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        val adapterTargets = TargetInSkillListAdapter(viewModel.chosenSkill.target)
-        binding.skillsTargetRecyclerViewer.adapter = adapterTargets
-        binding.skillsTargetRecyclerViewer.layoutManager = managerTargets
+
 
         binding.skillImageViewed.setOnClickListener{
             val intent = Intent(requireActivity(), PhotoActivity::class.java)
@@ -92,6 +93,15 @@ class SkillFragment : Fragment()  {
 
         viewModel.finishedLoading.observe(viewLifecycleOwner,{
             if(it){
+                val managerTargets = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                val adapterTargets = TargetInSkillListAdapter(viewModel.chosenSkill.target)
+                binding.skillsTargetRecyclerViewer.adapter = adapterTargets
+                binding.skillsTargetRecyclerViewer.layoutManager = managerTargets
+
+                val actionBar = (activity as MainActivity).supportActionBar
+                actionBar?.title = viewModel.chosenSkill.skillName
+
+
                 binding.skill = viewModel.chosenSkill
                 if (viewModel.beforeSkills.isNotEmpty()) {
                     binding.beforeSkillsHeader.visibility = View.VISIBLE
@@ -143,6 +153,13 @@ class SkillFragment : Fragment()  {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_skill,menu)
+
+
+        if(viewModel.chosenSkill.skillName.length > 18){
+            menu[3].setShowAsAction(0)
+        }
+
+
         val item = menu[2]
         item.setIcon(android.R.drawable.btn_star_big_off)
         viewModel.userSkillCrossRefs.observe(viewLifecycleOwner,{

@@ -36,10 +36,10 @@
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="98dp"
+            android:layout_marginTop="56dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameInput">
+            app:layout_constraintTop_toBottomOf="@+id/difficultySeekBar">
 
             <RadioButton
                 android:id="@+id/repsRadioButton"
@@ -137,6 +137,33 @@
             app:layout_constraintStart_toEndOf="@+id/shouldersCheckBox"
             app:layout_constraintStart_toStartOf="@+id/absCheckBox"
             app:layout_constraintTop_toTopOf="@+id/shouldersCheckBox" />
+
+        <SeekBar
+            android:id="@+id/difficultySeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:max="5"
+            android:min="1"
+            android:progress="1"
+            app:layout_constraintEnd_toStartOf="@+id/difficultyShowerInAddSkill"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameInput" />
+
+        <TextView
+            android:id="@+id/difficultyShowerInAddSkill"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="very-easy"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/difficultySeekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/difficultySeekBar"
+            app:layout_constraintTop_toTopOf="@+id/difficultySeekBar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
