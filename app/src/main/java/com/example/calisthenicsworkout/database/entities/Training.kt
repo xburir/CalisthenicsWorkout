@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Trainings")
 data class Training(
     var name: String,
-    var target: String,
+    var target: ArrayList<String>,
 
     @PrimaryKey(autoGenerate = false)
     val id: String,

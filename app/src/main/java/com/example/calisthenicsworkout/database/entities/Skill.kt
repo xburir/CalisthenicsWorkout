@@ -17,7 +17,9 @@ data class Skill(
 
     var skillImage: Bitmap,
 
-    val skillType: String
+    val skillType: String,
+
+    var target: ArrayList<String>
 
 )
 

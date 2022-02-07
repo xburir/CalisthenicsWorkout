@@ -43,11 +43,32 @@ class AddSkillFragment : Fragment() {
                 if (checkInput(binding.nameInput.text.toString(),  binding.descriptionINput.text.toString(),  binding.radioGroup)) {
                     val name = binding.nameInput.text.toString()
                     val desc = binding.descriptionINput.text.toString()
+                    val target = ArrayList<String>()
+
+                    if(binding.absCheckBox.isChecked){
+                        target.add("abs")
+                    }
+                    if(binding.shouldersCheckBox.isChecked){
+                        target.add("shoulders")
+                    }
+                    if(binding.chestCheckBox.isChecked){
+                        target.add("chest")
+                    }
+                    if(binding.legsCheckBox.isChecked){
+                        target.add("legs")
+                    }
+                    if(binding.armsCheckBox.isChecked){
+                        target.add("abs")
+                    }
+                    if(binding.backCheckBox.isChecked){
+                        target.add("back")
+                    }
+
                     if(binding.repsRadioButton.isChecked){
-                        saveFireStore(name,"reps",desc)
+                        saveFireStore(name,"reps",desc,target)
                     }
                     if (binding.timeRadioButton.isChecked)
-                        saveFireStore(name,"time",desc)
+                        saveFireStore(name,"time",desc,target)
                     findNavController().navigate(
                         AddSkillFragmentDirections.actionAddSkillFragmentToSkillFragment(
                             viewModel.lastViewedSkillId
@@ -61,12 +82,13 @@ class AddSkillFragment : Fragment() {
         return binding.root
     }
 
-    fun saveFireStore(name: String, type: String, desc: String){
+    fun saveFireStore(name: String, type: String, desc: String, target: List<String>){
         val db = FirebaseFirestore.getInstance()
         val mappedThing: MutableMap<String,Any> = HashMap()
         mappedThing["name"] = name
         mappedThing["type"] = type
         mappedThing["description"] = desc
+        mappedThing["target"] = target
         db.collection("skills").add(mappedThing)
             .addOnSuccessListener {
                 Log.i("Debug","added succesfully")

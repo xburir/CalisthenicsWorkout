@@ -10,9 +10,6 @@
             name="skill"
             type="com.example.calisthenicsworkout.database.entities.Skill" />
         <variable
-            name="viewModel"
-            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
-        <variable
             name="exercise"
             type="com.example.calisthenicsworkout.database.entities.Exercise" />
         <variable

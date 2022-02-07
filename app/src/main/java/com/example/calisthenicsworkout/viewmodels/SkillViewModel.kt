@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
@@ -20,19 +22,22 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
     val allSkills = database.getALlSkills()
     val chosenSkillId = MutableLiveData<String>()
+    lateinit var chosenSkill: Skill
+    lateinit var beforeSkills: List<Skill>
+    lateinit var afterSkills: List<Skill>
     var lastViewedSkillId = ""
+    val finishedLoading = MutableLiveData(false)
 
     val userSkillCrossRefs = database.getUserSkillCrossRefs(FirebaseAuth.getInstance().currentUser!!.uid)
 
     val allTrainings = database.getALlTrainings()
     val chosenTrainingId = MutableLiveData<String>()
     var lastViewedTrainingId = ""
+    lateinit var chosenTraining: Training
 
     val db = FirebaseFirestore.getInstance()
     val fbStorage = FirebaseStorage.getInstance()
 
-    val users = mutableListOf<User>()
-    val allUsers = MutableLiveData(users)
 
 
 
@@ -44,8 +49,26 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
 
 
     fun onSkillClicked(skillId: String) {
+        finishedLoading.value = false
         chosenSkillId.value = skillId
         lastViewedSkillId = skillId
+
+        CoroutineScope(IO).launch {
+            chosenSkill = database.getSkill(skillId)
+            beforeSkills = database.getALlBeforeSkills(skillId)
+            afterSkills = database.getALlAfterSkills(skillId)
+
+            beforeSkills.forEach { skillInList ->
+                if(skillInList.skillType == "reps"){
+                    skillInList.skillName = skillInList.skillName + " "+ database.getCrossRefAmount(skillId,skillInList.skillId).toString()+"x"
+                }else{
+                    skillInList.skillName = skillInList.skillName + " "+ database.getCrossRefAmount(skillId,skillInList.skillId).toString()+"s"
+                }
+            }
+            CoroutineScope(Main).launch {
+                finishedLoading.value = true
+            }
+        }
     }
 
 
@@ -56,20 +79,20 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     fun onTrainingClicked(trainingId: String) {
         chosenTrainingId.value = trainingId
         lastViewedTrainingId = trainingId
+        finishedLoading.value = false
+        CoroutineScope(IO).launch {
+            chosenTraining = database.getTraining(trainingId)
+        }
+        CoroutineScope(Main).launch {
+            finishedLoading.value = true
+        }
     }
     fun onTrainingNavigated(){
         chosenTrainingId.value = null
     }
 
 
-    suspend fun addSkillToDatabase(skill: Skill){
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                database.insert(skill)
-            }
-        }
 
-    }
 
     suspend fun insertSkillAndSkillCrossRef(crossRef: SkillAndSkillCrossRef){
         withContext(Dispatchers.IO){
@@ -123,7 +146,7 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
                         val id = entry.id
                         val name = entry.data.getValue("name").toString()
                         val owner = entry.data.getValue("owner").toString()
-                        val target = entry.data.getValue("target").toString()
+                        val target = entry.data.getValue("target") as ArrayList<String>
                         val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
                         val type = entry.data.getValue("type").toString()
                         val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises,"0",type)

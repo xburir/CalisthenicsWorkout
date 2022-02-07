@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.skill.FavSkillsFragment">
 
-    <data>
-        <variable
-            name="skillViewModel"
-            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

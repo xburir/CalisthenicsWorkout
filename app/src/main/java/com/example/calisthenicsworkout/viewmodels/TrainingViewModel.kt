@@ -29,10 +29,11 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
     val allSkills = database.getALlSkills()
     val key = getRandomString(20)
 
-    val training = Training("undefined","undefined",key, FirebaseAuth.getInstance().currentUser!!.uid ,
+    val training = Training("undefined",ArrayList<String>(),key, FirebaseAuth.getInstance().currentUser!!.uid ,
         Uri.parse("android.resource://com.example.calisthenicsworkout/drawable/default_training_pic"),0,"","")
     val exerciseList = mutableListOf<Exercise>()
     val listToDisplay = MutableLiveData(exerciseList)
+    val target = ArrayList<String>()
 
     val finished = MutableLiveData(false)
 
@@ -117,6 +118,12 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                             }else{
                                 if (numberOfReps == "1"){  Exercise(key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName,training.numberOfExercises)  }
                                 else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
+                            }
+                            skill.target.forEach { trg ->
+                                if(!target.contains(trg)){
+                                    target.add(trg)
+                                }
+
                             }
                             exerciseList.add(exercise)
                             activity.runOnUiThread {

@@ -77,5 +77,66 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <CheckBox
+            android:id="@+id/armsCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Arms"
+            app:layout_constraintEnd_toStartOf="@+id/legsCheckBox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionINput" />
+
+        <CheckBox
+            android:id="@+id/shouldersCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Shoulders"
+            app:layout_constraintStart_toStartOf="@+id/backCheckBox"
+            app:layout_constraintTop_toBottomOf="@+id/backCheckBox" />
+
+        <CheckBox
+            android:id="@+id/legsCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Legs"
+            app:layout_constraintBottom_toBottomOf="@+id/armsCheckBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/armsCheckBox"
+            app:layout_constraintTop_toTopOf="@+id/armsCheckBox" />
+
+        <CheckBox
+            android:id="@+id/backCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Back"
+            app:layout_constraintStart_toStartOf="@+id/armsCheckBox"
+            app:layout_constraintTop_toBottomOf="@+id/armsCheckBox" />
+
+        <CheckBox
+            android:id="@+id/absCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Abs"
+            app:layout_constraintBottom_toBottomOf="@+id/backCheckBox"
+            app:layout_constraintStart_toEndOf="@+id/backCheckBox"
+            app:layout_constraintStart_toStartOf="@+id/legsCheckBox"
+            app:layout_constraintTop_toTopOf="@+id/backCheckBox" />
+
+        <CheckBox
+            android:id="@+id/chestCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chest"
+            app:layout_constraintBottom_toBottomOf="@+id/shouldersCheckBox"
+            app:layout_constraintStart_toEndOf="@+id/shouldersCheckBox"
+            app:layout_constraintStart_toStartOf="@+id/absCheckBox"
+            app:layout_constraintTop_toTopOf="@+id/shouldersCheckBox" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

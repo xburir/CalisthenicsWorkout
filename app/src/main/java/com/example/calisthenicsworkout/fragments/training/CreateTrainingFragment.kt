@@ -81,13 +81,12 @@ class CreateTrainingFragment : Fragment() {
 
         binding.saveTrainingButton.setOnClickListener{
             val name = binding.trainingNameInput.text.toString()
-            val target = binding.targetInput.text.toString()
             val imgUrl = binding.imageChooseInput.text.toString()
 
             if (name.isNotEmpty()){
                 if(viewModel.exerciseList.isNotEmpty()){
                     viewModel.training.name = name
-                    viewModel.training.target = target
+                    viewModel.training.target = viewModel.target
                     viewModel.saveTraining(requireContext(),imgUrl)
                 }else{ Toast.makeText(context,"Your exercises list is empty", Toast.LENGTH_SHORT).show()  }
             }else{ Toast.makeText(context,"Set the name of your training", Toast.LENGTH_SHORT).show() }

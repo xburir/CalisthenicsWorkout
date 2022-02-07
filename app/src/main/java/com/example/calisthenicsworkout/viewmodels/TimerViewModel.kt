@@ -27,7 +27,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     var timeBetweenSets = 0L
     var trainingId =  MutableLiveData("")
     val training = MutableLiveData<Training>()
-    var _training = Training("","","","",PictureUtil.getDefaultTrainingPic(),0,"0","")
+    var _training = Training("",ArrayList<String>(),"","",PictureUtil.getDefaultTrainingPic(),0,"0","")
     val trainingItems = mutableListOf<TrainingItem>()
 
     lateinit var item : ListIterator<TrainingItem>

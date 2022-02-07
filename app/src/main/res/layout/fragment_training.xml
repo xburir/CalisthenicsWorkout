@@ -5,6 +5,7 @@
     tools:context=".fragments.training.TrainingFragment">
 
     <data>
+
         <variable
             name="training"
             type="com.example.calisthenicsworkout.database.entities.Training" />
@@ -42,18 +43,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:trainingImage="@{training}" />
 
-        <TextView
-            android:id="@+id/training_target_in_fragment"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/training_target_in_fragment_recyclerView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="TextView"
             app:layout_constraintBottom_toBottomOf="@+id/training_image_in_fragment"
             app:layout_constraintEnd_toStartOf="@+id/training_image_in_fragment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
-            app:trainingTarget="@{training}" />
+            tools:itemCount="4"
+            tools:listitem="@layout/skill_target_item_in_recycleviewer" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -87,7 +88,7 @@
             android:layout_marginTop="8dp"
             android:text="Targeted muscles:"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/training_target_in_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/training_target_in_fragment_recyclerView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12" />
 

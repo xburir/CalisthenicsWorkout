@@ -8,9 +8,6 @@
 
     <data>
         <variable
-            name="skillViewModel"
-            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
-        <variable
             name="skill"
             type="com.example.calisthenicsworkout.database.entities.Skill" />
     </data>
@@ -30,7 +27,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/SkillInfoHolder"
@@ -43,15 +40,15 @@
                         android:layout_height="0dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/skillsTargetRecyclerViewer"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/skill_image_viewed"
-                        app:layout_constraintTop_toBottomOf="@id/skill_name_viewed">
+                        app:layout_constraintTop_toBottomOf="@+id/skill_name_viewed">
 
                         <TextView
                             android:id="@+id/skill_description_viewed"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:text="TextView"
                             android:textAlignment="center"
                             android:textSize="20sp"
@@ -71,7 +68,6 @@
                         android:autoSizeTextType="uniform"
                         android:text="TextView"
                         android:textAlignment="center"
-                        android:textSize="50sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/scrollDescription"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -85,10 +81,25 @@
                         android:layout_height="150dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_launcher_foreground"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:skillImage="@{skill}" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/skillsTargetRecyclerViewer"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/skill_image_viewed"
+                        app:layout_constraintTop_toBottomOf="@+id/scrollDescription" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -103,6 +114,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="Skills to learn before this one: (Click to collapse)"
                         android:textAlignment="textStart"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -114,6 +127,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:maxHeight="200dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/beforeSkillsHeader" />
@@ -124,6 +138,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="Skills which can be learned after this one: (Click to collapse)"
                         android:textAlignment="textStart"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -136,6 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
+                        android:maxHeight="200dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

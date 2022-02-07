@@ -11,9 +11,7 @@
         <variable
             name="clickListener"
             type="com.example.calisthenicsworkout.adapters.TrainingListAdapter.TrainingListener" />
-        <variable
-            name="viewModel"
-            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
+
 
     </data>
 
@@ -52,7 +50,7 @@
             app:layout_constraintTop_toTopOf="@+id/training_image_in_recycleview"
             app:trainingName="@{training}" />
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/training_target_in_recycleview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -63,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
             app:layout_constraintTop_toBottomOf="@+id/textView7"
-            app:trainingTarget="@{training}" />
+            />
 
         <TextView
             android:id="@+id/textView7"

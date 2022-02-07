@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.adapters
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.database.entities.*
 
 
@@ -38,12 +39,7 @@ fun TextView.setTrainingName(item: Training?){
 }
 
 
-@BindingAdapter("trainingTarget")
-fun TextView.setTrainingTarget(item: Training?){
-    item?.let{
-        text = item.target
-    }
-}
+
 
 @BindingAdapter("trainingType")
 fun TextView.setTrainingType(item: Training?){

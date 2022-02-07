@@ -109,8 +109,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 val name = entry.data.getValue("name").toString()
                 val desc = entry.data.getValue("description").toString()
                 val type = entry.data.getValue("type").toString()
+                val target = entry.data.getValue("target") as ArrayList<String>
                 val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.nothing)
-                val skill = Skill(id,name,desc,bitmap,type)
+                val skill = Skill(id,name,desc,bitmap,type,target)
 
                 try {
                     val url = fbStorage.reference.child("skillImagesMini").child("${skill.skillId}.jpg").downloadUrl.await()
@@ -188,7 +189,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             CoroutineScope(IO).launch {
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
-                val target = entry.data.getValue("target").toString()
+                val target = entry.data.getValue("target") as ArrayList<String>
                 val type = entry.data.getValue("type").toString()
                 val defaultPic = PictureUtil.getDefaultTrainingPic()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
@@ -221,7 +222,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             CoroutineScope(IO).launch {
                 val id = entry.id
                 val name = entry.data.getValue("name").toString()
-                val target = entry.data.getValue("target").toString()
+                val target = entry.data.getValue("target") as ArrayList<String>
                 val type = entry.data.getValue("type").toString()
                 val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
                 val defaultPic = PictureUtil.getDefaultTrainingPic()

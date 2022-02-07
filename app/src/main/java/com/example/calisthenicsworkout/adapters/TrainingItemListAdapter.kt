@@ -18,8 +18,6 @@ class TrainingItemListAdapter() : ListAdapter<TrainingItem, TrainingItemListAdap
         return ViewHolder.from(parent)
     }
 
-
-
     class ViewHolder private constructor(val binding: CounterTrainingItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: TrainingItem) {

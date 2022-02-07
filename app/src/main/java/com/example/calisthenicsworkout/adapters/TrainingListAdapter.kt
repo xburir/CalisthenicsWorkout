@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.database.entities.Training
@@ -21,6 +22,10 @@ class TrainingListAdapter(val clickListener: TrainingListener): ListAdapter<Trai
 
         fun bind(item: Training, clickListener: TrainingListener) {
             binding.training = item
+            binding.trainingTargetInRecycleview.apply{
+                layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+                adapter = TargetInSkillListAdapter(item.target)
+            }
             binding.clickListener = clickListener
             binding.executePendingBindings()
         }

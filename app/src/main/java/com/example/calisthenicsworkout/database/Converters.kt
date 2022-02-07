@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.ByteArrayOutputStream
 
 class Converters {
@@ -28,6 +30,17 @@ class Converters {
     @TypeConverter
     fun toUri(str: String): Uri {
         return Uri.parse(str)
+    }
+
+    @TypeConverter
+    fun fromArrayList(list: ArrayList<String?>): String{
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun toArrayList(string: String): ArrayList<String>{
+        val listType = object : TypeToken<ArrayList<String?>?>() {}.type
+        return Gson().fromJson(string, listType)
     }
 
 }

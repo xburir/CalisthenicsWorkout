@@ -19,6 +19,7 @@ import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.TimerActivity
 import com.example.calisthenicsworkout.adapters.ExerciseListAdapter
+import com.example.calisthenicsworkout.adapters.TargetInSkillListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.Exercise
 import com.example.calisthenicsworkout.database.entities.Training
@@ -68,6 +69,17 @@ class TrainingFragment : Fragment() {
         val manager = LinearLayoutManager(activity)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
+
+
+        viewModel.finishedLoading.observe(viewLifecycleOwner,{
+            if(it){
+                val targetAdapter = TargetInSkillListAdapter(viewModel.chosenTraining.target)
+                val targetManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+                binding.trainingTargetInFragmentRecyclerView.layoutManager = targetManager
+                binding.trainingTargetInFragmentRecyclerView.adapter = targetAdapter
+            }
+        })
+
 
 
         changeTrainingOnFragment(binding,viewModel.lastViewedTrainingId,adapter)

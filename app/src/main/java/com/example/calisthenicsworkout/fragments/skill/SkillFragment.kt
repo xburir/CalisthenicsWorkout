@@ -2,13 +2,11 @@ package com.example.calisthenicsworkout.fragments.skill
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.adapters.SkillListAdapter
@@ -16,16 +14,12 @@ import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentSkillBinding
 import com.example.calisthenicsworkout.viewmodels.SkillViewModel
 import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import androidx.core.view.get
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import com.example.calisthenicsworkout.MainActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.VideoActivity
+import com.example.calisthenicsworkout.adapters.TargetInSkillListAdapter
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -48,7 +42,6 @@ class SkillFragment : Fragment()  {
         val dataSource = SkillDatabase.getInstance(application).skillDatabaseDao()
         viewModelFactory = SkillViewModelFactory(dataSource,application);
         viewModel = ViewModelProvider(requireActivity(),viewModelFactory).get(SkillViewModel::class.java)
-        binding.skillViewModel = viewModel;
 
 
 
@@ -56,19 +49,25 @@ class SkillFragment : Fragment()  {
         // create menu resource
         setHasOptionsMenu(true)
 
-        val managerBefore = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+        val managerBefore = GridLayoutManager(activity, 3)
         val adapterBefore = SkillListAdapter(SkillListAdapter.SkillListener {
                 skillId -> viewModel.onSkillClicked(skillId)
         })
         binding.beforeSkills.adapter = adapterBefore
         binding.beforeSkills.layoutManager = managerBefore
 
-        val managerAfter = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+        val managerAfter = GridLayoutManager(activity, 3)
         val adapterAfter = SkillListAdapter(SkillListAdapter.SkillListener {
                 skillId -> viewModel.onSkillClicked(skillId)
         })
         binding.afterSkills.adapter = adapterAfter
         binding.afterSkills.layoutManager = managerAfter
+
+
+        val managerTargets = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        val adapterTargets = TargetInSkillListAdapter(viewModel.chosenSkill.target)
+        binding.skillsTargetRecyclerViewer.adapter = adapterTargets
+        binding.skillsTargetRecyclerViewer.layoutManager = managerTargets
 
         binding.skillImageViewed.setOnClickListener{
             val intent = Intent(requireActivity(), PhotoActivity::class.java)
@@ -87,50 +86,59 @@ class SkillFragment : Fragment()  {
                 viewModel.onSkillNavigated()
             }
         })
-        changeSkillOnFragment(binding,viewModel.lastViewedSkillId,adapterBefore,adapterAfter)
+
+
+
+
+        viewModel.finishedLoading.observe(viewLifecycleOwner,{
+            if(it){
+                binding.skill = viewModel.chosenSkill
+                if (viewModel.beforeSkills.isNotEmpty()) {
+                    binding.beforeSkillsHeader.visibility = View.VISIBLE
+                    binding.beforeSkills.visibility = View.VISIBLE
+                } else{
+                    binding.beforeSkillsHeader.visibility = View.GONE
+                    binding.beforeSkills.visibility = View.GONE
+                }
+                adapterBefore.submitList(viewModel.beforeSkills)
+                if (viewModel.afterSkills.isNotEmpty()) {
+                    binding.afterSkillsHeader.visibility = View.VISIBLE
+                    binding.afterSkills.visibility = View.VISIBLE
+                } else {
+                    binding.afterSkillsHeader.visibility = View.GONE
+                    binding.afterSkills.visibility = View.GONE
+                }
+                adapterAfter.submitList(viewModel.afterSkills)
+            }
+        })
+
+        binding.beforeSkillsHeader.setOnClickListener {
+
+            if(binding.beforeSkills.visibility == View.GONE){
+                binding.beforeSkillsHeader.text = "Skills to learn before this one: (Click to collapse)"
+                binding.beforeSkills.visibility = View.VISIBLE
+            }else{
+                binding.beforeSkillsHeader.text = "Skills to learn before this one: (Click to expand)"
+                binding.beforeSkills.visibility = View.GONE
+            }
+
+        }
+
+        binding.afterSkillsHeader.setOnClickListener {
+            if(binding.afterSkills.visibility == View.GONE){
+                binding.afterSkillsHeader.text = "Skills which can be learned after this one: (Click to collapse)"
+                binding.afterSkills.visibility = View.VISIBLE
+            }else{
+                binding.afterSkillsHeader.text = "Skills which can be learned after this one: (Click to expand)"
+                binding.afterSkills.visibility = View.GONE
+            }
+        }
+
+
+
         return binding.root
     }
 
-    private fun changeSkillOnFragment(
-        binding: FragmentSkillBinding,
-        skill: String,
-        adapterBefore: SkillListAdapter,
-        adapterAfter: SkillListAdapter
-        ) {
-        viewModel.viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                binding.skill = viewModel.database.getSkill(skill)
-                binding.skillViewModel = viewModel
-                val beforeSkills = viewModel.database.getALlBeforeSkills(skill)
-                val afterSkills = viewModel.database.getALlAfterSkills(skill)
-
-                beforeSkills.forEach { skillInList ->
-                    if(skillInList.skillType == "reps"){
-                        skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"x"
-                    }else{
-                        skillInList.skillName = skillInList.skillName + " "+ viewModel.database.getCrossRefAmount(skill,skillInList.skillId).toString()+"s"
-                    }
-                }
-                if(isAdded){
-                    requireActivity().runOnUiThread {
-                        if (beforeSkills.isNotEmpty()) {
-                            binding.beforeSkillsHeader.text = "Skills to learn before this one:"
-                        } else{
-                            binding.beforeSkillsHeader.text = ""
-                        }
-                        adapterBefore.submitList(beforeSkills)
-                        if (afterSkills.isNotEmpty()) {
-                            binding.afterSkillsHeader.text = "Skills which can be learned after this one:"
-                        } else {
-                            binding.afterSkillsHeader.text = ""
-                        }
-                        adapterAfter.submitList(afterSkills)
-                    }
-                }
-
-            }
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
