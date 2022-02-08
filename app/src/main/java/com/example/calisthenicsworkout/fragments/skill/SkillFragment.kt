@@ -94,7 +94,10 @@ class SkillFragment : Fragment()  {
         viewModel.finishedLoading.observe(viewLifecycleOwner,{
             if(it){
                 val managerTargets = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-                val adapterTargets = TargetInSkillListAdapter(viewModel.chosenSkill.target)
+                val adapterTargets = TargetInSkillListAdapter(TargetInSkillListAdapter.ClickListener{ target ->
+                    Toast.makeText(context,target,Toast.LENGTH_SHORT).show()
+                })
+                adapterTargets.submitList(viewModel.chosenSkill.target)
                 binding.skillsTargetRecyclerViewer.adapter = adapterTargets
                 binding.skillsTargetRecyclerViewer.layoutManager = managerTargets
 
@@ -154,10 +157,14 @@ class SkillFragment : Fragment()  {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.action_bar_skill,menu)
 
+        viewModel.finishedLoading.observe(viewLifecycleOwner,{
+            if(it){
+                if(viewModel.chosenSkill.skillName.length > 18){
+                    menu[3].setShowAsAction(0)
+                }
+            }
+        })
 
-        if(viewModel.chosenSkill.skillName.length > 18){
-            menu[3].setShowAsAction(0)
-        }
 
 
         val item = menu[2]
@@ -220,6 +227,8 @@ class SkillFragment : Fragment()  {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 
 
 }

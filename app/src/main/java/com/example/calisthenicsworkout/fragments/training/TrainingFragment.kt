@@ -73,10 +73,13 @@ class TrainingFragment : Fragment() {
 
         viewModel.finishedLoading.observe(viewLifecycleOwner,{
             if(it){
-                val targetAdapter = TargetInSkillListAdapter(viewModel.chosenTraining.target)
+                val targetAdapter = TargetInSkillListAdapter(TargetInSkillListAdapter.ClickListener{ target ->
+                    Toast.makeText(context,target,Toast.LENGTH_SHORT).show()
+                })
                 val targetManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
                 binding.trainingTargetInFragmentRecyclerView.layoutManager = targetManager
                 binding.trainingTargetInFragmentRecyclerView.adapter = targetAdapter
+                targetAdapter.submitList(viewModel.chosenTraining.target)
             }
         })
 

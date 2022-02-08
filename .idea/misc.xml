@@ -25,7 +25,7 @@
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/content_navactivity.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/counter_training_item_in_recycleviewer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/custom_exercise_dialog.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/exercise_item_in_recycleviewer.xml" value="0.33" />
+        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/exercise_item_in_recycleviewer.xml" value="0.28651685393258425" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fetch_data_dialog.xml" value="0.5" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_about.xml" value="0.36277173913043476" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/fragment_add_before_skill.xml" value="0.2828282828282828" />
@@ -58,7 +58,7 @@
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/nav_header_navactivity.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/progress_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/skill_item_in_recycleviewer.xml" value="0.5177865612648221" />
-        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/skill_target_item_in_recycleviewer.xml" value="0.25757575757575757" />
+        <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/skill_target_item_in_recycleviewer.xml" value="0.1" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/switch_item.xml" value="0.1921875" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/text_item_view.xml" value="0.178125" />
         <entry key="..\:/Users/richa/AndroidStudioProjects/CalisthenicsWorkout/app/src/main/res/layout/training_item_in_recycleviewer.xml" value="0.36176470588235293" />

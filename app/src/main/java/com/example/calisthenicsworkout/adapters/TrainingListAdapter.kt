@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -22,10 +23,16 @@ class TrainingListAdapter(val clickListener: TrainingListener): ListAdapter<Trai
 
         fun bind(item: Training, clickListener: TrainingListener) {
             binding.training = item
-            binding.trainingTargetInRecycleview.apply{
-                layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-                adapter = TargetInSkillListAdapter(item.target)
-            }
+            val context = binding.trainingImageInRecycleview.context
+            val layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            val adapter = TargetInSkillListAdapter(TargetInSkillListAdapter.ClickListener{ target ->
+                Toast.makeText(context,target, Toast.LENGTH_SHORT).show()
+            })
+            adapter.submitList(item.target)
+
+            binding.trainingTargetInRecycleview.layoutManager = layoutManager
+            binding.trainingTargetInRecycleview.adapter = adapter
+
             binding.clickListener = clickListener
             binding.executePendingBindings()
         }

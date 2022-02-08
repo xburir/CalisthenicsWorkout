@@ -1,44 +1,37 @@
 package com.example.calisthenicsworkout.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.R
-import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.databinding.SkillTargetItemInRecycleviewerBinding
-import kotlin.coroutines.coroutineContext
+import com.example.calisthenicsworkout.generated.callback.OnClickListener
+
+class TargetInSkillListAdapter(val clickListener: ClickListener) : ListAdapter<String,TargetInSkillListAdapter.ViewHolder>(TargetDiffCallBack()) {
 
 
-class TargetInSkillListAdapter(target: ArrayList<String>) : RecyclerView.Adapter<TargetInSkillListAdapter.ViewHolder>() {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position)!!,clickListener)
 
-    private val targets = target
+    }
 
-    class ViewHolder constructor(val binding: SkillTargetItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(item: String) {
-            when(item){
-                "abs" ->{
-                    binding.targetImageInRecycler.setImageResource(R.drawable.abs)
-                }
-                "legs" ->{
-                    binding.targetImageInRecycler.setImageResource(R.drawable.legs)
-                }
-                "chest" ->{
-                binding.targetImageInRecycler.setImageResource(R.drawable.chest)
-                }
-                "shoulders" ->{
-                    binding.targetImageInRecycler.setImageResource(R.drawable.shoulder)
-                }
-                "back" ->{
-                    binding.targetImageInRecycler.setImageResource(R.drawable.back)
-                }
-                "arms" ->{
-                    binding.targetImageInRecycler.setImageResource(R.drawable.arm)
-                }
+    override fun onCreateViewHolder(parent: ViewGroup,viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
+    }
 
-            }
+
+
+    class ViewHolder private constructor(val binding: SkillTargetItemInRecycleviewerBinding): RecyclerView.ViewHolder(binding.root){
+
+        fun bind(item: String,clickListener: ClickListener) {
+            binding.target = item
+            binding.clickListener = clickListener
+            binding.executePendingBindings()
+
         }
+
 
 
         companion object {
@@ -48,23 +41,22 @@ class TargetInSkillListAdapter(target: ArrayList<String>) : RecyclerView.Adapter
                 return ViewHolder(binding)
             }
         }
+    }
 
+    class TargetDiffCallBack: DiffUtil.ItemCallback<String>(){
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
 
     }
 
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
-        return ViewHolder.from(parent)
+    class ClickListener(val clickListener: (item: String)->Unit){
+        fun onClick(item: String) = clickListener(item)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(targets[position])
-    }
 
-    override fun getItemCount(): Int {
-        return targets.size
-    }
 }

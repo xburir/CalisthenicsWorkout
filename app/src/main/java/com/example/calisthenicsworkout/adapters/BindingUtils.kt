@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout.adapters
 import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +23,7 @@ fun TextView.setSkillNameFormatted(item: Skill?){
 
 @BindingAdapter("skillDifficultyImage")
 fun ImageView.skillDifficultyImage(item: Skill?){
+    Log.i("Debug","Setting difficulty image")
     item?.let {
         when (item.difficulty){
             1 -> {
@@ -42,6 +44,36 @@ fun ImageView.skillDifficultyImage(item: Skill?){
         }
     }
 }
+
+
+@BindingAdapter("targetImage")
+fun ImageView.setTargetImage(item: String?){
+    Log.i("Debug","Setting image")
+    item?.let {
+        when(item){
+            "abs" ->{
+                setImageResource(R.drawable.abs)
+            }
+            "legs" ->{
+                setImageResource(R.drawable.legs)
+            }
+            "chest" ->{
+                setImageResource(R.drawable.chest)
+            }
+            "shoulders" ->{
+                setImageResource(R.drawable.shoulder)
+            }
+            "back" ->{
+                setImageResource(R.drawable.back)
+            }
+            "arms" ->{
+                setImageResource(R.drawable.arm)
+            }
+
+        }
+    }
+}
+
 
 
 
