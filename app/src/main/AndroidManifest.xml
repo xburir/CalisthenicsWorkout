@@ -24,7 +24,8 @@
             android:exported="true" />
         <activity
             android:name=".CreateTrainingActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/WhiteBackGround"/>
         <activity
             android:name=".PhotoActivity"
             android:exported="true"

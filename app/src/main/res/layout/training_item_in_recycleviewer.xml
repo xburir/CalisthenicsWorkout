@@ -16,8 +16,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/outside"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:onClick="@{()->clickListener.onClick(training)}">
 
         <ImageView
@@ -60,8 +62,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/training_image_in_recycleview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/training_image_in_recycleview"
-            app:layout_constraintTop_toBottomOf="@+id/textView7"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <TextView
             android:id="@+id/textView7"
@@ -92,10 +93,10 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:text="TextView"
-            app:trainingType="@{training}"
             app:layout_constraintBottom_toBottomOf="@+id/textView13"
             app:layout_constraintStart_toEndOf="@+id/textView13"
-            app:layout_constraintTop_toTopOf="@+id/textView13" />
+            app:layout_constraintTop_toTopOf="@+id/textView13"
+            app:trainingType="@{training}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

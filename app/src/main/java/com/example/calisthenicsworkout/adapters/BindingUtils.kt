@@ -23,7 +23,6 @@ fun TextView.setSkillNameFormatted(item: Skill?){
 
 @BindingAdapter("skillDifficultyImage")
 fun ImageView.skillDifficultyImage(item: Skill?){
-    Log.i("Debug","Setting difficulty image")
     item?.let {
         when (item.difficulty){
             1 -> {
@@ -48,7 +47,6 @@ fun ImageView.skillDifficultyImage(item: Skill?){
 
 @BindingAdapter("targetImage")
 fun ImageView.setTargetImage(item: String?){
-    Log.i("Debug","Setting image")
     item?.let {
         when(item){
             "abs" ->{
@@ -81,6 +79,15 @@ fun ImageView.setTargetImage(item: String?){
 fun TextView.setSkillDescriptionFormatted(item: Skill?){
     item?.let{
         text = item.skillDescription
+    }
+}
+
+@BindingAdapter("skillImageOnSkillScreen")
+fun ImageView.setSkillImageOnSkillScreen(item: Skill?){
+    item?.let {
+        setImageBitmap(it.skillImage)
+        clipToOutline = true
+        setBackgroundResource(R.drawable.constraint_layout_style)
     }
 }
 

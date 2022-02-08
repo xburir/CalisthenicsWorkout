@@ -6,8 +6,10 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/WhiteBackGround"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
 
         <Button
@@ -22,6 +24,7 @@
 
         <EditText
             android:id="@+id/nameInput"
+            style="@style/WhiteBackGround"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -68,6 +71,7 @@
 
         <EditText
             android:id="@+id/descriptionINput"
+            style="@style/WhiteBackGround"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="42dp"
@@ -140,6 +144,7 @@
 
         <SeekBar
             android:id="@+id/difficultySeekBar"
+            style="@style/WhiteBackGround"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -154,6 +159,7 @@
 
         <TextView
             android:id="@+id/difficultyShowerInAddSkill"
+            style="@style/WhiteBackGround"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
@@ -132,7 +133,10 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                         }
                         }
                     if(!found){
-                        Toast.makeText(context,"Skill not found", Toast.LENGTH_SHORT).show()
+                        withContext(Main){
+                            Toast.makeText(context,"Skill not found", Toast.LENGTH_SHORT).show()
+                        }
+
                     }
                 }
             }
