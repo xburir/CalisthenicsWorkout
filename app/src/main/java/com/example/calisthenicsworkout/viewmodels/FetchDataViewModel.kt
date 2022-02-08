@@ -73,14 +73,17 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
 
 
         val job  = withTimeoutOrNull(TIMEOUT){
+
             getSkillsFromFireBase(context)
-            getPredefinedTrainings(context)
-            getUsersTrainings(context)
+
             getSkillsAndSkillCrossRefFromFireBase()
             getUserAndSkillCrossRefFromFireBase()
             withContext(Main){
                 finished.value = "true"
             }
+
+
+
 
         }
         if(job == null){
@@ -102,7 +105,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         withContext(Main){
             skillsInDb.value = query.size()
         }
-
+        var added = 0
         for(entry in query){
             CoroutineScope(IO).launch {
                 val id = entry.id
@@ -121,6 +124,11 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
                 }finally {
                     Log.i("Debug","Adding skill")
                     database.insert(skill)
+                    added++
+                    if(added == query.size()){
+                        getPredefinedTrainings(context)
+                        getUsersTrainings(context)
+                    }
                 }
             }
         }
