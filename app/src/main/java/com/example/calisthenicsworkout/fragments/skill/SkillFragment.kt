@@ -93,6 +93,7 @@ class SkillFragment : Fragment()  {
 
         viewModel.finishedLoading.observe(viewLifecycleOwner,{
             if(it){
+
                 val managerTargets = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                 val adapterTargets = TargetInSkillListAdapter(TargetInSkillListAdapter.ClickListener{ target ->
                     Toast.makeText(context,target,Toast.LENGTH_SHORT).show()
@@ -106,6 +107,7 @@ class SkillFragment : Fragment()  {
 
 
                 binding.skill = viewModel.chosenSkill
+                binding.topLayoutOnSkillFragment.visibility = View.VISIBLE
                 if (viewModel.beforeSkills.isNotEmpty()) {
                     binding.beforeSkillsHeader.visibility = View.VISIBLE
                     binding.beforeSkills.visibility = View.VISIBLE

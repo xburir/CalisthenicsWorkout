@@ -5,11 +5,7 @@
     tools:context=".fragments.skill.AllSkillsFragment"
     >
 
-    <data>
-        <variable
-            name="skillViewModel"
-            type="com.example.calisthenicsworkout.viewmodels.SkillViewModel" />
-    </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,13 +16,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:gravity="center"
             android:hint="@string/search"
             android:inputType="text"
             android:singleLine="true"
             android:textColor="#000000"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/filterButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,6 +35,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchBar"
             tools:layout_editor_absoluteX="0dp" />
+
+        <Button
+            android:id="@+id/filterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Filter"
+            android:textAlignment="center"
+            app:icon="@android:drawable/ic_menu_sort_by_size"
+            app:layout_constraintBottom_toBottomOf="@+id/searchBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -32,5 +32,18 @@ class PrefUtil {
             editor.putBoolean(LOAD_ONLINE_DATABASE,boolean)
             editor.apply()
         }
+
+        private const val SKILL_FILTER = "com.example.calisthenicsworkout.skill_filter"
+
+        fun getFilterSetting(context: Context): String?{
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            return preferences.getString(SKILL_FILTER,"")
+        }
+
+        fun setFilterSettings(string: String, context: Context){
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putString(SKILL_FILTER,string)
+            editor.apply()
+        }
     }
 }

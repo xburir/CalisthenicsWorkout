@@ -24,6 +24,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/round_edges"
             android:onClick="@{()->clickListener.onClick(target)}"
+            android:padding="3dp"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -16,9 +16,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
-        android:id="@+id/frameLayout2"
+        android:id="@+id/topLayoutOnSkillFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <ScrollView
             android:layout_width="match_parent"
