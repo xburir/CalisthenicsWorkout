@@ -1,16 +1,24 @@
 package com.example.calisthenicsworkout.fragments
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calisthenicsworkout.PhotoActivity
 import com.example.calisthenicsworkout.R
+import com.example.calisthenicsworkout.adapters.TrainingListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.databinding.FragmentProfileBinding
 import com.example.calisthenicsworkout.viewmodels.ProfileViewModel
@@ -38,10 +46,45 @@ class ProfileFragment : Fragment() {
         viewModel.chosenUser.observe(viewLifecycleOwner,{
             it?.let{
                 binding.profileImageView.setImageURI(it.userImage)
-                binding.fullUserName.text = it.userFullName
                 binding.titleOnUser.text = it.userFullName
                 viewModel.chosenUserId = it.userId
                 viewModel.chosenUser.value = null
+
+
+
+                viewModel.getChosenUsersTrainings(requireContext())
+
+                val adapter = TrainingListAdapter(TrainingListAdapter.TrainingListener { trainingId ->
+                    copyTraining(trainingId)
+                })
+                val manager = LinearLayoutManager(activity)
+                binding.usersTrainingsRecyclerView.layoutManager = manager
+                binding.usersTrainingsRecyclerView.adapter = adapter
+
+
+                viewModel.chosenUsersTrainings.observe(viewLifecycleOwner,{ trainingList->
+                    if(trainingList.size>0){
+                        binding.textView30.text = "Users trainings: (Click to expand)"
+
+                        binding.textView30.setOnClickListener {
+
+                            if(binding.usersTrainingsRecyclerView.visibility == View.GONE){
+                                binding.textView30.text = "Users trainings: (Click to collapse)"
+                                binding.usersTrainingsRecyclerView.visibility = View.VISIBLE
+                            }else{
+                                binding.textView30.text = "Users trainings: (Click to expand)"
+                                binding.usersTrainingsRecyclerView.visibility = View.GONE
+                            }
+
+                        }
+                    }else{
+                        binding.textView30.text = "Users trainings: (No trainings)"
+                    }
+                    adapter.submitList(trainingList)
+
+                })
+
+
             }
         })
 
@@ -58,7 +101,24 @@ class ProfileFragment : Fragment() {
         }
 
 
+
+
+
+
+
+
+
+
+
         return binding.root
+    }
+
+    private fun copyTraining(trainingId:String) {
+        val clipboardManager = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("text", trainingId)
+        clipboardManager.setPrimaryClip(clipData)
+        Toast.makeText(context,"Training ID copied to clipboard", Toast.LENGTH_SHORT).show()
+
     }
 
 }

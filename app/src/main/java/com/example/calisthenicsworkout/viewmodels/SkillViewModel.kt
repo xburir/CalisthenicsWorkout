@@ -15,6 +15,8 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.tasks.await
+import java.lang.Exception
 
 
 class SkillViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
@@ -126,50 +128,55 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
     }
 
 
+    fun addSharedTraining(trainingId: String,context: Context){
 
+        CoroutineScope(IO).launch {
+            var found = false
+            val trainingQuery = db.collection("trainings").get().await()
+            trainingQuery.forEach { trainingQueryItem ->
+                if(trainingQueryItem.id == trainingId){
+                    found = true
+                    val id = trainingQueryItem.id
+                    val name = trainingQueryItem.data.getValue("name").toString()
+                    val owner = trainingQueryItem.data.getValue("owner").toString()
+                    val target = trainingQueryItem.data.getValue("target") as ArrayList<String>
+                    val numberOfExercises = trainingQueryItem.data.getValue("numberOfExercises").toString().toInt()
+                    val type = trainingQueryItem.data.getValue("type").toString()
+                    val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises,"0",type)
 
-
-    suspend fun addTrainingToDatabase(training: Training) {
-        withContext(Dispatchers.IO){
-            database.insertTraining(training)
+                    try{
+                        val uri =  fbStorage.reference.child("trainingImages").child("${id}.png").downloadUrl.await()
+                        val bitmap = PictureUtil.getBitmapFromUri(uri, context)
+                        val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,id)
+                        training.image = savedImageUri
+                    }catch (e: Exception) {
+                    }finally {
+                        Log.i("Debug","Adding training")
+                        database.insertTraining(training)
+                        getExercisesForTraining(id)
+                    }
+                }
+            }
+            if(!found){
+                Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    fun addSharedTraining(trainingId: String,context: Context){
+    private suspend fun getExercisesForTraining(training: String) {
 
-        db.collection("trainings").get().addOnCompleteListener{
-            if(it.isSuccessful){
-                var found = false
-                for(entry in it.result!!){
-                    if(entry.id == trainingId){
-                        found = true
-                        val id = entry.id
-                        val name = entry.data.getValue("name").toString()
-                        val owner = entry.data.getValue("owner").toString()
-                        val target = entry.data.getValue("target") as ArrayList<String>
-                        val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
-                        val type = entry.data.getValue("type").toString()
-                        val training = Training(name,target,id,owner,PictureUtil.getDefaultTrainingPic(),numberOfExercises,"0",type)
-                        val pictureRef = fbStorage.reference.child("trainingImages").child("$id.png")
-                        pictureRef.downloadUrl
-                            .addOnSuccessListener {
-                                viewModelScope.launch {
-                                    it?.let{
-                                        training.image = it
-                                    }
-                                    addTrainingToDatabase(training)
-                                }
-                            }
-                            .addOnFailureListener {
-                                viewModelScope.launch {
-                                    addTrainingToDatabase(training)
-                                }
-                            }
-                    }
-                }
-                if(!found){
-                    Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
-                }
+        val query = db.collection("exercises").whereEqualTo("trainingId",training).get().await()
+        for (entry in query){
+            val skillId = entry.data.getValue("skillId").toString()
+            val order = entry.data.getValue("order").toString().toInt()
+            val trainingId = entry.data.getValue("trainingId").toString()
+            val reps = entry.data.getValue("reps").toString()
+            val sets = entry.data.getValue("sets").toString()
+            withContext(IO){
+                val skill = database.getSkill(skillId)
+                val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
+                Log.i("Debug","Adding exercise")
+                database.insertExercise(exercise)
             }
         }
     }

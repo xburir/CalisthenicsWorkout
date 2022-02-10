@@ -12,14 +12,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
+import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.database.entities.User
 import com.example.calisthenicsworkout.util.PictureUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class ProfileViewModel(val database: SkillDatabaseDao, application: Application): AndroidViewModel(application) {
 
@@ -31,13 +37,17 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
     val allUsers = MutableLiveData(mutableListOf<User>())
     val allUsersDirect = mutableListOf<User>()
     val downloadProgress = MutableLiveData(0L)
+    val chosenUsersTrainings = MutableLiveData(mutableListOf<Training>())
+    var trainings = mutableListOf<Training>()
 
     val chosenUser = MutableLiveData<User>()
     var chosenUserId = ""
 
+
     var currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
     val uploadProgress = MutableLiveData(0L)
+
 
     init {
         val context = application.applicationContext
@@ -211,4 +221,37 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
         }
     }
 
+    fun getChosenUsersTrainings(context: Context){
+        trainings = mutableListOf()
+
+        CoroutineScope(IO).launch{
+            val query = db.collection("trainings").whereEqualTo("owner",chosenUserId).get().await()
+            for (entry in query){
+                val id = entry.id
+                val name = entry.data.getValue("name").toString()
+                val target = entry.data.getValue("target") as ArrayList<String>
+                val type = entry.data.getValue("type").toString()
+                val numberOfExercises = entry.data.getValue("numberOfExercises").toString().toInt()
+                val defaultPic = PictureUtil.getDefaultTrainingPic()
+                val training = Training(name,target,id,chosenUserId,defaultPic,numberOfExercises,"0",type)
+                try{
+                    val uri =  fbStorage.reference.child("trainingImages").child("${id}.png").downloadUrl.await()
+                    val bitmap = PictureUtil.getBitmapFromUri(uri, context)
+                    val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,id)
+                    training.image = savedImageUri
+                }catch (e: Exception) {
+                }finally {
+                    trainings.add(training)
+
+                }
+            }
+            withContext(Main){
+                chosenUsersTrainings.value = trainings
+            }
+
+        }
+
+
+
+    }
 }

@@ -30,7 +30,9 @@ import com.example.calisthenicsworkout.viewmodels.SkillViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -82,7 +84,6 @@ class TrainingFragment : Fragment() {
                 targetAdapter.submitList(viewModel.chosenTraining.target)
             }
         })
-
 
 
         changeTrainingOnFragment(binding,viewModel.lastViewedTrainingId,adapter)

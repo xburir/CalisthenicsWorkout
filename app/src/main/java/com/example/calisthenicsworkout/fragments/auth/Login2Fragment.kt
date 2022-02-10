@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.example.calisthenicsworkout.FetchDataActivity
 import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
@@ -36,7 +37,8 @@ class Login2Fragment : Fragment() {
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            val i = Intent(context, WelcomeActivity::class.java)
+
+            val i = Intent(context, MainActivity::class.java)
             i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(i)
             requireActivity().finish()

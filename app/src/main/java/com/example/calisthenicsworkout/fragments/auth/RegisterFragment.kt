@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.example.calisthenicsworkout.FetchDataActivity
+import com.example.calisthenicsworkout.MainActivity
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.WelcomeActivity
 import com.example.calisthenicsworkout.databinding.FragmentRegisterBinding
@@ -49,7 +51,7 @@ class RegisterFragment : Fragment() {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful){
                                 Toast.makeText(context,"Registered successfully",Toast.LENGTH_SHORT).show()
-                                val intent = Intent(context, WelcomeActivity::class.java)
+                                val intent = Intent(context, MainActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 PrefUtil.setLoadSettings(true,requireContext())
                                 val userId = FirebaseAuth.getInstance().currentUser!!.uid
