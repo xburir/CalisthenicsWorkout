@@ -98,7 +98,7 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
             mappedExercise["order"] = it.order
             mappedExercise["skillId"] = it.skillId
             mappedExercise["trainingId"] = it.trainingId
-            database.collection("exercises").add(mappedExercise)
+            database.collection("exercises").document(it.id).set(mappedExercise)
         }
 
     }
@@ -112,13 +112,14 @@ class TrainingViewModel(val database: SkillDatabaseDao, application: Application
                     database.getALlSkillsDirect().forEach { skill ->
                         if(skill.skillName == nameOfSkill){
                             found = true
+                            val exerciseId = getRandomString(20)
                             training.numberOfExercises++
                             exercise = if(skill.skillType == "reps"){
-                                if(numberOfReps == "1"){ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps repetition", skill.skillImage,skill.skillName,training.numberOfExercises) }
-                                else{ Exercise(key,skill.skillId ,numberOfSets,"$numberOfReps repetitions", skill.skillImage,skill.skillName,training.numberOfExercises)  }
+                                if(numberOfReps == "1"){ Exercise(exerciseId,key,skill.skillId ,numberOfSets, "$numberOfReps repetition", skill.skillImage,skill.skillName,training.numberOfExercises) }
+                                else{ Exercise(exerciseId,key,skill.skillId ,numberOfSets,"$numberOfReps repetitions", skill.skillImage,skill.skillName,training.numberOfExercises)  }
                             }else{
-                                if (numberOfReps == "1"){  Exercise(key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName,training.numberOfExercises)  }
-                                else{ Exercise(key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
+                                if (numberOfReps == "1"){  Exercise(exerciseId,key,skill.skillId ,numberOfSets,  "$numberOfReps second", skill.skillImage,skill.skillName,training.numberOfExercises)  }
+                                else{ Exercise(exerciseId,key,skill.skillId ,numberOfSets, "$numberOfReps seconds", skill.skillImage,skill.skillName,training.numberOfExercises) }
                             }
                             skill.target.forEach { trg ->
                                 if(!target.contains(trg)){

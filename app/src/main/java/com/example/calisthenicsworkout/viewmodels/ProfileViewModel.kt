@@ -44,7 +44,7 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
     var chosenUserId = ""
 
 
-    var currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
+    var currentUser = MutableLiveData<User>()
 
     val uploadProgress = MutableLiveData(0L)
 
@@ -64,10 +64,7 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
                         user.userImage = savedImageUri
 
                     }
-                    withContext(Dispatchers.IO){
-                        database.insertUser(user)
-                        currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
-                    }
+                    currentUser.value = user
                 }
             }
 
@@ -133,10 +130,13 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
         viewModelScope.launch {
             val bmp = PictureUtil.getBitmapFromUri(uri, context)
             val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bmp,context,userId)
-            withContext(Dispatchers.IO){
+
+            withContext(IO){
                 val  changedUser = database.getUserDirect(userId)
                 changedUser.userImage = savedImageUri
-                database.insertUser(changedUser)
+                withContext(Main){
+                    currentUser.value = changedUser
+                }
             }
             FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri)
                 .addOnProgressListener {

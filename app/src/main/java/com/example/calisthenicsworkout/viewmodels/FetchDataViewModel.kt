@@ -148,7 +148,7 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
             val sets = entry.data.getValue("sets").toString()
             withContext(IO){
                 val skill = database.getSkill(skillId)
-                val exercise = Exercise(trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
+                val exercise = Exercise(entry.id,trainingId,skillId,sets,reps,skill.skillImage,skill.skillName,order)
                 Log.i("Debug","Adding exercise")
                 database.insertExercise(exercise)
             }

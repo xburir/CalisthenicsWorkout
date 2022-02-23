@@ -2,6 +2,7 @@ package com.example.calisthenicsworkout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         val headerBinding = NavDrawerHeaderBinding.bind(header)
         
         viewModel.currentUser.observe(this,{
+
             it?.let{
                 headerBinding.userNameInHeader.text = it.userFullName
                 headerBinding.imageView3.setImageURI(it.userImage)
