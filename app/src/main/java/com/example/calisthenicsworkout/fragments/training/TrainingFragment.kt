@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
@@ -138,7 +139,18 @@ class TrainingFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        val points = PrefUtil.getPointsEarned(requireContext())
+        points?.let{
+            if(it>0){
+                Toast.makeText(context,"You obtained $it points!", Toast.LENGTH_SHORT).show()
+                viewModel.userEarnedPoints(it)
+            }
+        }
+        PrefUtil.setPointsEarned(0,requireContext())
 
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

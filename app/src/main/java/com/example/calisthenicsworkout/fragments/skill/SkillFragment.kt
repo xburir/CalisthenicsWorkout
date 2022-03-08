@@ -70,12 +70,6 @@ class SkillFragment : Fragment()  {
 
 
 
-        binding.skillImageViewed.setOnClickListener{
-            val intent = Intent(requireActivity(), PhotoActivity::class.java)
-            intent.putExtra("folder","skillImages")
-            intent.putExtra("id",viewModel.lastViewedSkillId)
-            startActivity(intent)
-        }
 
         viewModel.chosenSkillId.observe(viewLifecycleOwner, { skill ->
             skill?.let {
@@ -200,6 +194,12 @@ class SkillFragment : Fragment()  {
                 SkillFragmentDirections.actionSkillFragmentToAddSkillFragment()
 
             )
+        }
+        if(item.toString() == "Show Picture"){
+            val intent = Intent(requireActivity(), PhotoActivity::class.java)
+            intent.putExtra("folder","skillImages")
+            intent.putExtra("id",viewModel.lastViewedSkillId)
+            startActivity(intent)
         }
         if (item.toString() == "Like"){
             var likeed = false

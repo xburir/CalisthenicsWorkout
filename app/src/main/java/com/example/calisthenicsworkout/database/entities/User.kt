@@ -15,5 +15,7 @@ data class User(
 
     var userFullName: String,
 
-    var userImage: Uri
+    var userImage: Uri,
+
+    var points: Int
 )

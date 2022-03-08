@@ -47,6 +47,7 @@ class ProfileFragment : Fragment() {
             it?.let{
                 binding.profileImageView.setImageURI(it.userImage)
                 binding.titleOnUser.text = it.userFullName
+                binding.points = it.points
                 viewModel.chosenUserId = it.userId
                 viewModel.chosenUser.value = null
 

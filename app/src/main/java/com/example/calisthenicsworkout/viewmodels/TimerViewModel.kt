@@ -11,11 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.SkillDatabaseDao
 import com.example.calisthenicsworkout.database.entities.Exercise
+import com.example.calisthenicsworkout.database.entities.Skill
 import com.example.calisthenicsworkout.database.entities.Training
 import com.example.calisthenicsworkout.database.entities.TrainingItem
 import com.example.calisthenicsworkout.util.PictureUtil
 import com.example.calisthenicsworkout.util.PrefUtil
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -35,8 +38,10 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
     lateinit var currentItem: TrainingItem
 
     val exercises = arrayListOf<Exercise>()
+    val skills = arrayListOf<Skill>()
     var setNumber = 0
     var exerciseNumber = 0
+    val points = MutableLiveData(0)
 
     var allExercisesFinished = false
 
@@ -59,12 +64,10 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             withContext(Dispatchers.IO){
                 database.getExercisesOfTrainingDirect(trainingId).forEach {    exercise ->
                     exercises.add(exercise)
+                    skills.add(database.getSkill(exercise.skillId))
                 }
                 exercises.sortBy { exercise -> exercise.order }
-                trainingItems.add(TrainingItem("Prepare yourself","seconds",5))
-
-
-
+                trainingItems.add(TrainingItem("Prepare yourself","seconds",5,0))
             }
         }
     }
@@ -75,20 +78,41 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             for(i in 1.._training.numberOfSets.toInt()){
                 exercises.forEach {
                     val reps = it.repetitions.split(' ')
-                    trainingItems.add(TrainingItem(it.skillName,reps[1],reps[0].toInt()))
+
+                    skills.forEach { skill ->
+                        if(skill.skillId == it.skillId){
+                            var points = skill.difficulty*reps[0].toInt()
+                            if(reps[1][0] == 's'){
+                                points/=10
+                            }
+
+                            trainingItems.add(TrainingItem(it.skillName,reps[1],reps[0].toInt(),points))
+                        }
+                    }
+
                 }
             }
         }else{
             exercises.forEach { exer ->
                 val reps = exer.repetitions.split(' ')
                 for (i in 1..exer.sets.toInt()){
-                    trainingItems.add(TrainingItem(exer.skillName,reps[1],reps[0].toInt()))
+                    skills.forEach { skill ->
+                        if(skill.skillId == exer.skillId){
+                            var points = skill.difficulty*reps[0].toInt()
+                            if(reps[1][0] == 's'){
+                                points/=10
+                            }
+                            trainingItems.add(TrainingItem(exer.skillName,reps[1],reps[0].toInt(),points))
+                        }
+                    }
                 }
             }
         }
         item = trainingItems.listIterator()
         nextItem = item.next()
         currentItem = nextItem
+
+
     }
 
     fun loadTraining(id: String,requireActivity: FragmentActivity) {
@@ -114,6 +138,7 @@ class TimerViewModel(val database: SkillDatabaseDao, application: Application): 
             }
             State.Stopped -> {
                 startTimer()
+                points.value = points.value?.plus(currentItem.points)
             }
             State.Paused -> {
                 startTimer()

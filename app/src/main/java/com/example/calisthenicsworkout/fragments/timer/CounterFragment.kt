@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import com.example.calisthenicsworkout.adapters.TrainingItemListAdapter
 import com.example.calisthenicsworkout.database.SkillDatabase
 import com.example.calisthenicsworkout.database.entities.TrainingItem
 import com.example.calisthenicsworkout.databinding.FragmentCounterBinding
+import com.example.calisthenicsworkout.util.PrefUtil
 import com.example.calisthenicsworkout.viewmodels.TimerViewModel
 import com.example.calisthenicsworkout.viewmodels.TimerViewModelFactory
 
@@ -84,6 +86,11 @@ class CounterFragment : Fragment() {
         }})
 
 
+        viewModel.points.observe(viewLifecycleOwner,{
+            binding.pointsTextView.text = "Points: $it"
+        })
+
+
         viewModel.timerState.observe(viewLifecycleOwner,{ it?.let{ timerState ->
             if(!viewModel.allExercisesFinished){
 
@@ -143,6 +150,7 @@ class CounterFragment : Fragment() {
                     }
                 }
             }else{
+                PrefUtil.setPointsEarned(viewModel.points.value!!,requireContext())
                 viewModel.timer.cancel()
                 requireActivity().finish()
             }
@@ -170,6 +178,8 @@ class CounterFragment : Fragment() {
                     if (viewModel.timerState.value == TimerViewModel.State.Running){
                         viewModel.timer.cancel()
                     }
+
+                    PrefUtil.setPointsEarned(viewModel.points.value!!,requireContext())
                     requireActivity().finish()
                 }
                 .setNegativeButton("No") {_,_->

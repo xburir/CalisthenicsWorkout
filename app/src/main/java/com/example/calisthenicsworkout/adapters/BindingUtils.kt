@@ -5,12 +5,16 @@ import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calisthenicsworkout.R
 import com.example.calisthenicsworkout.database.entities.*
+import org.w3c.dom.Text
+import kotlin.math.floor
+import kotlin.math.pow
 
 
 @BindingAdapter("skillNameFormatted")
@@ -167,6 +171,14 @@ fun TextView.setRemainingExerciseReps(item: TrainingItem?){
     }
 }
 
+@BindingAdapter("remainingExercisePoints")
+fun TextView.setRemainingExercisePoints(item: TrainingItem?){
+    item?.let {
+        text = (it.points.toString()+" points")
+    }
+}
+
+
 @BindingAdapter("userImage")
 fun ImageView.setUserImage(item: User?){
     item?.let {
@@ -180,3 +192,40 @@ fun TextView.setUserName(item: User?){
         text = item.userFullName
     }
 }
+
+@BindingAdapter("level")
+fun TextView.setLevel(item: Int?){
+    item?.let {
+        text = "Level: ${getLevel(item)}"
+    }
+}
+
+@BindingAdapter("levelProgress")
+fun ProgressBar.setLevelProgress(item: Int?){
+    item?.let{
+        progress = item;
+        max = nextLevelPoints(item)
+    }
+}
+
+@BindingAdapter("pointsNeeded")
+fun TextView.setPointsNeeded(item: Int?){
+    item?.let{
+        text = (nextLevelPoints(item)-item).toString() + " points needed to level "+ (getLevel(item)+1).toString()
+    }
+}
+
+fun getLevel(points: Int):Int{
+    var level = 0
+    while (2.0.pow(level.toDouble()) <= points/1000 ){
+        level++
+    }
+    return level
+}
+
+fun nextLevelPoints(item: Int): Int{
+    return (2.0.pow(getLevel(item).toDouble())*1000).toInt()
+}
+
+
+

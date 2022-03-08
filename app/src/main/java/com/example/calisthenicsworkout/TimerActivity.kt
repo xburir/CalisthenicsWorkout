@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.calisthenicsworkout.database.SkillDatabase
@@ -56,6 +57,7 @@ class TimerActivity : AppCompatActivity() {
                 if(viewModel.timerState.value == TimerViewModel.State.Running){
                     viewModel.timer.cancel()
                 }
+                PrefUtil.setPointsEarned(viewModel.points.value!!,this)
                 this.finish()
             }
             .setNegativeButton("No") {_,_->

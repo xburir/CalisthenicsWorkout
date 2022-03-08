@@ -45,5 +45,19 @@ class PrefUtil {
             editor.putString(SKILL_FILTER,string)
             editor.apply()
         }
+
+
+        private const val POINTS_EARNED = "com.example.calisthenicsworkout.points_earned"
+
+        fun getPointsEarned(context: Context): Int?{
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            return preferences.getInt(POINTS_EARNED,0)
+        }
+
+        fun  setPointsEarned(number: Int, context: Context){
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putInt(POINTS_EARNED,number)
+            editor.apply()
+        }
     }
 }

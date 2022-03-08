@@ -181,7 +181,24 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
         }
     }
 
+    fun userEarnedPoints(amount: Int) {
+        CoroutineScope(IO).launch {
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+            val user = database.getUserDirect(userId)
+            Log.i("Debug","Before ${user.points} points")
+            user.points+= amount
+            Log.i("Debug","after ${user.points} points")
+            database.insertUser(user)
 
+
+            val mappedThing: MutableMap<String,Any> = HashMap()
+            mappedThing["userFullName"] = user.userFullName
+            mappedThing["userEmail"] = user.userEmail
+            mappedThing["userPoints"] = user.points
+
+            db.collection("users").document(userId).set(mappedThing)
+        }
+    }
 
 
 }

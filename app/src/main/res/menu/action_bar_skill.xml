@@ -22,4 +22,9 @@
         android:icon="@android:drawable/ic_media_play"
         android:title="Video"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ShowPicture"
+        android:title="Show Picture"
+        app:showAsAction="never" />
 </menu>

@@ -49,7 +49,7 @@ interface SkillDatabaseDao {
 
 
     //user
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
 
     @Query("SELECT * FROM User WHERE userId = :userId")

@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.ProfileFragment">
 
+    <data>
+        <variable
+            name="points"
+            type="Integer" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,6 +40,50 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                style="@style/outside"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="8px"
+                app:layout_constraintBottom_toBottomOf="@+id/profileImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profileImageView"
+                app:layout_constraintTop_toTopOf="@+id/profileImageView">
+
+                <ProgressBar
+                    android:id="@+id/levelProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/levelTextView"
+                    app:levelProgress="@{points}" />
+
+                <TextView
+                    android:id="@+id/levelTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/levelProgressBar"
+                    app:layout_constraintStart_toStartOf="@+id/levelProgressBar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:level="@{points}" />
+
+                <TextView
+                    android:id="@+id/pointsToNextLevelTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/levelProgressBar"
+                    app:layout_constraintStart_toStartOf="@+id/levelProgressBar"
+                    app:layout_constraintTop_toBottomOf="@+id/levelProgressBar"
+                    app:pointsNeeded="@{points}" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
                 android:id="@+id/profileImageView"

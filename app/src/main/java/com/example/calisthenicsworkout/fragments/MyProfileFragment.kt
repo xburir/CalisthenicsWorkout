@@ -49,6 +49,7 @@ class MyProfileFragment : Fragment() {
                 binding.userEmail.text = "Email: "+ user.userEmail
                 binding.userId.text = "UID: " + user.userId
                 binding.profileImageView.setImageURI(user.userImage)
+                binding.points = user.points
             }
         })
 

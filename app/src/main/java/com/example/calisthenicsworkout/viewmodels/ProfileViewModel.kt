@@ -44,30 +44,40 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
     var chosenUserId = ""
 
 
-    var currentUser = MutableLiveData<User>()
+    var currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
 
     val uploadProgress = MutableLiveData(0L)
 
 
     init {
         val context = application.applicationContext
-        db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
-            val name = it.data?.getValue("userFullName").toString()
-            val email = it.data?.getValue("userEmail").toString()
-            val id = it.id
-            val user =  User(id,email,name,PictureUtil.getDefaultProfilePic())
-            fbStorage.reference.child("userProfileImages").child("$id.png").downloadUrl.addOnCompleteListener {
-                viewModelScope.launch {
-                    if(it.isSuccessful){
-                        val bitmap = PictureUtil.getBitmapFromUri(it.result!!, context)
-                        val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,id)
-                        user.userImage = savedImageUri
+        CoroutineScope(IO).launch {
+            val user = database.getUserDirect(FirebaseAuth.getInstance().currentUser!!.uid)
+            if(user == null){
+                db.collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid).get().addOnSuccessListener {
+                    val name = it.data?.getValue("userFullName").toString()
+                    val email = it.data?.getValue("userEmail").toString()
+                    val id = it.id
+                    val points = it.data?.getValue("userPoints").toString()
+                    val user =  User(id,email,name,PictureUtil.getDefaultProfilePic(),points.toInt())
+                    fbStorage.reference.child("userProfileImages").child("$id.png").downloadUrl.addOnCompleteListener {
+                        viewModelScope.launch {
+                            if(it.isSuccessful){
+                                val bitmap = PictureUtil.getBitmapFromUri(it.result!!, context)
+                                val savedImageUri = PictureUtil.saveBitmapToInternalStorage(bitmap,context,id)
+                                user.userImage = savedImageUri
 
+                            }
+                            withContext(IO){
+                                database.insertUser(user)
+                                currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
+                            }
+
+                        }
                     }
-                    currentUser.value = user
+
                 }
             }
-
         }
     }
 
@@ -78,10 +88,11 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
                 val id = entry.id
                 val fullName = entry.data.getValue("userFullName").toString()
                 val email = entry.data.getValue("userEmail").toString()
+                val points = entry.data.getValue("userPoints").toString().toInt()
                 val pictureRef = fbStorage.reference.child("userProfileImages").child("${id}.png")
                 pictureRef.downloadUrl
                     .addOnFailureListener {
-                        val user = User(id,email,fullName, PictureUtil.getDefaultProfilePic())
+                        val user = User(id,email,fullName, PictureUtil.getDefaultProfilePic(),points)
                         allUsersDirect.add(user)
                         allUsers.value = allUsersDirect
                         downloadProgress.value = 100L * (allUsersDirect.size / query.size())
@@ -90,7 +101,7 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
                         viewModelScope.launch {
                             val bmp = PictureUtil.getBitmapFromUri(it,context)
                             val url = PictureUtil.saveBitmapToInternalStorage(bmp,context,id)
-                            val user = User(id,email,fullName,url)
+                            val user = User(id,email,fullName,url,points)
                             allUsersDirect.add(user)
                             allUsers.value = allUsersDirect
                             downloadProgress.value = 100L * (allUsersDirect.size / query.size())
@@ -134,9 +145,8 @@ class ProfileViewModel(val database: SkillDatabaseDao, application: Application)
             withContext(IO){
                 val  changedUser = database.getUserDirect(userId)
                 changedUser.userImage = savedImageUri
-                withContext(Main){
-                    currentUser.value = changedUser
-                }
+                database.insertUser(changedUser)
+                currentUser = database.getUser(FirebaseAuth.getInstance().currentUser!!.uid)
             }
             FirebaseStorage.getInstance().reference.child("userProfileImages").child("$userId.png").putFile(uri)
                 .addOnProgressListener {
