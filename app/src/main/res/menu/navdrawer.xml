@@ -15,6 +15,10 @@
         android:id="@+id/profileActivity"
         android:title="All Users" />
 
+    <item
+        android:id="@+id/aboutFragment"
+        android:title="About application" />
+
 
 
     <item android:title="Skills">

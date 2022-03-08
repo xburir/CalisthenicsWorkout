@@ -6,4 +6,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="made_by">Vytvoril Richard Búri</string>
     <string name="about">About</string>
+    <string name="about_app_string">This application is the result of my bachelors thesis. It is intended to be used mostly by people who want to do Calisthenics. You can choose a certain skill, which you want to learn. You can view the description of the skill and you can view a video tutorial how the skill is supposed to be performed. You can also see the before skills, which should be mastered before learning the chosen skill. You can also view skills which can be learned after mastering the chosen skill. You can also add skills to your favorites and create a training out of them. AFter you have chosen a predefined training or your own, you can start a timer specifically designed for the chosen training. After completing exercises, you get points calculated based on the difficulty of the skill and reps amount. The points are converted into levels.</string>
 </resources>

@@ -126,4 +126,9 @@
         android:name="com.example.calisthenicsworkout.ProfileActivity"
         android:label="activity_profile"
         tools:layout="@layout/activity_profile" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.calisthenicsworkout.fragments.AboutFragment"
+        android:label="About"
+        tools:layout="@layout/fragment_about" />
 </navigation>
