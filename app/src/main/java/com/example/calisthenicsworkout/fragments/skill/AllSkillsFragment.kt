@@ -139,7 +139,9 @@ class AllSkillsFragment : Fragment() {
             listAfterTargetFilter.sortBy{item->item.difficulty}
 
             listAfterTargetFilter.forEach { skill ->
-                if(skill.skillName.contains(text)){
+                val name = skill.skillName.uppercase()
+                val searched = text.uppercase()
+                if(name.contains(searched)){
                     listAfterTextFilter.add(skill)
                 }
             }

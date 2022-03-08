@@ -1,10 +1,11 @@
 package com.example.calisthenicsworkout.fragments.training
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.InputType
+import android.view.*
+import android.widget.EditText
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -63,8 +64,34 @@ class MyTrainingsFragment : Fragment() {
             }
         })
 
+        setHasOptionsMenu(true)
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.action_bar_all_trainings,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if(item.toString() == "Add Training"){
+            val input = EditText(context)
+            input.hint = "Enter Text"
+            input.inputType = InputType.TYPE_CLASS_TEXT
+            AlertDialog.Builder(context)
+                .setTitle("Add Training")
+                .setView(input)
+                .setPositiveButton("OK") {_,_->
+                    val id = input.text.toString()
+                    viewModel.addSharedTraining(id,requireContext())
+                }
+                .setNegativeButton("Cancel",null)
+                .show()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
 }

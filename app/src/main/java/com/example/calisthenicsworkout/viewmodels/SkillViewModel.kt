@@ -158,7 +158,10 @@ class SkillViewModel(val database: SkillDatabaseDao, application: Application): 
                 }
             }
             if(!found){
-                Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
+                CoroutineScope(Main).launch{
+                    Toast.makeText(context,"Training not found",Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
     }

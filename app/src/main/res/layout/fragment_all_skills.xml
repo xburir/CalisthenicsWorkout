@@ -22,7 +22,7 @@
             android:hint="@string/search"
             android:inputType="text"
             android:singleLine="true"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toStartOf="@+id/filterButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
