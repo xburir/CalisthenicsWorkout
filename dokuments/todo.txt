@@ -1,0 +1,13 @@
+1) nepodarilo sa nacitat data z dataabzy vypisat (asi staci else) nestaci
+failure listener nefunguje lebo robi ajked nieje net
+2) nepodarilo sa uploadnut trening treba nejako vypisat
+3) zmena obrazku az po reloade fragmentu
+
+
+-ked pridam shared traning tak nenacita jeho fotku
+-Testovanie aplikácie
+-pridanie fragmentu co vsetko sa da s appkou robit
+-obcas nenacita target v skille a ostane stary
+
+3) google facebook login
+

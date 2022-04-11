@@ -1,0 +1,11 @@
+0 uvod co planujem urobit a preco a plany
+1 ake aplikacie su  podobne
+	- opisat aj aplikacie podobne co vedia a tak 4 odseky co vedia o kazdej app jeden odsek  -- pridat screenshoty zoznam cvikov a prezeranie cvikov
+2 v com je moja lepsia
+3 vyber technologii (v com som programoval, pre aky HW som to programoval, ake najhlavnejsie kniznice som pouzival, preco prave tieto som si vybral kniznice) aj firebasae aj kniznice najdolezitejsie dokopy max 5  -- co sa neda najst, preco som sa rozhodol pouzit toto a toto
+4 ake funkcionality ma mat aplikacia(pomocou UML diagramov) 
+5 Časť implementacie (ake problemy som mal a ako som ich vyriešil, v ktorych funkcionalitach som stravil najviac času) (ked tak zjednoduseny pseudokod ako sm vyriesil)
+6 zhodnotenie aplikacie(dotazníky ako sa pacilo ludom)
+7 záver(opacna strana uvodu, co som urobil, co som zistil, ci sa podarilo to co som v uvode planoval)
+8 keby ma nejake velke obrazky tabulky tak sem ich dam a potom sa na ne budem odkazovat
+8 zdroje/literatura

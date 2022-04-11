@@ -1,0 +1,44 @@
+custom dialog:
+https://www.youtube.com/watch?v=jA5tjsHsdck&ab_channel=CodingWithMitch
+https://stackoverflow.com/questions/34967868/how-to-use-data-binding-in-dialog
+
+navbar + toolbar
+https://www.youtube.com/watch?v=5VsRFJjyMjU&ab_channel=larntech
+
+binding header
+https://stackoverflow.com/questions/32246360/how-to-get-view-from-drawer-header-layout-with-binding-in-activity
+
+nested recyclerview:
+https://www.youtube.com/watch?v=fEb617A92rU&ab_channel=LearningWorldz
+
+seekbar:
+https://www.youtube.com/watch?v=0wZwLfmVTvU
+
+custom action bar name in fragment:
+https://stackoverflow.com/questions/27100007/set-a-title-in-toolbar-from-fragment-in-android
+
+
+iconka legs:
+https://www.clipartmax.com/png/small/349-3498264_graphic-library-leg-outline-muscular-male-gymnast-people-legs-icon-png.png
+chest:
+https://cdn2.iconfinder.com/data/icons/fitness-outline-4/512/chest_strong_muscle_exercise_body_parts_medical_sports_man_fitness_anatomy-512.png
+shoulder:
+https://www.flaticon.com/free-icon/shoulder_2324729
+arm:
+https://www.pngegg.com/en/png-zvnaa/download
+back:
+https://pngtree.com/element/down?id=NTM5NDE2Ng==&type=1&time=1644268539&token=MTZjYjdlZTJlYTgyOWU0ODg3MDg5ZGIyNDkzYTYwMTQ=
+abs:
+https://icon-library.com/png/79069.html
+
+styles:
+https://www.youtube.com/watch?v=ynOUzHFFMeg&ab_channel=EducationisLife
+
+fb icon:
+https://pixabay.com/sk/illustrations/facebook-logo-soci%C3%A1lne-siete-siete-770688/
+
+email icon:
+https://freeicons.io/test/letter-email-icon-1220
+
+send email:
+https://devofandroid.blogspot.com/2018/11/send-email-using-intent-android-studio.html
