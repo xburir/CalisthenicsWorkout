@@ -81,6 +81,7 @@ class RegisterFragment : Fragment() {
             val mappedThing: MutableMap<String,Any> = HashMap()
             mappedThing["userFullName"] = name
             mappedThing["userEmail"] = email
+            mappedThing["userPoints"] = 0
             db.collection("users").document(id).set(mappedThing)
     }
 
