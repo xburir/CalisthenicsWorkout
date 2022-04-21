@@ -10,11 +10,13 @@ failure listener nefunguje lebo robi ajked nieje net
 -obcas nenacita target v skille a ostane stary
 -ten loadking nejak spravit 
 
-3) google facebook login
 
 
 
 anglicke vyrazy odlisit
-pridat rolu neprihlaseneho,
 popisat use case textom
 do 4 kapitoly class diagram a este spôsob akym ukladam do databazy veci
+
+subsekcie dat na hruby text len
+limity aplikácie
+navrh implementaciu
