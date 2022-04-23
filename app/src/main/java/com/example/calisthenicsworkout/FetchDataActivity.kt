@@ -3,6 +3,7 @@ package com.example.calisthenicsworkout
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -53,24 +54,38 @@ class FetchDataActivity : AppCompatActivity() {
         viewModel.trainingsInDb.observe(this,{
             dialogBinding.downloadedTrainingsTextView.text = "/"+it.toString()
         })
-
-        viewModel.skills.observe(this,{
-            if(it.isNotEmpty()){
-                dialogBinding.addedSkillsTextView.text = it.size.toString()
-                dialogBinding.addedSkillsTextView.visibility = View.VISIBLE
-                dialogBinding.textView10.visibility = View.VISIBLE
-                dialogBinding.downloadedSkillsTextView.visibility = View.VISIBLE
-            }
+        viewModel.customTrainingsInDb.observe(this,{
+            dialogBinding.downloadedCustomTrainingsTextView.text = "/"+it.toString()
+        })
+        viewModel.userAndSkillCrossRefsInDb.observe(this,{
+            dialogBinding.downloadedUserSkillsTextView.text = "/"+it.toString()
+        })
+        viewModel.skillAndSkillCrossRefsInDb.observe(this,{
+            dialogBinding.downloadedBeforeSkillsTextView.text = "/"+it.toString()
+        })
+        viewModel.exercisesInDb.observe(this,{
+            dialogBinding.downloadedExercisesTextView.text = "/"+it.toString()
         })
 
-        viewModel.trainings.observe(this,{
-            dialogBinding.addedTrainingsTextView.text = it.size.toString()
-            if(it.isNotEmpty()) {
-                dialogBinding.addedTrainingsTextView.visibility = View.VISIBLE
-                dialogBinding.textView11.visibility = View.VISIBLE
-                dialogBinding.downloadedTrainingsTextView.visibility = View.VISIBLE
+        viewModel.skillsAdded.observe(this,{
+            dialogBinding.addedSkillsTextView.text = it.toString()
+        })
 
-            }
+        viewModel.trainingsAdded.observe(this,{
+            dialogBinding.addedTrainingsTextView.text = it.toString()
+        })
+
+        viewModel.customTrainingsAdded.observe(this,{
+            dialogBinding.addedCustomTrainingsTextView.text = it.toString()
+        })
+        viewModel.exercisesAdded.observe(this,{
+            dialogBinding.addedExercisesTextView.text = it.toString()
+        })
+        viewModel.beforeSkillsAdded.observe(this,{
+            dialogBinding.addedBeforeSkillsTextView.text = it.toString()
+        })
+        viewModel.userSkillsAdded.observe(this,{
+            dialogBinding.addedUserSkillTextView.text = it.toString()
         })
 
         viewModel.timeLeft.observe(this,{
@@ -78,9 +93,14 @@ class FetchDataActivity : AppCompatActivity() {
         })
 
         viewModel.finished.observe(this,{
-            if(it == "true"){
+            if(it == "done"){
                 dialogg.dismiss()
                 Toast.makeText(this,"Data downloaded succesfully", Toast.LENGTH_SHORT).show()
+            }
+            if(it == "downloaded"){
+                dialogBinding.downloadedInfoTextView.visibility = View.VISIBLE
+                dialogBinding.timeOutTextView.visibility = View.GONE
+                Log.i("Debug","downloaded")
             }
             if(it == "under"){
                 dialogg.dismiss()

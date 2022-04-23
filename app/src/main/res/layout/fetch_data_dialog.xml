@@ -17,12 +17,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Downloading skills"
-            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:text="Skills"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
         <TextView
             android:id="@+id/textView11"
@@ -30,21 +28,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="Downloading trainings"
-            android:visibility="gone"
+            android:text="Trainings"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <ProgressBar
             android:id="@+id/progressBar4"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintTop_toBottomOf="@+id/textView38" />
 
         <TextView
             android:id="@+id/downloadedSkillsTextView"
@@ -52,11 +48,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="text"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/addedSkillsTextView"
-            app:layout_constraintTop_toTopOf="@+id/addedSkillsTextView"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@+id/addedSkillsTextView" />
 
         <TextView
             android:id="@+id/downloadedTrainingsTextView"
@@ -65,33 +59,26 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:text="text"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/addedTrainingsTextView"
-            app:layout_constraintTop_toBottomOf="@+id/downloadedSkillsTextView"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/downloadedSkillsTextView" />
 
         <TextView
             android:id="@+id/addedSkillsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="63dp"
             android:text="TextView"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/textView10"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toStartOf="@+id/addedUserSkillTextView"
+            app:layout_constraintTop_toTopOf="@+id/textView10" />
 
         <TextView
             android:id="@+id/addedTrainingsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/textView11"
             app:layout_constraintStart_toStartOf="@+id/addedSkillsTextView"
-            app:layout_constraintTop_toTopOf="@+id/textView11"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@+id/textView11" />
 
         <TextView
             android:id="@+id/timeOutTextView"
@@ -100,6 +87,145 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="Timeout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar4" />
+
+        <TextView
+            android:id="@+id/textView35"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Your trainings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <TextView
+            android:id="@+id/addedCustomTrainingsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/addedTrainingsTextView"
+            app:layout_constraintTop_toTopOf="@+id/textView35" />
+
+        <TextView
+            android:id="@+id/textView37"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Before skills"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView36" />
+
+        <TextView
+            android:id="@+id/textView38"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Other relations"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView37" />
+
+        <TextView
+            android:id="@+id/addedBeforeSkillsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/addedCustomTrainingsTextView"
+            app:layout_constraintTop_toTopOf="@+id/textView37" />
+
+        <TextView
+            android:id="@+id/addedUserSkillTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="TextView"
+            app:layout_constraintStart_toEndOf="@+id/textView38"
+            app:layout_constraintTop_toTopOf="@+id/textView38" />
+
+        <TextView
+            android:id="@+id/downloadedCustomTrainingsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addedCustomTrainingsTextView"
+            app:layout_constraintTop_toTopOf="@+id/addedCustomTrainingsTextView" />
+
+        <TextView
+            android:id="@+id/downloadedBeforeSkillsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addedBeforeSkillsTextView"
+            app:layout_constraintTop_toTopOf="@+id/addedBeforeSkillsTextView" />
+
+        <TextView
+            android:id="@+id/downloadedUserSkillsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addedUserSkillTextView"
+            app:layout_constraintTop_toTopOf="@+id/addedUserSkillTextView" />
+
+        <TextView
+            android:id="@+id/textView44"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:text="Downloading..."
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView36"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Exercises"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView35" />
+
+        <TextView
+            android:id="@+id/downloadedExercisesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/addedExercisesTextView"
+            app:layout_constraintTop_toTopOf="@+id/addedExercisesTextView" />
+
+        <TextView
+            android:id="@+id/addedExercisesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/addedCustomTrainingsTextView"
+            app:layout_constraintTop_toTopOf="@+id/textView36" />
+
+        <TextView
+            android:id="@+id/downloadedInfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Data downlaoded, please wait..."
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

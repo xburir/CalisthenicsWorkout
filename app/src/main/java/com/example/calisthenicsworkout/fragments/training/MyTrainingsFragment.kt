@@ -1,10 +1,12 @@
 package com.example.calisthenicsworkout.fragments.training
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.*
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -80,8 +82,13 @@ class MyTrainingsFragment : Fragment() {
             val input = EditText(context)
             input.hint = "Enter Text"
             input.inputType = InputType.TYPE_CLASS_TEXT
+            val title = TextView(context)
+            title.text = "Enter training Id"
+            title.textSize = 30F;
+            title.setTextColor(Color.BLACK)
+            title.textAlignment = View.TEXT_ALIGNMENT_CENTER
             AlertDialog.Builder(context)
-                .setTitle("Add Training")
+                .setCustomTitle(title)
                 .setView(input)
                 .setPositiveButton("OK") {_,_->
                     val id = input.text.toString()

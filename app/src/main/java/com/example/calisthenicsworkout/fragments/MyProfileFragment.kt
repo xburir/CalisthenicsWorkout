@@ -4,11 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
@@ -57,10 +60,16 @@ class MyProfileFragment : Fragment() {
 
         binding.logoutButton.setOnClickListener {
             if(binding.unregisterSwitch.isChecked){
+                val title = TextView(context)
+                title.text = "Are you sure you want to unregister?"
+                title.textSize = 30F;
+                title.setTextColor(Color.BLACK)
+                title.textAlignment = View.TEXT_ALIGNMENT_CENTER
                 AlertDialog.Builder(context)
-                    .setTitle("Are you sure you want to unregister?")
+                    .setCustomTitle(title)
                     .setPositiveButton("Yes") { _, _ ->
-                        AlertDialog.Builder(context).setTitle("Deleting...").setCancelable(false).show()
+                        title.text = "Deleting..."
+                        AlertDialog.Builder(context).setCustomTitle(title).setCancelable(false).show()
                         viewModel.unregister(Intent(context, AuthActivity::class.java),requireActivity())
 
                     }
@@ -101,6 +110,7 @@ class MyProfileFragment : Fragment() {
         }
 
         binding.profileImageView.setOnClickListener{
+
 
             val dialog = AlertDialog.Builder(context)
                 .setPositiveButton("Select new image") {_,_->

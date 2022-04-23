@@ -7,7 +7,7 @@ import com.example.calisthenicsworkout.database.entities.*
 @Dao
 interface SkillDatabaseDao {
     //skill
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(skill: Skill)
 
     @Query("SELECT * FROM Skills ORDER BY skillId DESC")
@@ -65,7 +65,7 @@ interface SkillDatabaseDao {
     fun clearUserTable()
 
     //user and skill cross ref
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUserAndSkillCrossRef(crossRef: UserAndSkillCrossRef)
 
     @Query("SELECT * FROM userandskillcrossref WHERE userId= :userId")
@@ -95,7 +95,7 @@ interface SkillDatabaseDao {
     @Query("SELECT * FROM Trainings")
     fun getALlTrainingsDirect(): List<Training>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTraining(training: Training)
 
     @Query("SELECT * from Trainings WHERE id = :key")
@@ -112,7 +112,7 @@ interface SkillDatabaseDao {
 
 
     //exercise
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertExercise(exercise: Exercise)
 
     @Query("SELECT * FROM Exercises WHERE trainingId = :key")
