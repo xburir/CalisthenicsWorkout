@@ -268,9 +268,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
     }
 
 
-    private suspend fun downloadSkillsImages(context: Context) {
+    private suspend fun downloadSkillsImages(context: Context) = coroutineScope{
         for (i in 0 until skills.size) {
-            CoroutineScope(IO).launch {
+            launch(IO) {
                 try {
                     val url = fbStorage.reference.child("skillImagesMini").child("${skills[i].skillId}.jpg").downloadUrl.await()
                     skills[i].skillImage = getBitmapFromUri(url, context)
@@ -281,9 +281,9 @@ class FetchDataViewModel(val database: SkillDatabaseDao, application: Applicatio
         }
     }
 
-    private suspend fun downloadTrainingImages(context:Context){
+    private suspend fun downloadTrainingImages(context:Context) = coroutineScope{
         for(i in 0 until trainings.size){
-            CoroutineScope(IO).launch {
+            launch(IO) {
                 try{
                     val uri =  fbStorage.reference.child("trainingImages").child("${trainings[i].id}.png").downloadUrl.await()
                     val bitmap = getBitmapFromUri(uri,context)

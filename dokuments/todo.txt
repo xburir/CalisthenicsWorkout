@@ -13,10 +13,5 @@ failure listener nefunguje lebo robi ajked nieje net
 
 
 
-anglicke vyrazy odlisit
-popisat use case textom
-do 4 kapitoly class diagram a este spôsob akym ukladam do databazy veci
 
-subsekcie dat na hruby text len
-limity aplikácie
 navrh implementaciu
