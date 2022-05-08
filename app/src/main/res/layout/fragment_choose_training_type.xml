@@ -47,13 +47,17 @@
                     android:id="@+id/normalTrainingButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Normal" />
+                    android:buttonTint="@color/white"
+                    android:text="Normal"
+                    android:textColor="@color/white" />
 
                 <RadioButton
                     android:id="@+id/circularTrainingButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Circular" />
+                    android:buttonTint="@color/white"
+                    android:text="Circular"
+                    android:textColor="@color/white" />
             </RadioGroup>
 
             <Button

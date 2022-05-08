@@ -50,6 +50,7 @@
                 android:ems="10"
                 android:hint="Number of sets"
                 android:inputType="numberSigned"
+                android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@+id/reps_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/skillOptions" />
@@ -63,6 +64,7 @@
                 android:ems="10"
                 android:hint="Number of reps"
                 android:inputType="numberSigned"
+                android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/sets_input"
                 app:layout_constraintTop_toTopOf="@+id/sets_input" />
@@ -100,6 +102,8 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:hint="Skill Name"
+                android:popupBackground="@color/dark_gray"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toTopOf="@+id/sets_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

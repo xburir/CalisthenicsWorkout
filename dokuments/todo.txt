@@ -15,3 +15,10 @@ failure listener nefunguje lebo robi ajked nieje net
 
 
 navrh implementaciu
+use case spojit vety
+preco vznikali ako som zistil ze je to problem ako sa da vyriesit, ci som odstranil problem
+inicializacia dat do implementacie, robil som fotky videa, v com som upravoval videa fotky 
+v 3.2 pisat o room radsej 
+class diagram (uml diagram databazy) priamrne kluce cudzie
+
+link na cennik spark program v 3.3 odkaz na literazru

@@ -42,3 +42,16 @@ https://freeicons.io/test/letter-email-icon-1220
 
 send email:
 https://devofandroid.blogspot.com/2018/11/send-email-using-intent-android-studio.html
+
+
+kotlin coroutines:
+https://developer.android.com/kotlin/coroutines
+
+huawei:
+https://www.alza.sk/huawei-p30-pro-128-gb-cierna-d5573700.htm
+
+photoshop:
+https://www.adobe.com/products/photoshop.html
+
+vegas:
+https://www.vegascreativesoftware.com/us/vegas-pro/
