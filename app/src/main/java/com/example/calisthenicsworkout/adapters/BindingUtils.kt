@@ -203,8 +203,8 @@ fun TextView.setLevel(item: Int?){
 @BindingAdapter("levelProgress")
 fun ProgressBar.setLevelProgress(item: Int?){
     item?.let{
-        progress = item;
         max = nextLevelPoints(item)
+        setProgress(item,true)
     }
 }
 
